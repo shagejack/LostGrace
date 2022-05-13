@@ -12,7 +12,7 @@ import java.util.Map;
 
 public class TickManager {
 
-    private static final Map<TickEvent.Type, List<ITickHandler>> tickHandlers = new HashMap<>();
+    public static final Map<TickEvent.Type, List<ITickHandler>> tickHandlers = new HashMap<>();
 
     static {
         for (TickEvent.Type type : TickEvent.Type.values()) {

@@ -48,14 +48,14 @@ public class LostGrace {
             LOGGER.info("Setting up event listeners...");
             ModSetup.setup(modEventBus, forgeEventBus);
 
-            TickManager.attachListeners(forgeEventBus);
-
         } catch (Exception e) {
             LOGGER.error(e);
             throw new RuntimeException();
         }
 
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> LostGraceClient.onClient(modEventBus, forgeEventBus));
+
+        TickManager.attachListeners(forgeEventBus);
     }
 
     public static ResourceLocation asResource(String path) {

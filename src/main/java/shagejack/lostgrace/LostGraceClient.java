@@ -21,8 +21,6 @@ public class LostGraceClient {
 
         TickManager.register(GraceUIRenderHandler.getInstance());
 
-        TickManager.attachListeners(forgeEventBus);
-
         forgeEventBus.addListener(EventPriority.LOW, GraceUIRenderHandler.getInstance()::render);
 
     }

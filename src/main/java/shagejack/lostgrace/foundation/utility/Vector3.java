@@ -197,25 +197,6 @@ public record Vector3(double x, double y, double z) {
         return buf;
     }
 
-    public Vector3 perpendicular() {
-        if (this.z == 0.0D)
-            return zCrossProduct();
-
-        return xCrossProduct();
-    }
-
-    public Vector3 xCrossProduct() {
-        return new Vector3(0, z, y);
-    }
-
-    public Vector3 zCrossProduct() {
-        return new Vector3(y, x, 0);
-    }
-
-    public Vector3 yCrossProduct() {
-        return new Vector3(-z, 0, x);
-    }
-
     public Vector3f toVec3f() {
         return new Vector3f((float) x, (float) y, (float) z);
     }

@@ -4,6 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -14,6 +16,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.render.Blending;
+import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.render.RenderingUtils;
 import shagejack.lostgrace.foundation.render.SphereBuilder;
 import shagejack.lostgrace.foundation.utility.ITickHandler;
@@ -29,7 +33,7 @@ public class GraceUIRenderHandler implements ITickHandler {
 
     private static GraceUIRenderHandler INSTANCE = new GraceUIRenderHandler();
 
-    private List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(Vector3.Y_AXIS.multiply(6), 8, 10);
+    private final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(Vector3.Y_AXIS.multiply(6), 8, 10);
 
     private GraceUI currentUI = null;
 
@@ -44,9 +48,7 @@ public class GraceUIRenderHandler implements ITickHandler {
         if (currentUI == null || !currentUI.getLevel().dimension().location().equals(level.dimension().location()) || !currentUI.getPos().equals(graceTilePos)) {
             currentUI = GraceUI.create(level, graceTilePos, 5.5D, graceHandler);
         }
-        if (currentUI != null) {
-            currentUI.refresh();
-        }
+
         return currentUI;
     }
 
@@ -62,6 +64,7 @@ public class GraceUIRenderHandler implements ITickHandler {
         Level level = Minecraft.getInstance().level;
 
         if (level == null || !this.currentUI.getLevel().dimension().location().equals(level.dimension().location())) {
+            this.currentUI.refresh();
             this.currentUI = null;
             return true;
         }
@@ -69,6 +72,7 @@ public class GraceUIRenderHandler implements ITickHandler {
         Player player = Minecraft.getInstance().player;
 
         if (player == null ) {
+            this.currentUI.refresh();
             this.currentUI = null;
             return true;
         }
@@ -76,6 +80,7 @@ public class GraceUIRenderHandler implements ITickHandler {
         LazyOptional<IGraceHandler> graceHandler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
 
         if (!graceHandler.isPresent() || graceHandler.resolve().isEmpty() || !graceHandler.resolve().get().isGraceActivated()) {
+            this.currentUI.refresh();
             this.currentUI = null;
             return true;
         }
@@ -83,6 +88,7 @@ public class GraceUIRenderHandler implements ITickHandler {
         Optional<GraceTileEntity> te = TileEntityUtils.get(GraceTileEntity.class, level, this.currentUI.getPos(), true);
 
         if (te.isEmpty() || !te.get().shouldRenderFog()) {
+            this.currentUI.refresh();
             this.currentUI = null;
             return true;
         }
@@ -90,7 +96,6 @@ public class GraceUIRenderHandler implements ITickHandler {
         return this.currentUI == null;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public void render(RenderLevelLastEvent event) {
         if (this.validate())
             return;
@@ -118,10 +123,9 @@ public class GraceUIRenderHandler implements ITickHandler {
 
     @OnlyIn(Dist.CLIENT)
     private void renderFog(PoseStack renderStack, Vector3 renderOffset, float pTick) {
-        RenderSystem.enableBlend();
-        RenderSystem.enableTexture();
-        RenderSystem.enableDepthTest();
-        RenderSystem.depthMask(false);
+
+        MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderTypeLG.FOG_SPHERE);
 
         renderStack.pushPose();
 
@@ -134,20 +138,17 @@ public class GraceUIRenderHandler implements ITickHandler {
 
         Matrix4f renderMatrix = renderStack.last().pose();
 
-        // TODO: fix rendering
-        RenderingUtils.draw(VertexFormat.Mode.TRIANGLES, DefaultVertexFormat.POSITION_COLOR, bufferBuilder -> {
-            for (SphereBuilder.TriangleFace face : this.sphereFaces) {
-                renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, bufferBuilder).color(r, g, b, alpha).endVertex();
-                renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, bufferBuilder).color(r, g, b, alpha).endVertex();
-                renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, bufferBuilder).color(r, g, b, alpha).endVertex();
-            }
-        });
+        // TODO: fix rendering, try fix sphere triangles generation in SphereBuilder
+        for (SphereBuilder.TriangleFace face : this.sphereFaces) {
+            renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+            renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+            renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+        }
 
         renderStack.popPose();
 
         RenderSystem.depthMask(true);
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
+        buffer.endBatch(RenderTypeLG.FOG_SPHERE);
     }
 
     @OnlyIn(Dist.CLIENT)
