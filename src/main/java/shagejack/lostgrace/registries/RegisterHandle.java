@@ -9,10 +9,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.registries.block.AllBlocks;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tileEntities.AllTileEntities;
@@ -38,9 +38,10 @@ public class RegisterHandle {
         new AllItems();
         new AllBlocks();
         new AllTileEntities();
-        new AllPackets();
 
         bus.addListener((FMLClientSetupEvent event) -> TileEntityBuilder.bind(event));
+
+        AllPackets.registerPackets();
     }
 
     public static void RegRegisters() {

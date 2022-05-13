@@ -1,12 +1,8 @@
 package shagejack.lostgrace.contents.block.grace;
 
-import com.mojang.math.Vector3d;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
@@ -27,17 +23,17 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
-import org.apache.commons.io.LineIterator;
 import org.jetbrains.annotations.NotNull;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.foundation.block.ITE;
+import shagejack.lostgrace.foundation.network.AllPackets;
+import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
 import shagejack.lostgrace.registries.tileEntities.AllTileEntities;
 
 import java.util.Random;
@@ -69,16 +65,18 @@ public class GraceBlock extends Block implements ITE<GraceTileEntity> {
         LazyOptional<IGraceHandler> handler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
         AtomicBoolean interacted = new AtomicBoolean(false);
         withTileEntityDo(level, pos, te -> {
-            Grace grace = te.getGrace();
-            handler.ifPresent(graceData -> {
-                if (graceData.visitGrace(grace)) {
-                    firstVisit(level, pos, player);
-                    interacted.set(true);
-                } else {
-                    commonVisit(level, pos, player);
-                    interacted.set(true);
-                }
-            });
+            if (!te.isLocked()) {
+                Grace grace = te.getGrace();
+                handler.ifPresent(graceData -> {
+                    if (graceData.visitGrace(grace)) {
+                        firstVisit(level, pos, player);
+                        interacted.set(true);
+                    } else {
+                        commonVisit(level, pos, player);
+                        interacted.set(true);
+                    }
+                });
+            }
         });
 
         if (interacted.get())
@@ -90,6 +88,8 @@ public class GraceBlock extends Block implements ITE<GraceTileEntity> {
     public void firstVisit(Level level, BlockPos pos, Player player) {
         level.setBlock(pos, level.getBlockState(pos).setValue(COOLDOWN, true), 3);
         if (player instanceof ServerPlayer serverPlayer) {
+            DiscoverGracePacket discoverGracePacket = new DiscoverGracePacket();
+            AllPackets.sendToPlayer(serverPlayer, discoverGracePacket);
             MutableComponent component = new TextComponent("LOST GRACE DISCOVERED").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.YELLOW);
             serverPlayer.connection.send(new ClientboundSetTitleTextPacket(component));
             serverPlayer.connection.send(new ClientboundSetTitlesAnimationPacket(10, 40, 10));
@@ -101,6 +101,8 @@ public class GraceBlock extends Block implements ITE<GraceTileEntity> {
         level.setBlock(pos, level.getBlockState(pos).setValue(COOLDOWN, true), 3);
 
         // TODO: render all visited grace for player and teleport on pressing shift key
+
+        withTileEntityDo(level, pos, te -> te.setLocked(true));
     }
 
     public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean p_60519_) {

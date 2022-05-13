@@ -4,17 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import shagejack.lostgrace.LostGrace;
-import shagejack.lostgrace.foundation.render.CustomRenderType;
+import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tileEntity.renderer.SafeTileEntityRenderer;
 
 public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
@@ -56,13 +54,16 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
         ms.mulPose(rotation);
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderType.translucent());
+        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.GRACE);
         Matrix4f matrix = ms.last().pose();
+
+        // TODO: do shear
 
         buffer.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.3f).uv(spriteHumanity.getU0(), spriteHumanity.getV0()).uv2(brightness).normal(1,0,0).endVertex();
         buffer.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.3f).uv(spriteHumanity.getU0(), spriteHumanity.getV1()).uv2(brightness).normal(1,0,0).endVertex();
         buffer.vertex(matrix, scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.3f).uv(spriteHumanity.getU1(), spriteHumanity.getV1()).uv2(brightness).normal(1,0,0).endVertex();
         buffer.vertex(matrix, scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.3f).uv(spriteHumanity.getU1(), spriteHumanity.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+
         ms.popPose();
     }
 

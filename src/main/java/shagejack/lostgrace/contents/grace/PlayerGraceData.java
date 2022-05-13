@@ -2,6 +2,7 @@ package shagejack.lostgrace.contents.grace;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,11 +13,16 @@ public class PlayerGraceData implements IGraceHandler {
 
     protected List<Grace> graces;
     protected int lastVisitedGraceIndex;
+    protected boolean graceActivated;
+    protected Vector3 graceActivatedPos;
 
     public PlayerGraceData() {
         this.graces = new ArrayList<>();
         this.lastVisitedGraceIndex = 0;
+        this.graceActivated = false;
+        this.graceActivatedPos = Vector3.ZERO;
     }
+
     @Override
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
@@ -26,6 +32,8 @@ public class PlayerGraceData implements IGraceHandler {
         }
         tag.put("GracesList", gracesList);
         tag.putInt("LastVisitedGraceIndex", lastVisitedGraceIndex);
+        tag.putBoolean("GraceActivated", graceActivated);
+        tag.put("GraceActivatedPos", graceActivatedPos.serializeNBT());
         return tag;
     }
 
@@ -40,6 +48,8 @@ public class PlayerGraceData implements IGraceHandler {
         }
         this.graces = graces;
         this.lastVisitedGraceIndex = nbt.getInt("LastVisitedGraceIndex");
+        this.graceActivated = nbt.getBoolean("GraceActivated");
+        this.graceActivatedPos = Vector3.of(nbt.getCompound("GraceActivatedPos"));
     }
 
     @Override
@@ -66,6 +76,8 @@ public class PlayerGraceData implements IGraceHandler {
             this.lastVisitedGraceIndex = graces.size() - 1;
             return true;
         }
+        this.activateGrace();
+        this.setGraceActivatedPos(grace.getPos());
         return false;
     }
 
@@ -73,6 +85,8 @@ public class PlayerGraceData implements IGraceHandler {
     public void copyFrom(IGraceHandler graceHandler) {
         this.graces = graceHandler.getAllGracesFound();
         this.lastVisitedGraceIndex = graceHandler.getLastGraceIndex();
+        this.graceActivated = graceHandler.isGraceActivated();
+        this.graceActivatedPos = graceHandler.getGraceActivatedPos();
     }
 
     @Override
@@ -80,5 +94,30 @@ public class PlayerGraceData implements IGraceHandler {
         this.graces = this.graces.stream()
                 .filter(graceSet::contains)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void activateGrace() {
+        this.graceActivated = true;
+    }
+
+    @Override
+    public void deactivateGrace() {
+        this.graceActivated = false;
+    }
+
+    @Override
+    public boolean isGraceActivated() {
+        return this.graceActivated;
+    }
+
+    @Override
+    public Vector3 getGraceActivatedPos() {
+        return this.graceActivatedPos;
+    }
+
+    @Override
+    public void setGraceActivatedPos(Vector3 graceActivatedPos) {
+        this.graceActivatedPos = graceActivatedPos;
     }
 }

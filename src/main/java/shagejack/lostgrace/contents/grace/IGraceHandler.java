@@ -1,7 +1,12 @@
 package shagejack.lostgrace.contents.grace;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.INBTSerializable;
+import shagejack.lostgrace.foundation.network.AllPackets;
+import shagejack.lostgrace.foundation.network.packet.PlayerGraceDataPacket;
+import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.util.List;
 import java.util.Set;
@@ -37,4 +42,27 @@ public interface IGraceHandler extends INBTSerializable<CompoundTag> {
     void copyFrom(IGraceHandler graceHandler);
 
     void checkGrace(Set<Grace> graceSet);
+
+    void activateGrace();
+
+    void deactivateGrace();
+
+    boolean isGraceActivated();
+
+    Vector3 getGraceActivatedPos();
+
+    void setGraceActivatedPos(Vector3 pos);
+
+    default void setGraceActivatedPos(BlockPos pos) {
+        setGraceActivatedPos(Vector3.of(pos));
+    }
+
+    default void syncToClient(ServerPlayer player) {
+        AllPackets.sendToPlayer(player, new PlayerGraceDataPacket(this));
+    }
+
+    default void tryDeactivateGrace(ServerPlayer player) {
+        if (Vector3.of(player).distance(getGraceActivatedPos().add(0.5, 0.5, 0.5)) > 3.0)
+            deactivateGrace();
+    }
 }

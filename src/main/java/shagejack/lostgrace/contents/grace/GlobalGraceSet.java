@@ -45,7 +45,13 @@ public class GlobalGraceSet {
         List<ServerPlayer> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayer player : players) {
             LazyOptional<IGraceHandler> graceHandler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
-            graceHandler.ifPresent(graceData -> graceData.checkGrace(graceSet));
+            graceHandler.ifPresent(graceData -> {
+                graceData.checkGrace(graceSet);
+                graceData.syncToClient(player);
+                if (graceData.isGraceActivated()) {
+                    graceData.tryDeactivateGrace(player);
+                }
+            });
         }
     }
 

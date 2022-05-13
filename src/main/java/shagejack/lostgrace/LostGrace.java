@@ -20,16 +20,15 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shagejack.lostgrace.foundation.handler.TickManager;
 import shagejack.lostgrace.registries.RegisterHandle;
 import shagejack.lostgrace.registries.setup.ModSetup;
 
 import java.util.stream.Collectors;
 
-// The value here should match an entry in the META-INF/mods.toml file
 @Mod(LostGrace.MOD_ID)
 public class LostGrace {
 
-    // Directly reference a log4j logger.
     public static final String MOD_ID = "lostgrace";
     public static final String MOD_NAME = "Lost Grace";
     public static final Logger LOGGER = LogManager.getLogger(LostGrace.MOD_NAME);
@@ -48,6 +47,8 @@ public class LostGrace {
 
             LOGGER.info("Setting up event listeners...");
             ModSetup.setup(modEventBus, forgeEventBus);
+
+            TickManager.attachListeners(forgeEventBus);
 
         } catch (Exception e) {
             LOGGER.error(e);
