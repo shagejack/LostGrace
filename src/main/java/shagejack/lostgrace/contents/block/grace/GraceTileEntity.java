@@ -5,10 +5,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -32,6 +30,7 @@ public class GraceTileEntity extends BaseTileEntity {
     protected int summoned;
     protected boolean locked;
 
+    public String graceName = "";
     public boolean renderFog;
 
     public GraceTileEntity(BlockPos pos, BlockState state) {
@@ -104,6 +103,7 @@ public class GraceTileEntity extends BaseTileEntity {
             if (distance < 2.5)
                 GraceUIRenderHandler.getInstance().getOrCreateUI(getLevel(), getBlockPos(), graceHandler.resolve().get());
 
+
             return;
         }
 
@@ -116,6 +116,7 @@ public class GraceTileEntity extends BaseTileEntity {
     protected void saveAdditional(CompoundTag tag) {
         tag.putInt("Summoned", this.summoned);
         tag.putBoolean("Locked", this.locked);
+        tag.putString("GraceName", graceName);
         super.saveAdditional(tag);
     }
 
@@ -127,6 +128,7 @@ public class GraceTileEntity extends BaseTileEntity {
             this.summoned = 2400;
         }
         this.locked = tag.getBoolean("Locked");
+        this.graceName = tag.getString("GraceName");
         super.load(tag);
     }
 
@@ -140,7 +142,7 @@ public class GraceTileEntity extends BaseTileEntity {
 
     public Grace getGrace() {
         if (grace == null) {
-            this.grace = new Grace(level, getBlockPos());
+            this.grace = new Grace(graceName, level, getBlockPos());
             GlobalGraceSet.addGrace(this.grace);
         }
         return this.grace;
@@ -148,6 +150,17 @@ public class GraceTileEntity extends BaseTileEntity {
 
     public int getSummonRemainingTicks() {
         return this.summoned;
+    }
+
+    public void setGraceName(String name) {
+        this.graceName = name;
+        GlobalGraceSet.removeGrace(this.grace);
+        this.grace = new Grace(graceName, level, getBlockPos());
+        GlobalGraceSet.addGrace(this.grace);
+    }
+
+    public void clearGraceName() {
+        setGraceName("");
     }
 
     @Override

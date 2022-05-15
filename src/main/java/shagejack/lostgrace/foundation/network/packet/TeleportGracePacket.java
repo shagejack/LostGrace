@@ -22,6 +22,11 @@ public class TeleportGracePacket extends SimplePacketBase {
 
     @Override
     public void handle(Supplier<NetworkEvent.Context> context) {
+        NetworkEvent.Context ctx = context.get();
+        ctx.enqueueWork(() -> {
 
+        });
+
+        ctx.setPacketHandled(true);
     }
 }

@@ -3,12 +3,14 @@ package shagejack.lostgrace.contents.block.grace;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
+import com.mojang.math.Vector3d;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
@@ -33,7 +35,7 @@ public class GraceUIRenderHandler implements ITickHandler {
 
     private static GraceUIRenderHandler INSTANCE = new GraceUIRenderHandler();
 
-    private final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(Vector3.Y_AXIS.multiply(6), 8, 10);
+    private final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(6, 8, false);
 
     private GraceUI currentUI = null;
 
@@ -138,7 +140,7 @@ public class GraceUIRenderHandler implements ITickHandler {
 
         Matrix4f renderMatrix = renderStack.last().pose();
 
-        // TODO: fix rendering, try fix sphere triangles generation in SphereBuilder
+        // TODO: fix rendering
         for (SphereBuilder.TriangleFace face : this.sphereFaces) {
             renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
             renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();

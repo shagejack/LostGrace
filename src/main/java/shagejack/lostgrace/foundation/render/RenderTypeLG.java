@@ -37,7 +37,10 @@ public class RenderTypeLG extends RenderType {
             .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
             .setTextureState(NO_TEXTURE)
             .setTransparencyState(NO_TRANSPARENCY)
-            .setOutputState(RenderStateShard.PARTICLES_TARGET)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setOutputState(RenderStateShard.MAIN_TARGET)
+            .setDepthTestState(NO_DEPTH_TEST)
+            .setCullState(NO_CULL)
             .build();
 
 
