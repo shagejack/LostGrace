@@ -3,24 +3,21 @@ package shagejack.lostgrace.contents.block.grace;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3d;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import org.lwjgl.system.CallbackI;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
-import shagejack.lostgrace.foundation.render.Blending;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
-import shagejack.lostgrace.foundation.render.RenderingUtils;
 import shagejack.lostgrace.foundation.render.SphereBuilder;
 import shagejack.lostgrace.foundation.utility.ITickHandler;
 import shagejack.lostgrace.foundation.utility.TileEntityUtils;
@@ -73,7 +70,7 @@ public class GraceUIRenderHandler implements ITickHandler {
 
         Player player = Minecraft.getInstance().player;
 
-        if (player == null ) {
+        if (player == null) {
             this.currentUI.refresh();
             this.currentUI = null;
             return true;
@@ -123,15 +120,14 @@ public class GraceUIRenderHandler implements ITickHandler {
         this.renderFocusedGrace(renderStack, renderOffset, pTick, graceHandler);
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void renderFog(PoseStack renderStack, Vector3 renderOffset, float pTick) {
+
+        renderStack.pushPose();
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderTypeLG.FOG_SPHERE);
 
-        renderStack.pushPose();
-
-        Color color = Color.BLACK;
+        Color color = Color.GRAY;
         int r = color.getRed();
         int g = color.getGreen();
         int b = color.getBlue();
@@ -147,17 +143,15 @@ public class GraceUIRenderHandler implements ITickHandler {
             renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
         }
 
-        renderStack.popPose();
-
         RenderSystem.depthMask(true);
         buffer.endBatch(RenderTypeLG.FOG_SPHERE);
+
+        renderStack.popPose();
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void renderFocusedGrace(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler) {
     }
 
-    @OnlyIn(Dist.CLIENT)
     private void renderGraces(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler) {
     }
 

@@ -53,9 +53,10 @@ public class GraceTileEntity extends BaseTileEntity {
                 }
             }
 
-            if (players.size() == 0) {
+            if (players.size() == 0 || players.stream().noneMatch(this::activatedGrace)) {
                 this.locked = false;
             } else if (level.isClientSide()) {
+                // try to create fog for client player
                 createFog();
             }
         }
@@ -71,6 +72,14 @@ public class GraceTileEntity extends BaseTileEntity {
                 cooldown = 0;
             }
         }
+    }
+
+    private boolean activatedGrace(Player player) {
+        LazyOptional<IGraceHandler> graceHandler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
+        if (!graceHandler.isPresent())
+            return false;
+
+        return graceHandler.resolve().isPresent() && graceHandler.resolve().get().isGraceActivated();
     }
 
     public boolean shouldRenderFog() {

@@ -65,8 +65,6 @@ public class SphereBuilder {
             }
         }
 
-
-
         return sphereFaces;
     }
 

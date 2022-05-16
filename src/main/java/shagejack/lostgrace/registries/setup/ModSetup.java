@@ -6,11 +6,14 @@ import shagejack.lostgrace.contents.block.grace.GraceInteractionHandler;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.PlayerGraceEventHandler;
 import shagejack.lostgrace.contents.item.goldenSeed.GoldenSeedEventHandler;
+import shagejack.lostgrace.registries.AllCommands;
 
 public class ModSetup {
 
     public static void setup(IEventBus modEventBus, IEventBus forgeEventBus) {
         forgeEventBus.addGenericListener(Entity.class, PlayerGraceEventHandler::attachCapability);
+
+        forgeEventBus.addListener(AllCommands::registerCommand);
 
         forgeEventBus.addListener(PlayerGraceEventHandler::onPlayerCloned);
         forgeEventBus.addListener(PlayerGraceEventHandler::onRegisterCapabilities);

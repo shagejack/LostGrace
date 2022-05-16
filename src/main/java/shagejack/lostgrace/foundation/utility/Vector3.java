@@ -188,13 +188,11 @@ public record Vector3(double x, double y, double z) {
     }
 
     public VertexConsumer drawPosNormal(Matrix3f normal, VertexConsumer buf) {
-        buf.normal(normal, (float) this.x, (float) this.y, (float) this.z);
-        return buf;
+        return buf.normal(normal, (float) this.x, (float) this.y, (float) this.z);
     }
 
     public VertexConsumer drawPosVertex(Matrix4f renderMatrix, VertexConsumer buf) {
-        buf.vertex(renderMatrix, (float) this.x, (float) this.y, (float) this.z);
-        return buf;
+        return buf.vertex(renderMatrix, (float) this.x, (float) this.y, (float) this.z);
     }
 
     public Vector3f toVec3f() {

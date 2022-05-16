@@ -15,6 +15,10 @@ public class GlobalGraceSet {
 
     public static Set<Grace> graceSet = Sets.newConcurrentHashSet();
 
+    public static Set<Grace> getGraceSet() {
+        return graceSet;
+    }
+
     public static boolean contains(Grace grace) {
         return graceSet.contains(grace);
     }
@@ -35,8 +39,15 @@ public class GlobalGraceSet {
     public static void tickGrace(TickEvent.ServerTickEvent event) {
         // check grace existence
         graceSet.removeIf(grace -> {
-            if (grace.getLevel() != null && grace.getLevel().getBlockEntity(grace.getPos()) instanceof GraceTileEntity te) {
-                return !te.getGrace().equals(grace);
+            if (grace.getLevel() != null) {
+                // only check grace in loaded chunk
+                if (grace.getLevel().isLoaded(grace.getPos())) {
+                    if (grace.getLevel().getBlockEntity(grace.getPos()) instanceof GraceTileEntity te) {
+                        return !te.getGrace().equals(grace);
+                    }
+                } else {
+                    return false;
+                }
             }
             return true;
         });

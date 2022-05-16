@@ -63,6 +63,14 @@ public class Grace {
         return level;
     }
 
+    public boolean hasName() {
+        return this.name.isEmpty();
+    }
+
+    public String getName() {
+        return hasName() ? name : "Empty";
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -80,6 +88,15 @@ public class Grace {
     @Override
     public int hashCode() {
         return isNull || pos == null ? 0 : pos.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        if (isNull) {
+            return "[Grace] NULL";
+        } else {
+            return "[Grace] Name: " + (hasName() ? name : "Empty") + ", Level: " + level.dimension().location() + ", Pos: " + pos.toString();
+        }
     }
 
     public CompoundTag serializeNBT() {
