@@ -156,7 +156,10 @@ public record Vector3(double x, double y, double z) {
     }
 
     public Vector3 normalize() {
-        return this.divide(this.length());
+        if (!this.equals(ZERO))
+            return this.divide(this.length());
+
+        return Y_AXIS;
     }
 
     public double includedAngle(Vector3 vec) {
@@ -205,6 +208,18 @@ public record Vector3(double x, double y, double z) {
 
     public Vector3f toVec3f() {
         return new Vector3f((float) x, (float) y, (float) z);
+    }
+
+    public Quaternion asRotateAxis(double angle) {
+        return new Quaternion(this.normalize().toVec3f(), (float) angle, false);
+    }
+
+    public Quaternion asRotateAxisDegree(double angle) {
+        return new Quaternion(this.normalize().toVec3f(), (float) angle, true);
+    }
+
+    public Quaternion asToVecRotation(Vector3 vec) {
+        return new Quaternion(this.cross(vec).normalize().toVec3f(), (float) this.includedAngle(vec), false);
     }
 
     public Vector3 rotate(double angle, Vector3 axis) {

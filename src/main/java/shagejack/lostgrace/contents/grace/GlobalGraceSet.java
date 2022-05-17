@@ -39,7 +39,7 @@ public class GlobalGraceSet {
     public static void tickGrace(TickEvent.ServerTickEvent event) {
         // check grace existence
         graceSet.removeIf(grace -> {
-            if (grace.getLevel() != null) {
+            if (grace != null && grace.getLevel() != null) {
                 // only check grace in loaded chunk
                 if (grace.getLevel().isLoaded(grace.getPos())) {
                     if (grace.getLevel().getBlockEntity(grace.getPos()) instanceof GraceTileEntity te) {

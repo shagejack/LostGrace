@@ -23,9 +23,9 @@ public interface IGraceHandler extends INBTSerializable<CompoundTag> {
     default boolean contains(Grace grace) {
         for (Grace found : getAllGracesFound()) {
             if (found.equals(grace))
-                return false;
+                return true;
         }
-        return true;
+        return false;
     }
 
     int getLastGraceIndex();

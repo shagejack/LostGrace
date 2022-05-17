@@ -13,6 +13,7 @@ import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class CommandVisitAllGraces {
@@ -36,10 +37,19 @@ public class CommandVisitAllGraces {
             graceSet = GlobalGraceSet.getGraceSet();
         }
 
+        AtomicInteger visitCount = new AtomicInteger();
+
         for (Grace grace : graceSet) {
-            player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceHandler -> graceHandler.visitGrace(grace));
-            context.getSource().sendSuccess(new TextComponent(grace.toString() + " visited."), true);
+            player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceHandler -> {
+                if (!graceHandler.contains(grace)) {
+                    graceHandler.visitGrace(grace);
+                    context.getSource().sendSuccess(new TextComponent(grace.toString() + " visited."), true);
+                    visitCount.getAndIncrement();
+                }
+            });
         }
+
+        context.getSource().sendSuccess(new TextComponent("Successfully visited " + visitCount + " graces."), true);
 
         return 1;
     }

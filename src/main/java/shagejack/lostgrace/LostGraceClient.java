@@ -7,7 +7,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import shagejack.lostgrace.contents.block.grace.GraceRenderer;
-import shagejack.lostgrace.contents.block.grace.GraceUIRenderHandler;
+import shagejack.lostgrace.contents.block.grace.GraceUIHandler;
 import shagejack.lostgrace.foundation.handler.TickManager;
 
 public class LostGraceClient {
@@ -19,9 +19,10 @@ public class LostGraceClient {
         modEventBus.addListener(LostGraceClient::clientInit);
         modEventBus.addListener(LostGraceClient::onTextureStitch);
 
-        TickManager.register(GraceUIRenderHandler.getInstance());
+        TickManager.register(GraceUIHandler.getInstance());
 
-        forgeEventBus.addListener(EventPriority.LOW, GraceUIRenderHandler.getInstance()::render);
+        forgeEventBus.addListener(EventPriority.LOW, GraceUIHandler.getInstance()::render);
+        forgeEventBus.addListener(GraceUIHandler.getInstance()::interact);
 
     }
 

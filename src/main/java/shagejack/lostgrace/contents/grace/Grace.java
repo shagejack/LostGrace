@@ -64,7 +64,7 @@ public class Grace {
     }
 
     public boolean hasName() {
-        return this.name.isEmpty();
+        return this.name != null && !this.name.isEmpty();
     }
 
     public String getName() {
@@ -109,8 +109,10 @@ public class Grace {
             tag.putDouble("Z", 0);
             tag.putBoolean("IsNull", true);
         } else {
-            if (name.isEmpty()) {
+            if (hasName()) {
                 tag.putString("Name", name);
+            } else {
+                tag.putString("Name", "");
             }
             tag.putString("Dimension", level.dimension().location().toString());
             tag.putDouble("X", pos.getX());

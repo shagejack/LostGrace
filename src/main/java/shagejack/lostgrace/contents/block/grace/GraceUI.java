@@ -12,6 +12,7 @@ public class GraceUI {
     private final IGraceHandler graceHandler;
 
     private int renderTicks = 20;
+    private int teleportTicks = 0;
 
     private GraceUI(Level level, BlockPos pos, double sphereRadius, IGraceHandler graceHandler) {
         this.level = level;
@@ -44,12 +45,25 @@ public class GraceUI {
         return renderTicks;
     }
 
+    public int getTeleportTicks() {
+        return teleportTicks;
+    }
+
     public void refresh() {
         this.renderTicks = 20;
+        this.teleportTicks = 0;
+    }
+
+    public void resetTeleportTicks() {
+        this.teleportTicks = 0;
     }
 
     public void decreaseRenderTicks() {
         this.renderTicks--;
+    }
+
+    public void increaseTeleportTicks() {
+        this.teleportTicks++;
     }
 
 

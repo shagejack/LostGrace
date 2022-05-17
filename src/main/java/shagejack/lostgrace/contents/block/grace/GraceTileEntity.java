@@ -45,6 +45,9 @@ public class GraceTileEntity extends BaseTileEntity {
         if (level == null)
             return;
 
+        if (this.grace == null || grace.equals(Grace.NULL) || grace.getLevel() == null || !grace.getName().equals(graceName))
+            this.grace = getGrace(true);
+
         if (locked) {
             List<Player> players = new ArrayList<>();
             for(Player player : level.players()) {
@@ -110,7 +113,7 @@ public class GraceTileEntity extends BaseTileEntity {
                 Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
 
             if (distance < 2.5)
-                GraceUIRenderHandler.getInstance().getOrCreateUI(getLevel(), getBlockPos(), graceHandler.resolve().get());
+                GraceUIHandler.getInstance().getOrCreateUI(getLevel(), getBlockPos(), graceHandler.resolve().get());
 
 
             return;
@@ -150,7 +153,11 @@ public class GraceTileEntity extends BaseTileEntity {
     }
 
     public Grace getGrace() {
-        if (grace == null) {
+        return this.getGrace(false);
+    }
+
+    public Grace getGrace(boolean forceCreate) {
+        if (grace == null || forceCreate) {
             this.grace = new Grace(graceName, level, getBlockPos());
             GlobalGraceSet.addGrace(this.grace);
         }

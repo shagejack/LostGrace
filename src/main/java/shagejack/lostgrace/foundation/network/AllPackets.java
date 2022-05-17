@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 public enum AllPackets {
     // Client to Server
-    // TELEPORT_GRACE(TeleportGracePacket.class, TeleportGracePacket::new, NetworkDirection.PLAY_TO_SERVER),
+    TELEPORT_GRACE(TeleportGracePacket.class, TeleportGracePacket::new, NetworkDirection.PLAY_TO_SERVER),
 
     // Server to Client
     DISCOVER_GRACE(DiscoverGracePacket.class, DiscoverGracePacket::new, NetworkDirection.PLAY_TO_CLIENT),

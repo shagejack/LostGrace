@@ -2,7 +2,6 @@ package shagejack.lostgrace.registries.setup;
 
 import net.minecraft.world.entity.Entity;
 import net.minecraftforge.eventbus.api.IEventBus;
-import shagejack.lostgrace.contents.block.grace.GraceInteractionHandler;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.PlayerGraceEventHandler;
 import shagejack.lostgrace.contents.item.goldenSeed.GoldenSeedEventHandler;
@@ -21,7 +20,6 @@ public class ModSetup {
 
         forgeEventBus.addListener(GlobalGraceSet::tickGrace);
         forgeEventBus.addListener(GoldenSeedEventHandler::onGoldenSeedSpawn);
-        forgeEventBus.addListener(GraceInteractionHandler::clientTick);
     }
 
 }
