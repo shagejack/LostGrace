@@ -28,7 +28,8 @@ public class SphereBuilder {
         List<Vector3> vertices = new ArrayList<>();
 
         double r = axis.length();
-        Vector3 rotation = axis.subtract(Vector3.Y_AXIS.multiply(r));
+        double rotationAngle = axis.includedAngle(Vector3.Y_AXIS.multiply(r));
+        Vector3 rotationAxis = axis.cross(Vector3.Y_AXIS.multiply(r));
 
         // generate vertices
         for (int j = 0; j <= stacks; j++) {
@@ -38,7 +39,7 @@ public class SphereBuilder {
             for (int i = 0; i <= sectors; i++) {
                 double u = (double) i / sectors;
                 double theta = 2 * Math.PI * u;
-                vertices.add(new Vector3(r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.cos(phi) * Math.sin(theta)).add(rotation));
+                vertices.add(new Vector3(r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta)).rotate(rotationAngle, rotationAxis));
             }
         }
 

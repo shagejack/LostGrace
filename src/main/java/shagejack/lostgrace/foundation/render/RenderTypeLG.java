@@ -40,7 +40,7 @@ public class RenderTypeLG extends RenderType {
             .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
             .setWriteMaskState(RenderStateShard.COLOR_WRITE)
             .setOutputState(RenderStateShard.MAIN_TARGET)
-            .setDepthTestState(NO_DEPTH_TEST)
+            .setDepthTestState(LEQUAL_DEPTH_TEST)
             .setCullState(NO_CULL)
             .build();
 

@@ -3,10 +3,13 @@ package shagejack.lostgrace.contents.block.grace;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -14,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import org.lwjgl.system.CallbackI;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
@@ -32,7 +36,7 @@ public class GraceUIRenderHandler implements ITickHandler {
 
     private static GraceUIRenderHandler INSTANCE = new GraceUIRenderHandler();
 
-    private final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(6, 8, false);
+    private final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(6, 16, false);
 
     private GraceUI currentUI = null;
 

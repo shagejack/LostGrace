@@ -159,6 +159,14 @@ public record Vector3(double x, double y, double z) {
         return this.divide(this.length());
     }
 
+    public double includedAngle(Vector3 vec) {
+        return Math.acos(this.dot(vec) / (this.length() * vec.length()));
+    }
+
+    public double includedAngleDegree(Vector3 vec) {
+        return this.includedAngle(vec) * 180 / Math.PI;
+    }
+
     public static Iterator<Vector3> iterator(Vector3 from, Vector3 to, int divider) {
         return new VecIterator(from, to, divider);
     }
@@ -200,12 +208,16 @@ public record Vector3(double x, double y, double z) {
     }
 
     public Vector3 rotate(double angle, Vector3 axis) {
-        new Quaternion(axis.normalize().toVec3f(), (float) angle, false);
+        if (!axis.equals(ZERO) && Double.compare(angle, 0) != 0)
+            return this.transform(new Quaternion(axis.normalize().toVec3f(), (float) angle, false));
+
         return this;
     }
 
     public Vector3 rotateDegree(double angle, Vector3 axis) {
-        new Quaternion(axis.normalize().toVec3f(), (float) angle, true);
+        if (!axis.equals(ZERO) && Double.compare(angle, 0) != 0)
+            return this.transform(new Quaternion(axis.normalize().toVec3f(), (float) angle, true));
+
         return this;
     }
 
