@@ -13,7 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
-import shagejack.lostgrace.foundation.tileEntity.renderer.SafeTileEntityRenderer;
+import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
 
 public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
 

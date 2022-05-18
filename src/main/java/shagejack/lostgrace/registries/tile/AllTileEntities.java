@@ -1,4 +1,4 @@
-package shagejack.lostgrace.registries.tileEntities;
+package shagejack.lostgrace.registries.tile;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;

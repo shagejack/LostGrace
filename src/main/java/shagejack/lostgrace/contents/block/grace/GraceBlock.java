@@ -34,7 +34,7 @@ import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.foundation.block.ITE;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
-import shagejack.lostgrace.registries.tileEntities.AllTileEntities;
+import shagejack.lostgrace.registries.tile.AllTileEntities;
 
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -99,9 +99,6 @@ public class GraceBlock extends Block implements ITE<GraceTileEntity> {
 
     public void commonVisit(Level level, BlockPos pos, Player player) {
         level.setBlock(pos, level.getBlockState(pos).setValue(COOLDOWN, true), 3);
-
-        // TODO: render all visited grace for player and teleport on pressing shift key
-
         withTileEntityDo(level, pos, te -> te.setLocked(true));
     }
 

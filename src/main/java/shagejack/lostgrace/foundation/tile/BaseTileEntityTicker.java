@@ -1,4 +1,4 @@
-package shagejack.lostgrace.foundation.tileEntity;
+package shagejack.lostgrace.foundation.tile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

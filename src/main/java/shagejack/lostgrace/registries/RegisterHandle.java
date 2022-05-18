@@ -9,15 +9,14 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.registries.block.AllBlocks;
 import shagejack.lostgrace.registries.item.AllItems;
-import shagejack.lostgrace.registries.tileEntities.AllTileEntities;
-import shagejack.lostgrace.registries.tileEntities.TileEntityBuilder;
+import shagejack.lostgrace.registries.tile.AllTileEntities;
+import shagejack.lostgrace.registries.tile.TileEntityBuilder;
 
 import static net.minecraftforge.registries.ForgeRegistries.*;
 import static shagejack.lostgrace.LostGrace.MOD_ID;

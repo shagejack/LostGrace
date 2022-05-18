@@ -1,4 +1,4 @@
-package shagejack.lostgrace.registries.tileEntities;
+package shagejack.lostgrace.registries.tile;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;

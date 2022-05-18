@@ -14,9 +14,10 @@ import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
-import shagejack.lostgrace.foundation.tileEntity.BaseTileEntity;
+import shagejack.lostgrace.foundation.tile.BaseTileEntity;
+import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.Vector3;
-import shagejack.lostgrace.registries.tileEntities.AllTileEntities;
+import shagejack.lostgrace.registries.tile.AllTileEntities;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +52,7 @@ public class GraceTileEntity extends BaseTileEntity {
         if (locked) {
             List<Player> players = new ArrayList<>();
             for(Player player : level.players()) {
-                if (Vector3.of(getBlockPos()).add(0.5, 1.6, 0.5).distance(Vector3.of(player.position())) < 5.5D) {
+                if (Vector3.of(getBlockPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5).distance(Vector3.of(player.position())) < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE) {
                     players.add(player);
                 }
             }
@@ -103,23 +104,20 @@ public class GraceTileEntity extends BaseTileEntity {
             return;
         }
 
-        if (graceHandler.resolve().isPresent() && graceHandler.resolve().get().isGraceActivated()) {
-            Vector3 center = Vector3.of(getBlockPos()).add(0.5, 1.6, 0.5);
-            double distance = Vector3.of(Minecraft.getInstance().player.position()).distance(center);
+        graceHandler.ifPresent(handler -> {
+            if (handler.isGraceActivated() && handler.getLastGrace().equals(this.getGrace())) {
+                Vector3 center = Vector3.of(getBlockPos()).add(0.5, 1.6, 0.5);
+                double distance = Vector3.of(Minecraft.getInstance().player.position()).distance(center);
 
-            renderFog = true;
+                this.renderFog = true;
 
-            if (distance < 5.5)
-                Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
+                if (distance < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE)
+                    Minecraft.getInstance().options.setCameraType(CameraType.FIRST_PERSON);
 
-            if (distance < 2.5)
-                GraceUIHandler.getInstance().getOrCreateUI(getLevel(), getBlockPos(), graceHandler.resolve().get());
-
-
-            return;
-        }
-
-        renderFog = false;
+                if (distance < Constants.GRACE_MAX_DISTANCE)
+                    GraceUIHandler.getInstance().getOrCreateUI(getLevel(), getBlockPos(), handler);
+            }
+        });
     }
 
 

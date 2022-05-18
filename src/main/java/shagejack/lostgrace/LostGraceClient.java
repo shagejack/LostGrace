@@ -11,7 +11,6 @@ import shagejack.lostgrace.contents.block.grace.GraceUIHandler;
 import shagejack.lostgrace.foundation.handler.TickManager;
 
 public class LostGraceClient {
-    // public static final ModelSwapper MODEL_SWAPPER = new ModelSwapper();
 
     public static void onClient(IEventBus modEventBus, IEventBus forgeEventBus) {
         LostGrace.LOGGER.info("Initializing Client...");

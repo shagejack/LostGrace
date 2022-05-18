@@ -6,6 +6,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.common.util.INBTSerializable;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.PlayerGraceDataPacket;
+import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.util.List;
@@ -62,7 +63,7 @@ public interface IGraceHandler extends INBTSerializable<CompoundTag> {
     }
 
     default void tryDeactivateGrace(ServerPlayer player) {
-        if (Vector3.of(player).distance(getGraceActivatedPos().add(0.5, 0.5, 0.5)) > 3.0)
+        if (Vector3.of(player).distance(getGraceActivatedPos().add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5)) > Constants.GRACE_MAX_DISTANCE)
             deactivateGrace();
     }
 }

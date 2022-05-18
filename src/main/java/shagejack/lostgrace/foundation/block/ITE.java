@@ -9,8 +9,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import shagejack.lostgrace.foundation.tileEntity.BaseTileEntity;
-import shagejack.lostgrace.foundation.tileEntity.BaseTileEntityTicker;
+import shagejack.lostgrace.foundation.tile.BaseTileEntity;
+import shagejack.lostgrace.foundation.tile.BaseTileEntityTicker;
 
 import javax.annotation.Nullable;
 import java.util.Optional;

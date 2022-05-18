@@ -26,6 +26,7 @@ import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.TeleportGracePacket;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.render.SphereBuilder;
+import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.ITickHandler;
 import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 import shagejack.lostgrace.foundation.utility.Vector3;
@@ -41,9 +42,10 @@ public class GraceUIHandler implements ITickHandler {
 
     private static GraceUIHandler INSTANCE = new GraceUIHandler();
 
-    private final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(6, 16, false);
+    private static final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(Constants.GRACE_FOG_RADIUS, 16, false);
 
     private GraceUI currentUI = null;
+    private int fadeTick = 0;
 
     // there should be only one grace ui render handler instance on client side
     private GraceUIHandler() {}
@@ -54,7 +56,7 @@ public class GraceUIHandler implements ITickHandler {
 
     public GraceUI getOrCreateUI(Level level, BlockPos graceTilePos, IGraceHandler graceHandler) {
         if (currentUI == null || !currentUI.getLevel().dimension().location().equals(level.dimension().location()) || !currentUI.getPos().equals(graceTilePos)) {
-            currentUI = GraceUI.create(level, graceTilePos, 5.5D, graceHandler);
+            currentUI = GraceUI.create(level, graceTilePos, graceHandler);
         }
 
         return currentUI;
@@ -105,40 +107,48 @@ public class GraceUIHandler implements ITickHandler {
     }
 
     public void render(RenderLevelLastEvent event) {
-        if (this.validate())
-            return;
-
         float pTick = event.getPartialTick();
         PoseStack renderStack = event.getPoseStack();
-        IGraceHandler graceHandler = this.currentUI.getGraceHandler();
 
         Player player = Minecraft.getInstance().player;
-        
+
         if (player == null)
             return;
 
         Vector3 renderOffset = Vector3.of(player).addY(1.7);
-        double distance = renderOffset.distance(Vector3.of(this.currentUI.getPos()).add(0.5, 1.8, 0.5));
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.getPosition();
         renderStack.translate(-cameraPos.x, -cameraPos.y, -cameraPos.z);
 
-        if(distance > 3) {
+        if (this.validate()) {
+            if (fadeTick > 0) {
+                this.renderFog(renderStack, renderOffset, pTick, true);
+            }
             return;
         }
 
-        this.renderFog(renderStack, renderOffset, pTick);
+        IGraceHandler graceHandler = this.currentUI.getGraceHandler();
+        double distance = Vector3.of(player).distance(Vector3.of(this.currentUI.getPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5));
+
+        if(distance > 3) {
+            if (fadeTick > 0) {
+                this.renderFog(renderStack, renderOffset, pTick, true);
+            }
+            return;
+        }
+
+        this.renderFog(renderStack, renderOffset, pTick, false);
         this.renderGraces(renderStack, renderOffset, pTick, graceHandler);
     }
 
-    private void renderFog(PoseStack renderStack, Vector3 renderOffset, float pTick) {
+    private void renderFog(PoseStack renderStack, Vector3 renderOffset, float pTick, boolean fading) {
         renderStack.pushPose();
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderTypeLG.FOG_SPHERE);
 
-        Color color = Color.LIGHT_GRAY;
+        Color color = Constants.GRACE_FOG_COLOR;
         int r = color.getRed();
         int g = color.getGreen();
         int b = color.getBlue();
@@ -147,17 +157,28 @@ public class GraceUIHandler implements ITickHandler {
 
         Matrix4f renderMatrix = renderStack.last().pose();
 
-        if (this.currentUI.getTeleportTicks() > 0) {
-            alpha = Math.max((int) (255 * Math.min(1, (double) this.currentUI.getTeleportTicks() / 20)), (int) (217 * (1 - (double) this.currentUI.getRenderTicks() / 20)));
-            List<SphereBuilder.TriangleFace> generatedSphereFaces = new SphereBuilder().build(6 * Math.max(0.25, 1 - (double) this.currentUI.getTeleportTicks() / 80), 16, false);
-            for (SphereBuilder.TriangleFace face : generatedSphereFaces) {
-                renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+        if (!fading) {
+            this.fadeTick = 20 - this.currentUI.getRenderTicks();
+
+            if (this.currentUI.getTeleportTicks() > 0) {
+                alpha = Math.max((int) (255 * Math.min(1, (double) this.currentUI.getTeleportTicks() / 20)), (int) (217 * (1 - (double) this.currentUI.getRenderTicks() / 20)));
+                List<SphereBuilder.TriangleFace> generatedSphereFaces = new SphereBuilder().build(Constants.GRACE_FOG_RADIUS * Math.max(0.25, 1 - (double) this.currentUI.getTeleportTicks() / 80), 16, false);
+                for (SphereBuilder.TriangleFace face : generatedSphereFaces) {
+                    renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                    renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                    renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                }
+            } else {
+                alpha = (int) (Constants.GRACE_FOG_ALPHA * (1 - (double) this.currentUI.getRenderTicks() / 20));
+                for (SphereBuilder.TriangleFace face : sphereFaces) {
+                    renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                    renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                    renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                }
             }
         } else {
-            alpha = (int) (217 * (1 - (double) this.currentUI.getRenderTicks() / 20));
-            for (SphereBuilder.TriangleFace face : this.sphereFaces) {
+            alpha = (int) (Constants.GRACE_FOG_ALPHA * ((double) this.fadeTick / 20));
+            for (SphereBuilder.TriangleFace face : sphereFaces) {
                 renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
                 renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
                 renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
@@ -170,6 +191,7 @@ public class GraceUIHandler implements ITickHandler {
         renderStack.popPose();
     }
 
+    // FIXME: 2022/5/18 fix distant and focused graces rendering
     private void renderGraces(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler) {
         int brightness = LightTexture.FULL_BRIGHT;
         TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(HUMANITY);
@@ -180,7 +202,7 @@ public class GraceUIHandler implements ITickHandler {
 
         for (Grace grace : graces) {
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
-            if (pos.addY(1.1).distance(renderOffset) > 5.5D || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
+            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(renderOffset) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
                 Vector3 graceVector = pos.subtract(renderOffset).normalize().multiply(5);
 
                 Player player = Minecraft.getInstance().player;
@@ -189,6 +211,7 @@ public class GraceUIHandler implements ITickHandler {
                     return;
 
                 if (Vector3.of(player.getViewVector(pTick)).includedAngleDegree(graceVector) < 5) {
+                    // render focused grace
                     Font font = Minecraft.getInstance().font;
 
                     float s = (System.currentTimeMillis() % 10000) / 10000.0f;
@@ -220,6 +243,7 @@ public class GraceUIHandler implements ITickHandler {
 
                     renderStack.popPose();
                 } else {
+                    // render distant graces
                     float s = (System.currentTimeMillis() % 10000) / 10000.0f;
                     if (s > 0.5f) {
                         s = 1.0f - s;
@@ -272,9 +296,9 @@ public class GraceUIHandler implements ITickHandler {
         Vector3 playerPos = Vector3.of(player);
         List<Grace> graces = graceHandler.getAllGracesFound().stream().filter(grace -> {
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
-            if (pos.addY(1.1).distance(playerPos) > 5.5D || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
+            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(playerPos) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
                 Vector3 graceVector = pos.subtract(playerPos).normalize();
-                return Vector3.of(player.getViewVector(1.0F)).includedAngleDegree(graceVector) < 5;
+                return Vector3.of(player.getViewVector(1.0F)).includedAngleDegree(graceVector) < Constants.GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
             }
             return false;
         }).toList();
@@ -300,8 +324,19 @@ public class GraceUIHandler implements ITickHandler {
     @Override
     public void tick(TickEvent.Type type, Object... context) {
         if (this.currentUI != null) {
-            if (this.currentUI.getRenderTicks() > 0)
+            if (this.currentUI.getRenderTicks() > 0) {
                 this.currentUI.decreaseRenderTicks();
+            }
+
+            Player player = Minecraft.getInstance().player;
+
+            if (player == null)
+                return;
+
+            double distance = Vector3.of(player).distance(Vector3.of(this.currentUI.getPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5));
+
+        } else if (fadeTick > 0) {
+            this.fadeTick--;
         }
     }
 

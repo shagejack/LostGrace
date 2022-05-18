@@ -8,21 +8,19 @@ public class GraceUI {
 
     private final Level level;
     private final BlockPos pos;
-    private final double sphereRadius;
     private final IGraceHandler graceHandler;
 
     private int renderTicks = 20;
     private int teleportTicks = 0;
 
-    private GraceUI(Level level, BlockPos pos, double sphereRadius, IGraceHandler graceHandler) {
+    private GraceUI(Level level, BlockPos pos, IGraceHandler graceHandler) {
         this.level = level;
         this.pos = pos;
-        this.sphereRadius = sphereRadius;
         this.graceHandler = graceHandler;
     }
 
-    public static GraceUI create(Level level, BlockPos graceTilePos, double sphereRadius, IGraceHandler graceHandler) {
-        return new GraceUI(level, graceTilePos, sphereRadius, graceHandler);
+    public static GraceUI create(Level level, BlockPos graceTilePos, IGraceHandler graceHandler) {
+        return new GraceUI(level, graceTilePos, graceHandler);
     }
 
     public IGraceHandler getGraceHandler() {
@@ -35,10 +33,6 @@ public class GraceUI {
 
     public BlockPos getPos() {
         return pos;
-    }
-
-    public double getSphereRadius() {
-        return sphereRadius;
     }
 
     public int getRenderTicks() {

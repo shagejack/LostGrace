@@ -55,8 +55,6 @@ public class PlayerGraceEventHandler {
         }
     }
 
-    // TODO: fix data lost when force quit game without saving
-
     @SubscribeEvent
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event)
     {

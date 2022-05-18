@@ -1,4 +1,4 @@
-package shagejack.lostgrace.foundation.tileEntity.renderer;
+package shagejack.lostgrace.foundation.tile.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
