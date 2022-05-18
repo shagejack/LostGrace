@@ -26,19 +26,21 @@ public class GlobalGraceSet {
     public static void addGrace(Grace grace) {
         if (grace != null && !grace.equals(Grace.NULL) && !grace.getLevel().isClientSide()) {
             graceSet.add(grace);
+            checkGraceForPlayers();
         }
     }
 
     public static void removeGrace(Grace grace) {
         if (grace != null) {
             graceSet.remove(grace);
+            checkGraceForPlayers();
         }
     }
 
     @SubscribeEvent
     public static void tickGrace(TickEvent.ServerTickEvent event) {
         // check grace existence
-        graceSet.removeIf(grace -> {
+        boolean modified = graceSet.removeIf(grace -> {
             if (grace != null && grace.getLevel() != null) {
                 // only check grace in loaded chunk
                 if (grace.getLevel().isLoaded(grace.getPos())) {
@@ -52,16 +54,26 @@ public class GlobalGraceSet {
             return true;
         });
 
-        // check grace for player
+        // check grace for players
+        if (modified)
+            checkGraceForPlayers();
+
         List<ServerPlayer> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayer player : players) {
-            LazyOptional<IGraceHandler> graceHandler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
-            graceHandler.ifPresent(graceData -> {
-                graceData.checkGrace(graceSet);
-                graceData.syncToClient(player);
+            player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceData -> {
                 if (graceData.isGraceActivated()) {
                     graceData.tryDeactivateGrace(player);
                 }
+            });
+        }
+    }
+
+    public static void checkGraceForPlayers() {
+        List<ServerPlayer> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
+        for (ServerPlayer player : players) {
+            player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceData -> {
+                graceData.checkGrace(graceSet);
+                graceData.syncToClient(player);
             });
         }
     }

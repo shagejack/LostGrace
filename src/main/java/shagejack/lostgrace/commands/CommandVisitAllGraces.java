@@ -7,6 +7,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
@@ -25,7 +26,7 @@ public class CommandVisitAllGraces {
     }
 
     private int visitAllGraces(CommandContext<CommandSourceStack> context, boolean requireName) throws CommandSyntaxException {
-        Player player = context.getSource().getPlayerOrException();
+        ServerPlayer player = context.getSource().getPlayerOrException();
         String name;
 
         Set<Grace> graceSet;
@@ -45,6 +46,7 @@ public class CommandVisitAllGraces {
                     graceHandler.visitGrace(grace);
                     context.getSource().sendSuccess(new TextComponent(grace.toString() + " visited."), true);
                     visitCount.getAndIncrement();
+                    graceHandler.syncToClient(player);
                 }
             });
         }

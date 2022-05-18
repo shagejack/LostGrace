@@ -63,7 +63,9 @@ public interface IGraceHandler extends INBTSerializable<CompoundTag> {
     }
 
     default void tryDeactivateGrace(ServerPlayer player) {
-        if (Vector3.of(player).distance(getGraceActivatedPos().add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5)) > Constants.GRACE_MAX_DISTANCE)
+        if (Vector3.of(player).distance(getGraceActivatedPos().add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5)) > Constants.GRACE_MAX_DISTANCE) {
             deactivateGrace();
+            syncToClient(player);
+        }
     }
 }

@@ -2,7 +2,6 @@ package shagejack.lostgrace.contents.block.grace;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
 import shagejack.lostgrace.foundation.tile.TileEntityLateInitializer;
 
 import java.util.function.Consumer;
@@ -21,14 +20,16 @@ public class GraceTileEntityLateInitializer implements TileEntityLateInitializer
         this.level = level;
         this.pos = pos;
         this.action = action;
+        tick();
     }
 
     public GraceTileEntityLateInitializer(Level level, BlockPos pos, Consumer<GraceTileEntity> action) {
-        this.life = 40;
+        this.life = 20;
         this.initialized = false;
         this.level = level;
         this.pos = pos;
         this.action = action;
+        tick();
     }
 
     @Override

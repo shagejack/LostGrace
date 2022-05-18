@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
 import shagejack.lostgrace.foundation.block.ITE;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
@@ -39,7 +40,7 @@ import shagejack.lostgrace.registries.tile.AllTileEntities;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class GraceBlock extends Block implements ITE<GraceTileEntity> {
+public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     public static final BooleanProperty COOLDOWN = BlockStateProperties.ATTACHED;
 
@@ -75,6 +76,9 @@ public class GraceBlock extends Block implements ITE<GraceTileEntity> {
                         commonVisit(level, pos, player);
                         interacted.set(true);
                     }
+
+                    if (!level.isClientSide())
+                        graceData.syncToClient((ServerPlayer) player);
                 });
             }
         });
@@ -100,13 +104,6 @@ public class GraceBlock extends Block implements ITE<GraceTileEntity> {
     public void commonVisit(Level level, BlockPos pos, Player player) {
         level.setBlock(pos, level.getBlockState(pos).setValue(COOLDOWN, true), 3);
         withTileEntityDo(level, pos, te -> te.setLocked(true));
-    }
-
-    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean p_60519_) {
-        if (oldState.hasBlockEntity() && oldState.getBlock() != newState.getBlock()) {
-            withTileEntityDo(level, pos, GraceTileEntity::onRemoved);
-            level.removeBlockEntity(pos);
-        }
     }
 
     @Override

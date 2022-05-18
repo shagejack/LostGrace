@@ -1,6 +1,7 @@
 package shagejack.lostgrace.contents.grace;
 
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -49,6 +50,8 @@ public class PlayerGraceEventHandler {
             event.getOriginal().getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(oldGrace -> {
                 event.getPlayer().getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(newGrace -> {
                     newGrace.copyFrom(oldGrace);
+                    if (event.getPlayer().level instanceof ServerLevel)
+                        newGrace.syncToClient((ServerPlayer) event.getPlayer());
                 });
             });
             event.getOriginal().invalidateCaps();

@@ -20,6 +20,10 @@ public class TileEntityLateInitializationHandler implements ITickHandler {
     }
 
     public boolean add(TileEntityLateInitializer<?> initializer) {
+        // server side only
+        if (initializer.getLevel().isClientSide())
+            return false;
+
         return initializers.add(initializer);
     }
 
