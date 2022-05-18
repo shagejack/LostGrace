@@ -24,7 +24,7 @@ public class GlobalGraceSet {
     }
 
     public static void addGrace(Grace grace) {
-        if (grace != null && grace != Grace.NULL) {
+        if (grace != null && !grace.equals(Grace.NULL) && !grace.getLevel().isClientSide()) {
             graceSet.add(grace);
         }
     }

@@ -23,7 +23,8 @@ public enum AllPackets {
 
     // Server to Client
     DISCOVER_GRACE(DiscoverGracePacket.class, DiscoverGracePacket::new, NetworkDirection.PLAY_TO_CLIENT),
-    PLAYER_GRACE_DATA(PlayerGraceDataPacket.class, PlayerGraceDataPacket::new, NetworkDirection.PLAY_TO_CLIENT)
+    PLAYER_GRACE_DATA(PlayerGraceDataPacket.class, PlayerGraceDataPacket::new, NetworkDirection.PLAY_TO_CLIENT),
+    GRACE_TILE_UPDATE(GraceTileEntityUpdatePacket.class, GraceTileEntityUpdatePacket::new, NetworkDirection.PLAY_TO_CLIENT)
 
     ;
 

@@ -1,5 +1,6 @@
 package shagejack.lostgrace.foundation.render;
 
+import com.mojang.math.Quaternion;
 import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.util.ArrayList;
@@ -8,11 +9,11 @@ import java.util.List;
 public class SphereBuilder {
 
     public List<TriangleFace> build(double radius, int stacks) {
-        return build(Vector3.Y_AXIS.multiply(radius),  stacks, true);
+        return build(Vector3.Y_POS_AXIS.multiply(radius),  stacks, true);
     }
 
     public List<TriangleFace> build(double radius, int stacks, boolean clockwise) {
-        return build(Vector3.Y_AXIS.multiply(radius), stacks, clockwise);
+        return build(Vector3.Y_POS_AXIS.multiply(radius), stacks, clockwise);
     }
 
     public List<TriangleFace> build(Vector3 axis, int stacks) {
@@ -28,8 +29,8 @@ public class SphereBuilder {
         List<Vector3> vertices = new ArrayList<>();
 
         double r = axis.length();
-        double rotationAngle = axis.includedAngle(Vector3.Y_AXIS.multiply(r));
-        Vector3 rotationAxis = axis.cross(Vector3.Y_AXIS.multiply(r));
+
+        Quaternion rotation = Vector3.Y_POS_AXIS.multiply(r).asToVecRotation(axis);
 
         // generate vertices
         for (int j = 0; j <= stacks; j++) {
@@ -39,7 +40,7 @@ public class SphereBuilder {
             for (int i = 0; i <= sectors; i++) {
                 double u = (double) i / sectors;
                 double theta = 2 * Math.PI * u;
-                vertices.add(new Vector3(r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta)).rotate(rotationAngle, rotationAxis));
+                vertices.add(new Vector3(r * Math.sin(phi) * Math.cos(theta), r * Math.cos(phi), r * Math.sin(phi) * Math.sin(theta)).transform(rotation));
             }
         }
 
@@ -69,15 +70,4 @@ public class SphereBuilder {
         return sphereFaces;
     }
 
-    public record TriangleFace(Vector3 v1, Vector3 v2, Vector3 v3) {
-        public Vector3 getV1() {
-            return v1;
-        }
-        public Vector3 getV2() {
-            return v2;
-        }
-        public Vector3 getV3() {
-            return v3;
-        }
-    }
 }

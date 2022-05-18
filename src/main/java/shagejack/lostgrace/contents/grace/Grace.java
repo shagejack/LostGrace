@@ -42,11 +42,7 @@ public class Grace {
             this.level = ServerLifecycleHooks.getCurrentServer().getLevel(ResourceKey.create(Registry.DIMENSION_REGISTRY, new ResourceLocation(nbt.getString("Dimension"))));
             this.pos = new BlockPos(nbt.getDouble("X"), nbt.getDouble("Y"), nbt.getDouble("Z"));
             this.isNull = false;
-            if (nbt.contains("Name", Tag.TAG_STRING) && nbt.getString("Name").isEmpty()) {
-                this.name = nbt.getString("Name");
-            } else {
-                this.name = "";
-            }
+            this.name = nbt.getString("Name");
         } else {
             this.level = null;
             this.name = "";
@@ -71,23 +67,27 @@ public class Grace {
         return hasName() ? name : "Empty";
     }
 
+    public String getRawName() {
+        return hasName() ? name : "";
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
             return true;
 
-        if (obj == null || !(obj instanceof Grace grace))
+        if (!(obj instanceof Grace grace))
             return false;
 
         if (grace.isNull)
             return false;
 
-        return grace.getPos().equals(this.getPos());
+        return grace.getPos().equals(this.getPos()) && grace.getLevel().dimension().location().equals(this.getLevel().dimension().location()) && grace.getRawName().equals(this.getRawName());
     }
 
     @Override
     public int hashCode() {
-        return isNull || pos == null ? 0 : pos.hashCode();
+        return isNull || pos == null || level == null ? 0 : getRawName().hashCode() * 31 * 31 + level.dimension().location().hashCode() * 31 + pos.hashCode();
     }
 
     @Override

@@ -5,6 +5,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.PlayerGraceEventHandler;
 import shagejack.lostgrace.contents.item.goldenSeed.GoldenSeedEventHandler;
+import shagejack.lostgrace.foundation.handler.TickManager;
+import shagejack.lostgrace.foundation.tile.TileEntityLateInitializationHandler;
 import shagejack.lostgrace.registries.AllCommands;
 
 public class ModSetup {
@@ -20,6 +22,8 @@ public class ModSetup {
 
         forgeEventBus.addListener(GlobalGraceSet::tickGrace);
         forgeEventBus.addListener(GoldenSeedEventHandler::onGoldenSeedSpawn);
+
+        TickManager.register(TileEntityLateInitializationHandler.getInstance());
     }
 
 }

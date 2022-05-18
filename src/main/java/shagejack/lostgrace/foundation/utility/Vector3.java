@@ -18,9 +18,12 @@ public record Vector3(double x, double y, double z) {
 
     private static final Random RAND = new Random();
     public static final Vector3 ZERO = new Vector3(0, 0, 0);
-    public static final Vector3 X_AXIS = new Vector3(1, 0, 0);
-    public static final Vector3 Y_AXIS = new Vector3(0, 1, 0);
-    public static final Vector3 Z_AXIS = new Vector3(0, 0, 1);
+    public static final Vector3 X_POS_AXIS = new Vector3(1, 0, 0);
+    public static final Vector3 Y_POS_AXIS = new Vector3(0, 1, 0);
+    public static final Vector3 Z_POS_AXIS = new Vector3(0, 0, 1);
+    public static final Vector3 X_NEG_AXIS = new Vector3(-1, 0, 0);
+    public static final Vector3 Y_NEG_AXIS = new Vector3(0, -1, 0);
+    public static final Vector3 Z_NEG_AXIS = new Vector3(0, 0, -1);
 
     public static Vector3 of(double x, double y, double z) {
         return new Vector3(x, y, z);
@@ -65,7 +68,7 @@ public record Vector3(double x, double y, double z) {
         } else if (!(other instanceof Vector3 vec3)) {
             return false;
         } else {
-            return Double.compare(this.getX(), vec3.getX()) == 0 && Double.compare(this.getY(), vec3.getY()) == 0 && Double.compare(this.getZ(), vec3.getZ()) == 0;
+            return Double.compare(this.x(), vec3.x()) == 0 && Double.compare(this.y(), vec3.y()) == 0 && Double.compare(this.z(), vec3.z()) == 0;
         }
     }
 
@@ -79,16 +82,16 @@ public record Vector3(double x, double y, double z) {
         return 31 * i + (int) (j ^ j >>> 32);
     }
 
-    public double getX() {
-        return this.x;
+    public float xF() {
+        return (float) this.x;
     }
 
-    public double getY() {
-        return this.y;
+    public float yF() {
+        return (float) this.y;
     }
 
-    public double getZ() {
-        return this.z;
+    public float zF() {
+        return (float) this.z;
     }
 
     public Vector3 setX(double nX) {
@@ -159,7 +162,19 @@ public record Vector3(double x, double y, double z) {
         if (!this.equals(ZERO))
             return this.divide(this.length());
 
-        return Y_AXIS;
+        return Y_POS_AXIS;
+    }
+
+    public Vector3 perpendicular() {
+        return this.x() > this.z() ? new Vector3(this.y(), -this.x(), 0) : new Vector3(0, -this.z(), this.y());
+    }
+
+    public boolean isPerpendicularTo(Vector3 vec) {
+        return Double.compare(this.dot(vec), 0.0) == 0;
+    }
+
+    public boolean isParallelTo(Vector3 vec) {
+        return Double.compare(Math.abs(this.normalize().dot(vec.normalize())), 1.0) == 0;
     }
 
     public double includedAngle(Vector3 vec) {
@@ -198,12 +213,12 @@ public record Vector3(double x, double y, double z) {
         return tag;
     }
 
-    public VertexConsumer drawPosNormal(Matrix3f normal, VertexConsumer buf) {
-        return buf.normal(normal, (float) this.x, (float) this.y, (float) this.z);
+    public VertexConsumer drawPosNormal(Matrix3f normal, VertexConsumer builder) {
+        return builder.normal(normal, (float) this.x, (float) this.y, (float) this.z);
     }
 
-    public VertexConsumer drawPosVertex(Matrix4f renderMatrix, VertexConsumer buf) {
-        return buf.vertex(renderMatrix, (float) this.x, (float) this.y, (float) this.z);
+    public VertexConsumer drawPosVertex(Matrix4f renderMatrix, VertexConsumer builder) {
+        return builder.vertex(renderMatrix, (float) this.x, (float) this.y, (float) this.z);
     }
 
     public Vector3f toVec3f() {
@@ -218,8 +233,17 @@ public record Vector3(double x, double y, double z) {
         return new Quaternion(this.normalize().toVec3f(), (float) angle, true);
     }
 
-    public Quaternion asToVecRotation(Vector3 vec) {
-        return new Quaternion(this.cross(vec).normalize().toVec3f(), (float) this.includedAngle(vec), false);
+    public Quaternion asToVecRotation(Vector3 toVec) {
+        Vector3 fromNormal = this.normalize();
+        Vector3 toNormal = toVec.normalize();
+
+        if (fromNormal.equals(toNormal.opposite()))
+            return fromNormal.perpendicular().asRotateAxis(Math.PI);
+
+        Vector3 half = fromNormal.add(toNormal).normalize();
+        Vector3f crossProductHalf = fromNormal.cross(half).toVec3f();
+
+        return new Quaternion(crossProductHalf.x(), crossProductHalf.y(), crossProductHalf.z(), (float) fromNormal.dot(half));
     }
 
     public Vector3 rotate(double angle, Vector3 axis) {

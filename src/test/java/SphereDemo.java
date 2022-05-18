@@ -1,5 +1,6 @@
 import org.lwjgl.opengl.*;
 import shagejack.lostgrace.foundation.render.SphereBuilder;
+import shagejack.lostgrace.foundation.render.TriangleFace;
 import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.awt.*;
@@ -13,7 +14,7 @@ import java.util.Random;
 
 public class SphereDemo {
 
-    private final List<SphereBuilder.TriangleFace> sphere = new SphereBuilder().build(Vector3.Z_AXIS.multiply(3), 16, true);
+    private final List<TriangleFace> sphere = new SphereBuilder().build(Vector3.Z_POS_AXIS.multiply(2), 16, true);
 
     private long seed = 1145141919810L;
     private Random random;
@@ -106,7 +107,7 @@ public class SphereDemo {
         glfwPollEvents();
     }
 
-    private void renderTriangleFace(SphereBuilder.TriangleFace face) {
+    private void renderTriangleFace(TriangleFace face) {
         glColor3f(random.nextFloat(), random.nextFloat(), random.nextFloat());
         glVertex3d(face.getV1().x(), face.getV1().y(), face.getV1().z());
         glColor3f(random.nextFloat(), random.nextFloat(), random.nextFloat());

@@ -28,8 +28,8 @@ public class RenderTypeLG extends RenderType {
             .disableDepthTest()
             .build();
 
-    public static final RenderType FOG_SPHERE = RenderTypeBuilder.builder()
-            .name("fog_sphere")
+    public static final RenderType SPHERE = RenderTypeBuilder.builder()
+            .name("sphere")
             .bufferSize(2097152)
             .affectsCrumbling()
             .sortOnUpload()

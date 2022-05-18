@@ -14,6 +14,8 @@ import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.network.AllPackets;
+import shagejack.lostgrace.foundation.network.packet.GraceTileEntityUpdatePacket;
 import shagejack.lostgrace.foundation.tile.BaseTileEntity;
 import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.Vector3;
@@ -30,6 +32,8 @@ public class GraceTileEntity extends BaseTileEntity {
     protected int cooldown;
     protected int summoned;
     protected boolean locked;
+
+    protected int syncCounter = 1200;
 
     public String graceName = "";
     public boolean renderFog;
@@ -74,6 +78,15 @@ public class GraceTileEntity extends BaseTileEntity {
             } else {
                 level.setBlock(getBlockPos(), getBlockState().setValue(GraceBlock.COOLDOWN, false), 3);
                 cooldown = 0;
+            }
+        }
+
+        if (!level.isClientSide()) {
+            if (syncCounter > 0) {
+                syncCounter--;
+            } else {
+                syncCounter = 1200;
+                syncToClient();
             }
         }
     }
@@ -155,9 +168,20 @@ public class GraceTileEntity extends BaseTileEntity {
     }
 
     public Grace getGrace(boolean forceCreate) {
-        if (grace == null || forceCreate) {
+        if (grace == null) {
             this.grace = new Grace(graceName, level, getBlockPos());
             GlobalGraceSet.addGrace(this.grace);
+
+            if (level != null && !level.isClientSide())
+                syncToClient();
+
+        } else if (forceCreate) {
+            GlobalGraceSet.removeGrace(this.grace);
+            this.grace = new Grace(graceName, level, getBlockPos());
+            GlobalGraceSet.addGrace(this.grace);
+
+            if (level != null && !level.isClientSide())
+                syncToClient();
         }
         return this.grace;
     }
@@ -171,10 +195,18 @@ public class GraceTileEntity extends BaseTileEntity {
         GlobalGraceSet.removeGrace(this.grace);
         this.grace = new Grace(graceName, level, getBlockPos());
         GlobalGraceSet.addGrace(this.grace);
+
+        if (level != null && !level.isClientSide())
+            syncToClient();
     }
 
     public void clearGraceName() {
         setGraceName("");
+    }
+
+    public void syncToClient() {
+        if (level != null && !level.isClientSide())
+            AllPackets.sendToNear(level, getBlockPos(), new GraceTileEntityUpdatePacket(getBlockPos(), this.graceName));
     }
 
     @Override

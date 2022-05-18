@@ -6,7 +6,6 @@ import com.mojang.math.Matrix4f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -24,8 +23,10 @@ import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.TeleportGracePacket;
+import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.render.SphereBuilder;
+import shagejack.lostgrace.foundation.render.TriangleFace;
 import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.ITickHandler;
 import shagejack.lostgrace.foundation.utility.TileEntityUtils;
@@ -40,9 +41,9 @@ public class GraceUIHandler implements ITickHandler {
 
     public static final ResourceLocation HUMANITY = LostGrace.asResource("block/grace/humanity");
 
-    private static GraceUIHandler INSTANCE = new GraceUIHandler();
+    private static final GraceUIHandler INSTANCE = new GraceUIHandler();
 
-    private static final List<SphereBuilder.TriangleFace> sphereFaces = new SphereBuilder().build(Constants.GRACE_FOG_RADIUS, 16, false);
+    private static final List<TriangleFace> sphereFaces = new SphereBuilder().build(Constants.GRACE_FOG_RADIUS, 16, false);
 
     private GraceUI currentUI = null;
     private int fadeTick = 0;
@@ -146,12 +147,9 @@ public class GraceUIHandler implements ITickHandler {
         renderStack.pushPose();
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer vertexConsumer = buffer.getBuffer(RenderTypeLG.FOG_SPHERE);
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderTypeLG.SPHERE);
 
         Color color = Constants.GRACE_FOG_COLOR;
-        int r = color.getRed();
-        int g = color.getGreen();
-        int b = color.getBlue();
 
         int alpha;
 
@@ -161,39 +159,30 @@ public class GraceUIHandler implements ITickHandler {
             this.fadeTick = 20 - this.currentUI.getRenderTicks();
 
             if (this.currentUI.getTeleportTicks() > 0) {
-                alpha = Math.max((int) (255 * Math.min(1, (double) this.currentUI.getTeleportTicks() / 20)), (int) (217 * (1 - (double) this.currentUI.getRenderTicks() / 20)));
-                List<SphereBuilder.TriangleFace> generatedSphereFaces = new SphereBuilder().build(Constants.GRACE_FOG_RADIUS * Math.max(0.25, 1 - (double) this.currentUI.getTeleportTicks() / 80), 16, false);
-                for (SphereBuilder.TriangleFace face : generatedSphereFaces) {
-                    renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                    renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                    renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                alpha = (int) ((255 - Constants.GRACE_FOG_ALPHA) * Math.min(1, (double) this.currentUI.getTeleportTicks() / 60) + Constants.GRACE_FOG_ALPHA * (1 - (double) this.currentUI.getRenderTicks() / 20));
+                List<TriangleFace> generatedSphereFaces = new SphereBuilder().build(Constants.GRACE_FOG_RADIUS * Math.max(0.25, 1 - (double) this.currentUI.getTeleportTicks() / 80), 16, false);
+                for (TriangleFace face : generatedSphereFaces) {
+                    DrawUtils.renderTriangleWithColor(vertexConsumer, renderStack, renderOffset, face, color, alpha);
                 }
             } else {
                 alpha = (int) (Constants.GRACE_FOG_ALPHA * (1 - (double) this.currentUI.getRenderTicks() / 20));
-                for (SphereBuilder.TriangleFace face : sphereFaces) {
-                    renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                    renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                    renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+                for (TriangleFace face : sphereFaces) {
+                    DrawUtils.renderTriangleWithColor(vertexConsumer, renderStack, renderOffset, face, color, alpha);
                 }
             }
         } else {
             alpha = (int) (Constants.GRACE_FOG_ALPHA * ((double) this.fadeTick / 20));
-            for (SphereBuilder.TriangleFace face : sphereFaces) {
-                renderOffset.add(face.getV1()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                renderOffset.add(face.getV2()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
-                renderOffset.add(face.getV3()).drawPosVertex(renderMatrix, vertexConsumer).color(r, g, b, alpha).endVertex();
+            for (TriangleFace face : sphereFaces) {
+                DrawUtils.renderTriangleWithColor(vertexConsumer, renderStack, renderOffset, face, color, alpha);
             }
         }
 
-        RenderSystem.depthMask(true);
-        buffer.endBatch(RenderTypeLG.FOG_SPHERE);
+        buffer.endBatch(RenderTypeLG.SPHERE);
 
         renderStack.popPose();
     }
-
-    // FIXME: 2022/5/18 fix distant and focused graces rendering
+    
     private void renderGraces(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler) {
-        int brightness = LightTexture.FULL_BRIGHT;
         TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(HUMANITY);
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -210,38 +199,26 @@ public class GraceUIHandler implements ITickHandler {
                 if (player == null)
                     return;
 
-                if (Vector3.of(player.getViewVector(pTick)).includedAngleDegree(graceVector) < 5) {
+                if (Vector3.of(player.getViewVector(pTick)).includedAngleDegree(graceVector) < Constants.GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE) {
                     // render focused grace
-                    Font font = Minecraft.getInstance().font;
-
                     float s = (System.currentTimeMillis() % 10000) / 10000.0f;
                     if (s > 0.5f) {
                         s = 1.0f - s;
                     }
                     float scale = 0.4f + s * 0.08f;
 
-                    Vector3 rightRenderVector = Vector3.Z_AXIS.multiply(5);
+                    scale *= (1 + 4 * currentUI.getTeleportTicks() / 60.0);
 
-                    renderStack.pushPose();
+                    Vector3 renderPos = renderOffset.add(graceVector.multiply(1 - currentUI.getTeleportTicks() / 60.0));
 
-                    renderStack.mulPose(graceVector.asToVecRotation(rightRenderVector));
+                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite(), scale, spriteHumanity, 255);
 
-                    Matrix4f renderMatrix = renderStack.last().pose();
+                    Color textColor = new Color(255, 215, 0);
 
-                    Vector3 renderPos = renderOffset.add(rightRenderVector);
-
-                    renderPos.add(-scale, -scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 1.0f).uv(spriteHumanity.getU0(), spriteHumanity.getV0()).uv2(brightness).normal(1, 0, 0).endVertex();
-                    renderPos.add(-scale, scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 1.0f).uv(spriteHumanity.getU0(), spriteHumanity.getV1()).uv2(brightness).normal(1, 0, 0).endVertex();
-                    renderPos.add(scale, scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 1.0f).uv(spriteHumanity.getU1(), spriteHumanity.getV1()).uv2(brightness).normal(1, 0, 0).endVertex();
-                    renderPos.add(scale, -scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 1.0f).uv(spriteHumanity.getU1(), spriteHumanity.getV0()).uv2(brightness).normal(1, 0, 0).endVertex();
-
+                    // FIXME: 2022/5/19 fix text rendering
                     if (grace.hasName()) {
-                        String text = grace.getName();
-                        renderStack.translate(renderPos.x(), renderPos.y(), renderPos.z());
-                        font.drawShadow(renderStack, text, font.width(text), font.lineHeight, Color.ORANGE.getRGB());
+                        DrawUtils.renderInLevelText(renderStack, renderPos.addY(0.2), grace.getName(), textColor, scale);
                     }
-
-                    renderStack.popPose();
                 } else {
                     // render distant graces
                     float s = (System.currentTimeMillis() % 10000) / 10000.0f;
@@ -250,20 +227,10 @@ public class GraceUIHandler implements ITickHandler {
                     }
                     float scale = 0.25f + s * 0.05f;
 
-                    Vector3 rightRenderVector = Vector3.Z_AXIS.multiply(5);
+                    Vector3 renderPos = renderOffset.add(graceVector);
 
-                    renderStack.pushPose();
+                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite(), scale, spriteHumanity, 127);
 
-                    renderStack.mulPose(graceVector.asToVecRotation(rightRenderVector));
-
-                    Matrix4f renderMatrix = renderStack.last().pose();
-
-                    renderOffset.add(rightRenderVector).add(-scale, -scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 0.6f).uv(spriteHumanity.getU0(), spriteHumanity.getV0()).uv2(brightness).normal(1, 0, 0).endVertex();
-                    renderOffset.add(rightRenderVector).add(-scale, scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 0.6f).uv(spriteHumanity.getU0(), spriteHumanity.getV1()).uv2(brightness).normal(1, 0, 0).endVertex();
-                    renderOffset.add(rightRenderVector).add(scale, scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 0.6f).uv(spriteHumanity.getU1(), spriteHumanity.getV1()).uv2(brightness).normal(1, 0, 0).endVertex();
-                    renderOffset.add(rightRenderVector).add(scale, -scale, 0).drawPosVertex(renderMatrix, vertexConsumer).color(1.0f, 1.0f, 1.0f, 0.6f).uv(spriteHumanity.getU1(), spriteHumanity.getV0()).uv2(brightness).normal(1, 0, 0).endVertex();
-
-                    renderStack.popPose();
                 }
 
             }

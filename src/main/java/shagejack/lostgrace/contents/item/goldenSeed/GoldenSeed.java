@@ -8,6 +8,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
+import shagejack.lostgrace.contents.block.grace.GraceTileEntityLateInitializer;
+import shagejack.lostgrace.foundation.tile.TileEntityLateInitializationHandler;
+import shagejack.lostgrace.foundation.tile.TileEntityLateInitializer;
 import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 import shagejack.lostgrace.registries.block.AllBlocks;
 
@@ -26,7 +29,7 @@ public class GoldenSeed extends Item {
         if (level.getBlockState(inPos).is(Blocks.FIRE)) {
             level.setBlock(inPos, AllBlocks.grace.block().get().defaultBlockState(), 3);
             if (seedStack.hasCustomHoverName()) {
-                TileEntityUtils.get(GraceTileEntity.class, level, inPos, true).ifPresent(te -> te.setGraceName(entity.getItem().getHoverName().getContents()));
+                TileEntityLateInitializationHandler.getInstance().add(new GraceTileEntityLateInitializer(level, inPos, te -> te.setGraceName(entity.getItem().getHoverName().getContents())));
             }
             entity.remove(Entity.RemovalReason.KILLED);
             return true;
