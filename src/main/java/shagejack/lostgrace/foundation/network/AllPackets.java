@@ -59,6 +59,14 @@ public enum AllPackets {
         CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), message);
     }
 
+    public static void sendToSameDimension(Level world, Object message) {
+        CHANNEL.send(PacketDistributor.DIMENSION.with(world::dimension), message);
+    }
+
+    public static void sendToAll(Object message) {
+        CHANNEL.send(PacketDistributor.ALL.noArg(), message);
+    }
+
     public static void sendToNear(Level world, BlockPos pos, Object message) {
         CHANNEL.send(PacketDistributor.NEAR
                 .with(PacketDistributor.TargetPoint.p(pos.getX(), pos.getY(), pos.getZ(), 256, world.dimension())), message);

@@ -147,7 +147,7 @@ public record Vector3(double x, double y, double z) {
     }
 
     public Vector3 opposite() {
-        return this.multiply(-1);
+        return new Vector3(-x, -y, -z);
     }
 
     public double length() {

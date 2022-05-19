@@ -22,57 +22,58 @@ public class DrawUtils {
 
     // Too many method overloads...
     public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, TextureAtlasSprite sprite) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, sprite, LightTexture.FULL_BRIGHT);
+        renderQuad(builder, renderStack, pos, facingNormal, 0, scale, sprite, 255);
     }
 
     public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, TextureAtlasSprite sprite, int alpha) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, sprite, LightTexture.FULL_BRIGHT, alpha);
+        renderQuad(builder, renderStack, pos, facingNormal, 0, scale, sprite, LightTexture.FULL_BRIGHT, 255, 255, 255, alpha);
     }
 
-    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, TextureAtlasSprite sprite, int r, int g, int b, int alpha) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, sprite, LightTexture.FULL_BRIGHT, r, g, b, alpha);
+    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, double planeRotationAngle, float scale, TextureAtlasSprite sprite) {
+        renderQuad(builder, renderStack, pos, facingNormal, planeRotationAngle, scale, sprite, 255);
     }
 
-    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, TextureAtlasSprite sprite, int lightMapUV, int alpha) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, sprite, lightMapUV, 255, 255, 255, alpha);
+    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, double planeRotationAngle, float scale, TextureAtlasSprite sprite, int alpha) {
+        renderQuad(builder, renderStack, pos, facingNormal, planeRotationAngle, scale, sprite, LightTexture.FULL_BRIGHT, 255, 255, 255, alpha);
     }
 
-    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, TextureAtlasSprite sprite, int lightMapUV, int r, int g, int b, int alpha) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), lightMapUV, r, g, b, alpha);
+    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, double planeRotationAngle, float scale, TextureAtlasSprite sprite, int lightMapUV, int r, int g, int b, int alpha) {
+        renderQuad(builder, renderStack, pos, facingNormal, planeRotationAngle, scale, sprite.getU0(), sprite.getV0(), sprite.getU1(), sprite.getV1(), lightMapUV, r, g, b, alpha);
     }
 
-    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, float u0, float v0, float u1, float v1) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, u0, v0, u1, v1, LightTexture.FULL_BRIGHT);
+    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, double planeRotationAngle, float scale, float u0, float v0, float u1, float v1, int alpha) {
+        renderQuad(builder, renderStack, pos, facingNormal, planeRotationAngle, scale, u0, v0, u1, v1, LightTexture.FULL_BRIGHT, 255, 255, 255, alpha);
     }
 
-    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, float u0, float v0, float u1, float v1, int lightMapUV) {
-        renderQuad(builder, renderStack, pos, facingNormal, scale, u0, v0, u1, v1, lightMapUV, 255, 255, 255, 255);
-    }
-
-    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, float u0, float v0, float u1, float v1, int lightMapUV, int r, int g, int b, int alpha) {
+    // FIXME: 2022/5/19 fix the problem that quads with some certain facings not rendered as expected (incorrect and unforeseen plane rotation which may caused by wrong implementation of Vector3#asToVecRotation)
+    public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, double planeRotationAngle, float scale, float u0, float v0, float u1, float v1, int lightMapUV, int r, int g, int b, int alpha) {
 
         Vector3 pos1, pos2, pos3, pos4;
 
-        if (!facingNormal.isParallelTo(Vector3.Z_NEG_AXIS)) {
-            Quaternion rotation = Vector3.Z_NEG_AXIS.asToVecRotation(facingNormal);
+        // in case that input facing normal is not normalized
+        Vector3 normal = facingNormal.normalize();
+        Vector3 planeRotationAxis = Vector3.Z_NEG_AXIS;
 
-            pos1 = pos.add(new Vector3(-scale, -scale, 0).transform(rotation));
-            pos2 = pos.add(new Vector3(-scale, scale, 0).transform(rotation));
-            pos3 = pos.add(new Vector3(scale, scale, 0).transform(rotation));
-            pos4 = pos.add(new Vector3(scale, -scale, 0).transform(rotation));
+        if (!facingNormal.isParallelTo(Vector3.Z_NEG_AXIS)) {
+            Quaternion rotation = Vector3.Z_NEG_AXIS.asToVecRotation(normal);
+
+            pos1 = pos.add(new Vector3(-scale, -scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis).transform(rotation));
+            pos2 = pos.add(new Vector3(-scale, scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis).transform(rotation));
+            pos3 = pos.add(new Vector3(scale, scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis).transform(rotation));
+            pos4 = pos.add(new Vector3(scale, -scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis).transform(rotation));
         } else {
-            pos1 = pos.add(-scale, -scale, 0);
-            pos2 = pos.add(-scale, scale, 0);
-            pos3 = pos.add(scale, scale, 0);
-            pos4 = pos.add(scale, -scale, 0);
+            pos1 = pos.add(-scale, -scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis);
+            pos2 = pos.add(-scale, scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis);
+            pos3 = pos.add(scale, scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis);
+            pos4 = pos.add(scale, -scale, 0).rotateDegree(planeRotationAngle, planeRotationAxis);
         }
 
         Matrix4f renderMatrix = renderStack.last().pose();
 
-        pos1.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v0).uv2(lightMapUV).normal(facingNormal.xF(), facingNormal.yF(), facingNormal.zF()).endVertex();
-        pos2.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v1).uv2(lightMapUV).normal(facingNormal.xF(), facingNormal.yF(), facingNormal.zF()).endVertex();
-        pos3.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v1).uv2(lightMapUV).normal(facingNormal.xF(), facingNormal.yF(), facingNormal.zF()).endVertex();
-        pos4.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v0).uv2(lightMapUV).normal(facingNormal.xF(), facingNormal.yF(), facingNormal.zF()).endVertex();
+        pos1.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v0).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos2.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v1).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos3.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v1).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos4.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v0).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
     }
 
     public static void renderTriangleWithColor(VertexConsumer builder, PoseStack renderStack, Vector3 pos, TriangleFace triangle, Color color, int alpha) {

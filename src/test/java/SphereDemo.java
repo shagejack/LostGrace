@@ -14,7 +14,7 @@ import java.util.Random;
 
 public class SphereDemo {
 
-    private final List<TriangleFace> sphere = new SphereBuilder().build(Vector3.Z_POS_AXIS.multiply(2), 16, true);
+    private final List<TriangleFace> sphere = new SphereBuilder().build(new Vector3(-1, -0.5, 1).normalize(), 16, true);
 
     private long seed = 1145141919810L;
     private Random random;

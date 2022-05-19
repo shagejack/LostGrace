@@ -36,9 +36,14 @@ public interface IGraceHandler extends INBTSerializable<CompoundTag> {
     /**
      * The method for player to visit grace.
      * @param grace The grace visited.
+     * @param shouldActivate Should the grace visited be activated. True value doesn't necessarily mean activation as first visit check exists.
      * @return if it's the first time to visit this grace
      */
-    boolean visitGrace(Grace grace);
+    boolean visitGrace(Grace grace, boolean shouldActivate);
+
+    default boolean visitGrace(Grace grace) {
+        return visitGrace(grace, true);
+    }
 
     void copyFrom(IGraceHandler graceHandler);
 

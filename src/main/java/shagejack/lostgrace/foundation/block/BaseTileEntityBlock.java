@@ -13,7 +13,7 @@ public abstract class BaseTileEntityBlock<T extends BaseTileEntity> extends Bloc
     }
 
     @Override
-    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean p_60519_) {
+    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
         if (oldState.hasBlockEntity() && oldState.getBlock() != newState.getBlock()) {
             withTileEntityDo(level, pos, T::onRemoved);
             level.removeBlockEntity(pos);

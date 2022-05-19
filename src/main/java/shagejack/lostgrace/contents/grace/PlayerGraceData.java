@@ -63,8 +63,9 @@ public class PlayerGraceData implements IGraceHandler {
     }
 
     @Override
-    public boolean visitGrace(Grace grace) {
+    public boolean visitGrace(Grace grace, boolean shouldActivate) {
         int i = 0;
+
         for (; i < graces.size(); i++) {
             if (graces.get(i).equals(grace)) {
                 this.lastVisitedGraceIndex = i;
@@ -76,8 +77,11 @@ public class PlayerGraceData implements IGraceHandler {
             this.lastVisitedGraceIndex = graces.size() - 1;
             return true;
         }
-        this.activateGrace();
-        this.setGraceActivatedPos(grace.getPos());
+        
+        if (shouldActivate) {
+            this.activateGrace();
+            this.setGraceActivatedPos(grace.getPos());
+        }
         return false;
     }
 

@@ -7,6 +7,7 @@ import java.awt.*;
 
 public class Constants {
     // built-in value
+    public static final double PLAYER_SIGHT_Y_OFFSET = 1.7D;
     public static final double GRACE_DISTANCE_Y_OFFSET = 1.6D;
 
     // configurable value

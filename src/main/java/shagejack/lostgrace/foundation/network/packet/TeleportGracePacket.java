@@ -58,6 +58,7 @@ public class TeleportGracePacket extends SimplePacketBase {
                     Level targetLevel = grace.getLevel();
                     Vec3 pos = Vec3.atCenterOf(grace.getPos());
                     if (targetLevel != null) {
+                        graceHandler.visitGrace(this.grace, false);
                         if (!targetLevel.dimension().location().equals(player.getLevel().dimension().location())) {
                             player.changeDimension((ServerLevel) targetLevel);
                         }

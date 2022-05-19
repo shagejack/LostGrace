@@ -14,6 +14,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +29,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
+import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
@@ -35,6 +37,8 @@ import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
 import shagejack.lostgrace.foundation.block.ITE;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
+import shagejack.lostgrace.foundation.utility.DropUtils;
+import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
 import java.util.Random;
@@ -66,19 +70,23 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
         LazyOptional<IGraceHandler> handler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
         AtomicBoolean interacted = new AtomicBoolean(false);
         withTileEntityDo(level, pos, te -> {
+            te.syncToClient();
             if (!te.isLocked()) {
                 Grace grace = te.getGrace();
                 handler.ifPresent(graceData -> {
-                    if (graceData.visitGrace(grace)) {
-                        firstVisit(level, pos, player);
-                        interacted.set(true);
-                    } else {
-                        commonVisit(level, pos, player);
-                        interacted.set(true);
-                    }
+                    if (GlobalGraceSet.getGraceSet().contains(grace)) {
+                        if (graceData.visitGrace(grace)) {
+                            firstVisit(level, pos, player);
+                            interacted.set(true);
+                        } else {
+                            commonVisit(level, pos, player);
+                            interacted.set(true);
+                        }
 
-                    if (!level.isClientSide())
-                        graceData.syncToClient((ServerPlayer) player);
+                        if (!level.isClientSide()) {
+                            graceData.syncToClient((ServerPlayer) player);
+                        }
+                    }
                 });
             }
         });
@@ -116,6 +124,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
         return (BlockEntityType<? extends GraceTileEntity>) AllTileEntities.grace.get();
     }
 
+    @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
         double x = (double) pos.getX() + 0.5D;
         double y = (double) pos.getY() + 0.5D;
@@ -126,5 +135,21 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
 
         level.addParticle(ParticleTypes.FLAME, x + random.nextDouble() - 0.5D, y + random.nextDouble() - 0.5D, z + random.nextDouble() - 0.5D, 0.0D, 0.0D, 0.0D);
+    }
+
+    @Override
+    public void onRemove(BlockState oldState, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if (oldState.hasBlockEntity() && oldState.getBlock() != newState.getBlock()) {
+            ItemStack dropSeed = new ItemStack(AllItems.goldenSeed.get());
+
+            withTileEntityDo(level, pos, te -> {
+                te.onRemoved();
+                if (te.hasGraceName())
+                    dropSeed.setHoverName(new TextComponent(te.getGraceName()));
+            });
+
+            DropUtils.dropItemStack(level, pos, dropSeed);
+            level.removeBlockEntity(pos);
+        }
     }
 }

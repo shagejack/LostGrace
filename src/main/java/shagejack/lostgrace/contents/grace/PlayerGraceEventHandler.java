@@ -11,7 +11,10 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import shagejack.lostgrace.LostGrace;
+
+import java.util.List;
 
 public class PlayerGraceEventHandler {
 
@@ -50,8 +53,10 @@ public class PlayerGraceEventHandler {
             event.getOriginal().getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(oldGrace -> {
                 event.getPlayer().getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(newGrace -> {
                     newGrace.copyFrom(oldGrace);
-                    if (event.getPlayer().level instanceof ServerLevel)
+                    if (event.getPlayer().level instanceof ServerLevel) {
+                        newGrace.checkGrace(GlobalGraceSet.getGraceSet());
                         newGrace.syncToClient((ServerPlayer) event.getPlayer());
+                    }
                 });
             });
             event.getOriginal().invalidateCaps();
@@ -62,5 +67,18 @@ public class PlayerGraceEventHandler {
     public static void onRegisterCapabilities(RegisterCapabilitiesEvent event)
     {
         event.register(IGraceHandler.class);
+    }
+
+    @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (event.getPlayer().level instanceof ServerLevel)
+            checkGraceForPlayers((ServerPlayer) event.getPlayer());
+    }
+
+    public static void checkGraceForPlayers(ServerPlayer player) {
+        player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceData -> {
+            graceData.checkGrace(GlobalGraceSet.getGraceSet());
+            graceData.syncToClient(player);
+        });
     }
 }

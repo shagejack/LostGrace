@@ -13,6 +13,8 @@ import java.util.Set;
 
 public class GlobalGraceSet {
 
+    private static int IDLE = 1200;
+
     public static Set<Grace> graceSet = Sets.newConcurrentHashSet();
 
     public static Set<Grace> getGraceSet() {
@@ -31,7 +33,7 @@ public class GlobalGraceSet {
     }
 
     public static void removeGrace(Grace grace) {
-        if (grace != null) {
+        if (grace != null && !grace.getLevel().isClientSide()) {
             graceSet.remove(grace);
             checkGraceForPlayers();
         }
@@ -39,24 +41,30 @@ public class GlobalGraceSet {
 
     @SubscribeEvent
     public static void tickGrace(TickEvent.ServerTickEvent event) {
-        // check grace existence
-        boolean modified = graceSet.removeIf(grace -> {
-            if (grace != null && grace.getLevel() != null) {
-                // only check grace in loaded chunk
-                if (grace.getLevel().isLoaded(grace.getPos())) {
-                    if (grace.getLevel().getBlockEntity(grace.getPos()) instanceof GraceTileEntity te) {
-                        return !te.getGrace().equals(grace);
+        // check grace existence in case of unexpected circumstances
+        if (IDLE > 0) {
+            IDLE--;
+        } else {
+            boolean modified = graceSet.removeIf(grace -> {
+                if (grace != null && grace.getLevel() != null) {
+                    // only check grace in loaded chunk
+                    if (grace.getLevel().isLoaded(grace.getPos())) {
+                        if (grace.getLevel().getBlockEntity(grace.getPos()) instanceof GraceTileEntity te) {
+                            return !te.getGrace().equals(grace);
+                        }
+                    } else {
+                        return false;
                     }
-                } else {
-                    return false;
                 }
-            }
-            return true;
-        });
+                return true;
+            });
 
-        // check grace for players
-        if (modified)
-            checkGraceForPlayers();
+            // check grace for players
+            if (modified)
+                checkGraceForPlayers();
+
+            IDLE = 1200;
+        }
 
         List<ServerPlayer> players = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayers();
         for (ServerPlayer player : players) {

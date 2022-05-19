@@ -49,7 +49,7 @@ public class TileEntityUtils {
             return Optional.empty();
         }
 
-        //TODO: This causes freezes if being called from onLoad
+        // this causes freezes if being called from onLoad
         BlockEntity tile = world.getBlockEntity(pos);
         if (tile == null) {
             return Optional.empty();

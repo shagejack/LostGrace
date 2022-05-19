@@ -35,7 +35,7 @@ public class GraceTileEntity extends BaseTileEntity {
 
     protected int syncCounter = 1200;
 
-    public String graceName = "";
+    public String graceName;
     public boolean renderFog;
 
     public GraceTileEntity(BlockPos pos, BlockState state) {
@@ -43,6 +43,7 @@ public class GraceTileEntity extends BaseTileEntity {
         this.cooldown = 0;
         this.summoned = 2400;
         this.locked = false;
+        this.graceName = "";
     }
 
     @Override
@@ -50,7 +51,7 @@ public class GraceTileEntity extends BaseTileEntity {
         if (level == null)
             return;
 
-        if (this.grace == null || grace.equals(Grace.NULL) || grace.getLevel() == null || !grace.getName().equals(graceName))
+        if (this.grace == null || grace.equals(Grace.NULL) || grace.getLevel() == null || !grace.getRawName().equals(graceName))
             this.grace = getGrace(true);
 
         if (locked) {
@@ -61,7 +62,7 @@ public class GraceTileEntity extends BaseTileEntity {
                 }
             }
 
-            if (players.size() == 0 || players.stream().noneMatch(this::activatedGrace)) {
+            if (players.size() == 0 || players.stream().noneMatch(GraceTileEntity::activatedGrace)) {
                 this.locked = false;
             } else if (level.isClientSide()) {
                 // try to create fog for client player
@@ -91,7 +92,7 @@ public class GraceTileEntity extends BaseTileEntity {
         }
     }
 
-    private boolean activatedGrace(Player player) {
+    public static boolean activatedGrace(Player player) {
         LazyOptional<IGraceHandler> graceHandler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
         if (!graceHandler.isPresent())
             return false;
@@ -119,7 +120,7 @@ public class GraceTileEntity extends BaseTileEntity {
 
         graceHandler.ifPresent(handler -> {
             if (handler.isGraceActivated() && handler.getLastGrace().equals(this.getGrace())) {
-                Vector3 center = Vector3.of(getBlockPos()).add(0.5, 1.6, 0.5);
+                Vector3 center = Vector3.of(getBlockPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5);
                 double distance = Vector3.of(Minecraft.getInstance().player.position()).distance(center);
 
                 this.renderFog = true;
@@ -133,18 +134,17 @@ public class GraceTileEntity extends BaseTileEntity {
         });
     }
 
-
-
     @Override
-    protected void saveAdditional(CompoundTag tag) {
+    protected void write(CompoundTag tag, boolean clientPacket) {
+        super.write(tag, clientPacket);
         tag.putInt("Summoned", this.summoned);
         tag.putBoolean("Locked", this.locked);
-        tag.putString("GraceName", graceName);
-        super.saveAdditional(tag);
+        tag.putString("GraceName", this.graceName);
     }
 
     @Override
-    public void load(CompoundTag tag) {
+    protected void read(CompoundTag tag, boolean clientPacket) {
+        super.read(tag, clientPacket);
         if (tag.contains("Summoned", Tag.TAG_INT)) {
             this.summoned = tag.getInt("Summoned");
         } else {
@@ -152,7 +152,6 @@ public class GraceTileEntity extends BaseTileEntity {
         }
         this.locked = tag.getBoolean("Locked");
         this.graceName = tag.getString("GraceName");
-        super.load(tag);
     }
 
     public boolean isLocked() {
@@ -200,13 +199,21 @@ public class GraceTileEntity extends BaseTileEntity {
             syncToClient();
     }
 
+    public String getGraceName() {
+        return this.graceName;
+    }
+
+    public boolean hasGraceName() {
+        return this.graceName != null && !this.graceName.isEmpty();
+    }
+
     public void clearGraceName() {
         setGraceName("");
     }
 
     public void syncToClient() {
         if (level != null && !level.isClientSide())
-            AllPackets.sendToNear(level, getBlockPos(), new GraceTileEntityUpdatePacket(getBlockPos(), this.graceName));
+            AllPackets.sendToSameDimension(level, new GraceTileEntityUpdatePacket(getBlockPos(), this.graceName));
     }
 
     @Override

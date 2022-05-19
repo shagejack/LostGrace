@@ -116,7 +116,7 @@ public class GraceUIHandler implements ITickHandler {
         if (player == null)
             return;
 
-        Vector3 renderOffset = Vector3.of(player).addY(1.7);
+        Vector3 renderOffset = Vector3.of(player).addY(Constants.PLAYER_SIGHT_Y_OFFSET);
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
         Vec3 cameraPos = camera.getPosition();
@@ -211,7 +211,7 @@ public class GraceUIHandler implements ITickHandler {
 
                     Vector3 renderPos = renderOffset.add(graceVector.multiply(1 - currentUI.getTeleportTicks() / 60.0));
 
-                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite(), scale, spriteHumanity, 255);
+                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite().normalize(), scale, spriteHumanity, 255);
 
                     Color textColor = new Color(255, 215, 0);
 
@@ -229,7 +229,7 @@ public class GraceUIHandler implements ITickHandler {
 
                     Vector3 renderPos = renderOffset.add(graceVector);
 
-                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite(), scale, spriteHumanity, 127);
+                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite().normalize(), scale, spriteHumanity, 127);
 
                 }
 
@@ -263,8 +263,9 @@ public class GraceUIHandler implements ITickHandler {
         Vector3 playerPos = Vector3.of(player);
         List<Grace> graces = graceHandler.getAllGracesFound().stream().filter(grace -> {
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
+            // interact with distant grace
             if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(playerPos) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
-                Vector3 graceVector = pos.subtract(playerPos).normalize();
+                Vector3 graceVector = pos.subtract(playerPos.addY(Constants.PLAYER_SIGHT_Y_OFFSET)).normalize();
                 return Vector3.of(player.getViewVector(1.0F)).includedAngleDegree(graceVector) < Constants.GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
             }
             return false;

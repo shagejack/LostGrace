@@ -40,6 +40,7 @@ public class MemoryOfGraceItem extends Item {
                         Level targetLevel = grace.getLevel();
                         Vec3 pos = Vec3.atCenterOf(grace.getPos());
                         if (targetLevel != null) {
+                            graceData.visitGrace(grace, false);
                             if (!targetLevel.dimension().location().equals(player.getLevel().dimension().location())) {
                                 player.changeDimension((ServerLevel) targetLevel);
                             }
