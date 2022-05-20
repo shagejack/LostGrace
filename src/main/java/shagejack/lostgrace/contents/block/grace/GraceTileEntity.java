@@ -3,13 +3,17 @@ package shagejack.lostgrace.contents.block.grace;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.world.ForgeChunkManager;
+import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
@@ -27,6 +31,7 @@ import java.util.List;
 public class GraceTileEntity extends BaseTileEntity {
 
     private Grace grace = null;
+    private boolean loaded;
     protected Player interactedPlayer = null;
 
     protected int cooldown;
@@ -219,6 +224,7 @@ public class GraceTileEntity extends BaseTileEntity {
     @Override
     public void onRemoved() {
         GlobalGraceSet.removeGrace(getGrace());
+
         super.onRemoved();
     }
 }

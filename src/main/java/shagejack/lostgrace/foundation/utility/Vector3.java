@@ -33,6 +33,10 @@ public record Vector3(double x, double y, double z) {
         return new Vector3(pos.getX(), pos.getY(), pos.getZ());
     }
 
+    public static Vector3 atCenterOf(Vec3i pos) {
+        return new Vector3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+    }
+
     public static Vector3 of(Vec3 pos) {
         return new Vector3(pos.x(), pos.y(), pos.z());
     }

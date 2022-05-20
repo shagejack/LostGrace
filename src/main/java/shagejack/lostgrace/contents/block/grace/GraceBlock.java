@@ -34,7 +34,6 @@ import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
-import shagejack.lostgrace.foundation.block.ITE;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
 import shagejack.lostgrace.foundation.utility.DropUtils;

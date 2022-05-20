@@ -1,5 +1,6 @@
 package shagejack.lostgrace.registries;
 
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.inventory.MenuType;
@@ -31,6 +32,7 @@ public class RegisterHandle {
     public static final DeferredRegister<MobEffect> MOB_EFFECT_REGISTER = DeferredRegister.create(MOB_EFFECTS, MOD_ID);
     public static final DeferredRegister<Enchantment> ENCHANTMENT_REGISTER = DeferredRegister.create(ENCHANTMENTS, MOD_ID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPE_REGISTER = DeferredRegister.create(ENTITIES, MOD_ID);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENT_REGISTER = DeferredRegister.create(SOUND_EVENTS, MOD_ID);
 
 
     public static void init() {
@@ -38,6 +40,7 @@ public class RegisterHandle {
         new AllItems();
         new AllBlocks();
         new AllTileEntities();
+        new AllSoundEvents();
 
         bus.addListener((FMLClientSetupEvent event) -> TileEntityBuilder.bind(event));
 
@@ -56,5 +59,6 @@ public class RegisterHandle {
         MOB_EFFECT_REGISTER.register(bus);
         ENCHANTMENT_REGISTER.register(bus);
         ENTITY_TYPE_REGISTER.register(bus);
+        SOUND_EVENT_REGISTER.register(bus);
     }
 }

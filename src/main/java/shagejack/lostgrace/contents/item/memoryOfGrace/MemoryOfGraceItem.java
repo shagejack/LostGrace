@@ -1,6 +1,9 @@
 package shagejack.lostgrace.contents.item.memoryOfGrace;
 
+import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -11,10 +14,14 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.world.ForgeChunkManager;
+import net.minecraftforge.server.ServerLifecycleHooks;
+import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -37,14 +44,13 @@ public class MemoryOfGraceItem extends Item {
                 handler.ifPresent(graceData -> {
                     Grace grace = graceData.getLastGrace();
                     if (grace != Grace.NULL && GlobalGraceSet.contains(grace)) {
-                        Level targetLevel = grace.getLevel();
-                        Vec3 pos = Vec3.atCenterOf(grace.getPos());
-                        if (targetLevel != null) {
-                            graceData.visitGrace(grace, false);
-                            if (!targetLevel.dimension().location().equals(player.getLevel().dimension().location())) {
-                                player.changeDimension((ServerLevel) targetLevel);
+                        Level graceLevel = grace.getLevel();
+                        Vector3 pos = Vector3.atCenterOf(grace.getPos());
+                        if (graceLevel instanceof ServerLevel targetLevel) {
+                            if (player instanceof ServerPlayer serverPlayer) {
+                                serverPlayer.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(serverPlayer.getYRot()), Mth.wrapDegrees(serverPlayer.getXRot()));
+                                graceData.visitGrace(grace, false);
                             }
-                            player.teleportTo(pos.x(), pos.y(), pos.z());
                         }
                     } else {
                         player.stopUsingItem();

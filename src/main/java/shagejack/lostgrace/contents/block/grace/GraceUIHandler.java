@@ -5,7 +5,6 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -21,6 +20,7 @@ import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.handler.KeyInputHandler;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.TeleportGracePacket;
 import shagejack.lostgrace.foundation.render.DrawUtils;
@@ -31,6 +31,7 @@ import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.ITickHandler;
 import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 import shagejack.lostgrace.foundation.utility.Vector3;
+import shagejack.lostgrace.registries.AllTextures;
 
 import java.awt.*;
 import java.util.EnumSet;
@@ -38,8 +39,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class GraceUIHandler implements ITickHandler {
-
-    public static final ResourceLocation HUMANITY = LostGrace.asResource("block/grace/humanity");
 
     private static final GraceUIHandler INSTANCE = new GraceUIHandler();
 
@@ -183,7 +182,7 @@ public class GraceUIHandler implements ITickHandler {
     }
     
     private void renderGraces(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler) {
-        TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(HUMANITY);
+        TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.GUIDANCE);
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderTypeLG.GRACE);
@@ -205,7 +204,7 @@ public class GraceUIHandler implements ITickHandler {
                     if (s > 0.5f) {
                         s = 1.0f - s;
                     }
-                    float scale = 0.4f + s * 0.08f;
+                    float scale = 0.2f + s * 0.04f;
 
                     scale *= (1 + 4 * currentUI.getTeleportTicks() / 60.0);
 
@@ -215,9 +214,8 @@ public class GraceUIHandler implements ITickHandler {
 
                     Color textColor = new Color(255, 215, 0);
 
-                    // FIXME: 2022/5/19 fix text rendering
                     if (grace.hasName()) {
-                        DrawUtils.renderInLevelText(renderStack, renderPos.addY(0.2), grace.getName(), textColor, scale);
+                        DrawUtils.renderInLevelText(renderStack, renderPos.addY(1.1 * scale), grace.getHoverName(), textColor, scale);
                     }
                 } else {
                     // render distant graces
@@ -225,7 +223,7 @@ public class GraceUIHandler implements ITickHandler {
                     if (s > 0.5f) {
                         s = 1.0f - s;
                     }
-                    float scale = 0.25f + s * 0.05f;
+                    float scale = 0.125f + s * 0.025f;
 
                     Vector3 renderPos = renderOffset.add(graceVector);
 
@@ -255,7 +253,7 @@ public class GraceUIHandler implements ITickHandler {
             return;
         }
 
-        if (!player.isShiftKeyDown()) {
+        if (!KeyInputHandler.IS_GRACE_TELEPORT_KEY_DOWN) {
             this.currentUI.resetTeleportTicks();
             return;
         }
@@ -295,14 +293,6 @@ public class GraceUIHandler implements ITickHandler {
             if (this.currentUI.getRenderTicks() > 0) {
                 this.currentUI.decreaseRenderTicks();
             }
-
-            Player player = Minecraft.getInstance().player;
-
-            if (player == null)
-                return;
-
-            double distance = Vector3.of(player).distance(Vector3.of(this.currentUI.getPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5));
-
         } else if (fadeTick > 0) {
             this.fadeTick--;
         }

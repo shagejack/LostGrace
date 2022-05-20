@@ -14,10 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
+import shagejack.lostgrace.registries.AllTextures;
 
 public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
-
-    public static final ResourceLocation HUMANITY = LostGrace.asResource("block/grace/humanity");
 
     public GraceRenderer(BlockEntityRendererProvider.Context context) {}
 
@@ -45,7 +44,7 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         }
         float scale = 0.5f + s * 0.1f;
 
-        TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(HUMANITY);
+        TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.HUMANITY);
         
         ms.pushPose();
 

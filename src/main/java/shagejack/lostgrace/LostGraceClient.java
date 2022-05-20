@@ -8,7 +8,10 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import shagejack.lostgrace.contents.block.grace.GraceRenderer;
 import shagejack.lostgrace.contents.block.grace.GraceUIHandler;
+import shagejack.lostgrace.foundation.handler.KeyInputHandler;
 import shagejack.lostgrace.foundation.handler.TickManager;
+import shagejack.lostgrace.registries.AllKeys;
+import shagejack.lostgrace.registries.AllTextures;
 
 public class LostGraceClient {
 
@@ -22,11 +25,11 @@ public class LostGraceClient {
 
         forgeEventBus.addListener(EventPriority.LOW, GraceUIHandler.getInstance()::render);
         forgeEventBus.addListener(GraceUIHandler.getInstance()::interact);
-
+        forgeEventBus.addListener(KeyInputHandler::onKeyInput);
     }
 
     public static void clientInit(final FMLClientSetupEvent event) {
-
+        AllKeys.init();
     }
 
     @SubscribeEvent
@@ -34,6 +37,7 @@ public class LostGraceClient {
         if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
-        event.addSprite(GraceRenderer.HUMANITY);
+        event.addSprite(AllTextures.HUMANITY);
+        event.addSprite(AllTextures.GUIDANCE);
     }
 }

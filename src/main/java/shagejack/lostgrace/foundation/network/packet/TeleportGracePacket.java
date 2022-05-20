@@ -1,13 +1,17 @@
 package shagejack.lostgrace.foundation.network.packet;
 
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
@@ -55,14 +59,11 @@ public class TeleportGracePacket extends SimplePacketBase {
 
             player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceHandler -> {
                 if (graceHandler.isGraceActivated() && graceHandler.contains(this.grace) && GlobalGraceSet.contains(this.grace)) {
-                    Level targetLevel = grace.getLevel();
+                    Level graceLevel = grace.getLevel();
                     Vec3 pos = Vec3.atCenterOf(grace.getPos());
-                    if (targetLevel != null) {
+                    if (graceLevel instanceof ServerLevel targetLevel) {
+                        player.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(player.getYRot()), Mth.wrapDegrees(player.getXRot()));
                         graceHandler.visitGrace(this.grace, false);
-                        if (!targetLevel.dimension().location().equals(player.getLevel().dimension().location())) {
-                            player.changeDimension((ServerLevel) targetLevel);
-                        }
-                        player.teleportTo(pos.x(), pos.y(), pos.z());
                     }
                 }
             });

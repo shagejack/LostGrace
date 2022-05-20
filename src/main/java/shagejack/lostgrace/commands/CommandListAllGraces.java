@@ -1,20 +1,15 @@
 package shagejack.lostgrace.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.world.entity.player.Player;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
-import shagejack.lostgrace.contents.grace.GraceProvider;
 
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 public class CommandListAllGraces {
 
@@ -23,12 +18,7 @@ public class CommandListAllGraces {
     }
 
     private int listAllGraces(CommandContext<CommandSourceStack> context) throws CommandSyntaxException {
-        Player player = context.getSource().getPlayerOrException();
-        String name;
-
-        Set<Grace> graceSet;
-
-        graceSet = GlobalGraceSet.getGraceSet();
+        Set<Grace> graceSet = GlobalGraceSet.getGraceSet();
 
         int count = 0;
 

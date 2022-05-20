@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "lostgrace:item/music_disc_dies_irae/music_disc_dies_irae"
+  }
+}

@@ -96,7 +96,7 @@ public class PlayerGraceData implements IGraceHandler {
     @Override
     public void checkGrace(Set<Grace> graceSet) {
         this.graces = this.graces.stream()
-                .filter(graceSet::contains)
+                .filter(grace -> (grace.getLevel() != null && !grace.getLevel().isLoaded(grace.getPos())) || graceSet.contains(grace))
                 .collect(Collectors.toList());
     }
 

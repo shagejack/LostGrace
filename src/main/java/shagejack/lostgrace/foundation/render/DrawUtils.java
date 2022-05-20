@@ -1,6 +1,7 @@
 package shagejack.lostgrace.foundation.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
@@ -9,6 +10,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.network.chat.Component;
 import shagejack.lostgrace.foundation.utility.Vector3;
 
 import java.awt.Color;
@@ -110,23 +112,23 @@ public class DrawUtils {
         buffer.endBatch(RenderTypeLG.SPHERE);
     }
 
-    public static int renderInLevelText(PoseStack renderStack, Vector3 pos, String text, Color color, float scale) {
+    public static int renderInLevelText(PoseStack renderStack, Vector3 pos, Component text, Color color, float scale) {
         return renderInLevelText(renderStack, pos, text, color, scale, true);
     }
 
-    public static int renderInLevelText(PoseStack renderStack, Vector3 pos, String text, Color color, float scale, boolean alwaysFacingPlayer) {
+    public static int renderInLevelText(PoseStack renderStack, Vector3 pos, Component text, Color color, float scale, boolean alwaysFacingPlayer) {
         Font font = Minecraft.getInstance().font;
 
         renderStack.pushPose();
         renderStack.translate(pos.x(), pos.y(), pos.z());
-        renderStack.scale(scale, -scale, scale);
+        renderStack.scale(-0.05f * scale, -0.05f * scale, -0.05f * scale);
 
         if (alwaysFacingPlayer) {
-            Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+            Quaternion rotation = Minecraft.getInstance().getEntityRenderDispatcher().cameraOrientation();
             renderStack.mulPose(rotation);
         }
 
-        int drawLength = font.drawShadow(renderStack, text, font.width(text) / 2.0f, font.lineHeight, color.getRGB());
+        int drawLength = font.drawShadow(renderStack, text, -font.width(text) / 2.0f, 0, color.getRGB());
 
         renderStack.popPose();
 

@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "lostgrace:item/music_disc_kappa/music_disc_kappa"
+  }
+}

@@ -4,6 +4,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
@@ -65,6 +67,10 @@ public class Grace {
 
     public String getName() {
         return hasName() ? name : "Empty";
+    }
+
+    public Component getHoverName() {
+        return hasName() ? new TextComponent(name) : new TextComponent("Empty");
     }
 
     public String getRawName() {

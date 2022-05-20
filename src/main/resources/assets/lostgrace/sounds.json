@@ -1,0 +1,18 @@
+{
+  "dies_irae": {
+    "sounds": [
+      {
+        "name": "lostgrace:music/dies_irae",
+        "stream": true
+      }
+    ]
+  },
+  "kappa": {
+    "sounds": [
+      {
+        "name": "lostgrace:music/kappa",
+        "stream": true
+      }
+    ]
+  }
+}
