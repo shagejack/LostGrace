@@ -21,6 +21,9 @@ public class ModSetup {
         forgeEventBus.addListener(PlayerGraceEventHandler::onPlayerRespawn);
 
         forgeEventBus.addListener(GlobalGraceSet::tickGrace);
+        forgeEventBus.addListener(GlobalGraceSet::onDataLoad);
+        forgeEventBus.addListener(GlobalGraceSet::onDataSave);
+
         forgeEventBus.addListener(GoldenSeedEventHandler::onGoldenSeedSpawn);
 
         TickManager.register(TileEntityLateInitializationHandler.getInstance());
