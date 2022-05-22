@@ -3,6 +3,7 @@ package shagejack.lostgrace.registries.item;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.RegistryObject;
+import shagejack.lostgrace.contents.item.blackKnife.BlackKnife;
 import shagejack.lostgrace.contents.item.goldenSeed.GoldenSeed;
 import shagejack.lostgrace.contents.item.memoryOfGrace.MemoryOfGraceItem;
 import shagejack.lostgrace.contents.item.record.DiesIraeRecordItem;
@@ -16,9 +17,14 @@ public class AllItems {
             .build(MemoryOfGraceItem::new);
 
     public static final RegistryObject<Item> goldenSeed = new ItemBuilder()
-            .properties(properties -> properties.stacksTo(1))
+            .properties(properties -> properties.stacksTo(1).fireResistant())
             .name("golden_seed")
             .build(GoldenSeed::new);
+
+    public static final RegistryObject<Item> blackKnife = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1).fireResistant().rarity(Rarity.EPIC).setNoRepair())
+            .name("black_knife")
+            .build(BlackKnife::new);
 
     public static final RegistryObject<Item> musicDiscDiesIrae = new ItemBuilder()
             .properties(properties -> properties.stacksTo(1).tab(AllTabs.tabMain).rarity(Rarity.EPIC))

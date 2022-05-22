@@ -1,8 +1,10 @@
 {
   "block.lostgrace.grace": "Lost Grace",
+  "block.lostgrace.blood_altar": "Blood Altar",
 
   "item.lostgrace.memory_of_grace": "Memory of Grace",
   "item.lostgrace.golden_seed": "Golden Seed",
+  "item.lostgrace.black_knife": "Black Knife",
   "item.lostgrace.music_disc_dies_irae": "Scarlet Music Disc",
   "item.lostgrace.music_disc_dies_irae.desc": "Giuseppe Verdi - Dies Irae",
   "item.lostgrace.music_disc_kappa": "Melancholy Music Disc",
@@ -11,5 +13,7 @@
   "itemGroup.lostgrace": "Lost Grace",
 
   "key.categories.lostgrace": "Lost Grace",
-  "key.graceteleport": "Grace Teleporting"
+  "key.graceteleport": "Grace Teleporting",
+
+  "lostgrace.info.destined_death": "Destined Death"
 }

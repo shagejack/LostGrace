@@ -1,8 +1,10 @@
 {
   "block.lostgrace.grace": "赐福",
+  "block.lostgrace.blood_altar": "鲜血祭坛",
 
   "item.lostgrace.memory_of_grace": "赐福记忆",
   "item.lostgrace.golden_seed": "黄金种子",
+  "item.lostgrace.black_knife": "黑刀",
   "item.lostgrace.music_disc_dies_irae": "猩红的音乐唱片",
   "item.lostgrace.music_disc_dies_irae.desc": "朱塞佩·威尔第 - 神怒之日",
   "item.lostgrace.music_disc_kappa": "忧郁的音乐唱片",
@@ -11,7 +13,9 @@
   "itemGroup.lostgrace": "失去的赐福",
 
   "key.categories.lostgrace": "失去的赐福",
-  "key.graceteleport": "赐福传送"
+  "key.graceteleport": "赐福传送",
+
+  "lostgrace.info.destined_death": "命定之死"
 
 
 }

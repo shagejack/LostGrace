@@ -22,8 +22,7 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
 
     @Override
     protected void renderSafe(GraceTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource buffer, int light, int overlay) {
-        if (!te.getBlockState().isAir())
-            renderGrace(te, partialTicks, ms, buffer, light, overlay);
+        renderGrace(te, partialTicks, ms, buffer, light, overlay);
     }
 
     protected void renderGrace(GraceTileEntity grace, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {

@@ -18,9 +18,7 @@ showAsResourcePack=false
   logoFile="logo.png"
   credits="Thanks for all the fish."
   authors="Shage_Jack"
-  description='''
-  The call of long lost grace speaks to us all.
-  '''
+  description='''The call of long lost grace speaks to us all.'''
 
   [[dependencies.lostgrace]]
     modId="forge"

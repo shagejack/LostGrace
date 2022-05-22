@@ -15,6 +15,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.registries.block.AllBlocks;
+import shagejack.lostgrace.registries.fluid.AllFluids;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 import shagejack.lostgrace.registries.tile.TileEntityBuilder;
@@ -39,6 +40,7 @@ public class RegisterHandle {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
         new AllItems();
         new AllBlocks();
+        new AllFluids();
         new AllTileEntities();
         new AllSoundEvents();
 

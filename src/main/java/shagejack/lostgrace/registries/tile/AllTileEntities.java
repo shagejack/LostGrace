@@ -2,6 +2,8 @@ package shagejack.lostgrace.registries.tile;
 
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
+import shagejack.lostgrace.contents.block.bloodAltar.BloodAltarRenderer;
+import shagejack.lostgrace.contents.block.bloodAltar.BloodAltarTileEntity;
 import shagejack.lostgrace.contents.block.grace.GraceRenderer;
 import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
 import shagejack.lostgrace.registries.block.AllBlocks;
@@ -14,6 +16,14 @@ public class AllTileEntities {
             .tileEntity(GraceTileEntity::new)
             .validBlocks(AllBlocks.grace)
             .renderer(() -> GraceRenderer::new)
+            .build();
+
+    public static final RegistryObject<BlockEntityType<?>> bloodAltar
+            = new TileEntityBuilder<BloodAltarTileEntity>()
+            .name("blood_altar")
+            .tileEntity(BloodAltarTileEntity::new)
+            .validBlocks(AllBlocks.grace)
+            .renderer(() -> BloodAltarRenderer::new)
             .build();
 
 }

@@ -17,14 +17,18 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
+
 public enum AllPackets {
     // Client to Server
-    TELEPORT_GRACE(TeleportGracePacket.class, TeleportGracePacket::new, NetworkDirection.PLAY_TO_SERVER),
+    TELEPORT_GRACE(TeleportGracePacket.class, TeleportGracePacket::new, PLAY_TO_SERVER),
 
     // Server to Client
-    DISCOVER_GRACE(DiscoverGracePacket.class, DiscoverGracePacket::new, NetworkDirection.PLAY_TO_CLIENT),
-    PLAYER_GRACE_DATA(PlayerGraceDataPacket.class, PlayerGraceDataPacket::new, NetworkDirection.PLAY_TO_CLIENT),
-    GRACE_TILE_UPDATE(GraceTileEntityUpdatePacket.class, GraceTileEntityUpdatePacket::new, NetworkDirection.PLAY_TO_CLIENT)
+    DISCOVER_GRACE(DiscoverGracePacket.class, DiscoverGracePacket::new, PLAY_TO_CLIENT),
+    PLAYER_GRACE_DATA(PlayerGraceDataPacket.class, PlayerGraceDataPacket::new, PLAY_TO_CLIENT),
+    GRACE_TILE_UPDATE(GraceTileEntityUpdatePacket.class, GraceTileEntityUpdatePacket::new, PLAY_TO_CLIENT),
+    FLUID_UPDATE(FluidUpdatePacket.class, FluidUpdatePacket::new, PLAY_TO_CLIENT)
 
     ;
 

@@ -1,0 +1,39 @@
+{
+  "parent": "lostgrace:item/black_knife/black_knife_empty",
+  "overrides": [
+    {
+      "predicate": {
+        "lostgrace:invisible": 1
+      },
+      "model": "lostgrace:item/black_knife/black_knife_invisible"
+    },
+    {
+      "predicate": {
+        "lostgrace:invisible": 0,
+        "lostgrace:blood": 0.25
+      },
+      "model": "lostgrace:item/black_knife/black_knife_1"
+    },
+    {
+      "predicate": {
+        "lostgrace:invisible": 0,
+        "lostgrace:blood": 0.5
+      },
+      "model": "lostgrace:item/black_knife/black_knife_2"
+    },
+    {
+      "predicate": {
+        "lostgrace:invisible": 0,
+        "lostgrace:blood": 0.75
+      },
+      "model": "lostgrace:item/black_knife/black_knife_3"
+    },
+    {
+      "predicate": {
+        "lostgrace:invisible": 0,
+        "lostgrace:blood": 0.9
+      },
+      "model": "lostgrace:item/black_knife/black_knife_full"
+    }
+  ]
+}
