@@ -39,5 +39,7 @@ public class LostGraceClient {
         }
         event.addSprite(AllTextures.HUMANITY);
         event.addSprite(AllTextures.GUIDANCE);
+        event.addSprite(AllTextures.IMPACT_CROSS);
+        event.addSprite(AllTextures.IMPACT_RING);
     }
 }

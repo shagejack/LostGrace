@@ -1,16 +1,19 @@
 package shagejack.lostgrace.foundation.utility;
 
+import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.Iterator;
+import java.util.List;
 import java.util.Random;
 import java.util.function.IntFunction;
 
@@ -54,11 +57,37 @@ public record Vector3(double x, double y, double z) {
     }
 
     public static Vector3 random() {
-        return new Vector3(RAND.nextDouble() * (RAND.nextBoolean() ? 1 : -1), RAND.nextDouble() * (RAND.nextBoolean() ? 1 : -1), RAND.nextDouble() * (RAND.nextBoolean() ? 1 : -1));
+        return random(RAND);
     }
 
     public static Vector3 random(Random random) {
         return new Vector3(random.nextDouble() * (random.nextBoolean() ? 1 : -1), random.nextDouble() * (random.nextBoolean() ? 1 : -1), random.nextDouble() * (random.nextBoolean() ? 1 : -1));
+    }
+
+    public static List<Vector3> getRandomPos(Random random, Vector3 a, Vector3 b, int size) {
+        List<Vector3> result = Lists.newArrayListWithExpectedSize(size);
+        for (int i = 0; i < size; i++) {
+            result.add(a.add(b.subtract(a).multiply(random.nextDouble(), random.nextDouble(), random.nextDouble())));
+        }
+        return result;
+    }
+
+    public static List<Vector3> getRandomPos(Vector3 a, Vector3 b, int size) {
+        return getRandomPos(RAND, a, b, size);
+    }
+
+    public static List<BlockPos> getRandomBlockPos(Random random, Vector3 a, Vector3 b, int size) {
+        List<BlockPos> result = Lists.newArrayListWithExpectedSize(size);
+        final BlockPos posA = MathUtils.getBetweenClosedBlockPos(a, b);
+        final BlockPos posB = MathUtils.getBetweenClosedBlockPos(b, a);
+        for (int i = 0; i < size; i++) {
+            result.add(MathUtils.randomBetweenBlockPos(random, posA, posB));
+        }
+        return result;
+    }
+
+    public static List<BlockPos> getRandomBlockPos(Vector3 a, Vector3 b, int size) {
+        return getRandomBlockPos(RAND, a, b, size);
     }
 
     public Vector3 copy() {
@@ -84,6 +113,19 @@ public record Vector3(double x, double y, double z) {
         i = 31 * i + (int) (j ^ j >>> 32);
         j = Double.doubleToLongBits(this.z);
         return 31 * i + (int) (j ^ j >>> 32);
+    }
+
+    public long asLong() {
+        return asLong(this.x, this.y, this.z);
+    }
+
+    public static long asLong(double pX, double pY, double pZ) {
+        long j = Double.doubleToLongBits(pX);
+        long i = (j ^ j >>> 32);
+        j = Double.doubleToLongBits(pY);
+        i = 31 * i + (j ^ j >>> 32);
+        j = Double.doubleToLongBits(pZ);
+        return 31 * i + (j ^ j >>> 32);
     }
 
     public float xF() {
@@ -138,8 +180,16 @@ public record Vector3(double x, double y, double z) {
         return new Vector3(x * mul, y * mul, z * mul);
     }
 
-    public Vector3 divide(double mul) {
-        return new Vector3(x / mul, y / mul, z / mul);
+    public Vector3 multiply(double mulX, double mulY, double mulZ) {
+        return new Vector3(x * mulZ, y * mulY, z * mulZ);
+    }
+
+    public Vector3 divide(double divider) {
+        return new Vector3(x / divider, y / divider, z / divider);
+    }
+
+    public Vector3 divide(double dividerX, double dividerY, double dividerZ) {
+        return new Vector3(x / dividerX, y / dividerY, z / dividerZ);
     }
 
     public double dot(Vector3 vec) {
@@ -227,6 +277,10 @@ public record Vector3(double x, double y, double z) {
 
     public Vector3f toVec3f() {
         return new Vector3f((float) x, (float) y, (float) z);
+    }
+
+    public BlockPos toBlockPos() {
+        return new BlockPos((int) x, (int) y, (int) z);
     }
 
     public Quaternion asRotateAxis(double angle) {

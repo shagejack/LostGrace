@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "lostgrace:block/rotten_fresh"
+      },
+      {
+        "model": "lostgrace:block/rotten_fresh",
+        "y": 90
+      },
+      {
+        "model": "lostgrace:block/rotten_fresh",
+        "y": 180
+      },
+      {
+        "model": "lostgrace:block/rotten_fresh",
+        "y": 270
+      }
+    ]
+  }
+}

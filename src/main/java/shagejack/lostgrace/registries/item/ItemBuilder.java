@@ -1,5 +1,7 @@
 package shagejack.lostgrace.registries.item;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -8,7 +10,11 @@ import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.registries.AllTabs;
 import shagejack.lostgrace.registries.RegisterHandle;
+import shagejack.lostgrace.registries.tags.TagBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -18,6 +24,7 @@ public class ItemBuilder {
     protected CreativeModeTab tab = AllTabs.tabMain;
     protected boolean hasTab = true;
     protected Item.Properties properties;
+    protected final List<String> tags = new ArrayList<>();
     protected RegistryObject<Item> registryObject;
 
     public ItemBuilder() {
@@ -71,17 +78,37 @@ public class ItemBuilder {
         return build(() -> factory.apply(properties));
     }
 
+    public <T extends BlockItem> RegistryObject<Item> build(RegistryObject<Block> block, BiFunction<Block, Item.Properties, T> blockItemFactory) {
+        return build(() -> blockItemFactory.apply(block.get(), properties));
+    }
+
     public RegistryObject<Item> build(Supplier<Item> itemSupplier) {
         checkProperties();
         registryObject = RegisterHandle.ITEM_REGISTER.register(name, itemSupplier);
-        LostGrace.LOGGER.debug("register Item {}", name);
+
+        if (!tags.isEmpty()) {
+            TagBuilder.itemTag(registryObject, tags);
+            LostGrace.LOGGER.debug("Register Item: {} with Tags: {}", name, tags.toString());
+        } else {
+            LostGrace.LOGGER.debug("Register Item: {}", name);
+        }
+
         return registryObject;
     }
 
-    public <T extends BlockItem> RegistryObject<Item> build(RegistryObject<Block> block, BiFunction<Block, Item.Properties, T> blockItemFactory) {
-        checkProperties();
-        registryObject = RegisterHandle.ITEM_REGISTER.register(name, () -> blockItemFactory.apply(block.get(), properties) );
-        return registryObject;
+    public ItemBuilder tags(TagKey<?>... tags) {
+        this.tags.addAll(Arrays.stream(tags).map(tag -> tag.location().toString()).toList());
+        return this;
+    }
+
+    public ItemBuilder tags(ResourceLocation... tags) {
+        this.tags.addAll(Arrays.stream(tags).map(ResourceLocation::toString).toList());
+        return this;
+    }
+
+    public ItemBuilder tags(String... tags) {
+        this.tags.addAll(List.of(tags));
+        return this;
     }
 
 }

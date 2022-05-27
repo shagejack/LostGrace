@@ -53,6 +53,7 @@ public class GraceTileEntity extends BaseTileEntity {
 
     @Override
     public void tick() {
+        super.tick();
         if (level == null)
             return;
 

@@ -7,12 +7,19 @@ import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.FluidUpdatePacket;
 import shagejack.lostgrace.foundation.tile.SyncedTileEntity;
 
+import java.util.function.Predicate;
+
 public class FluidTankBase<T extends SyncedTileEntity> extends FluidTank {
 
     protected T parent;
 
     public FluidTankBase(T parent, int capacity) {
         super(capacity);
+        this.parent = parent;
+    }
+
+    public FluidTankBase(T parent, int capacity, Predicate<FluidStack> validator) {
+        super(capacity, validator);
         this.parent = parent;
     }
 

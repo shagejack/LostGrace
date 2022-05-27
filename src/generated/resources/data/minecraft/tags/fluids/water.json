@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "lostgrace:sacred_blood",
+    "lostgrace:flowing_sacred_blood",
+    "lostgrace:profane_blood",
+    "lostgrace:flowing_profane_blood"
+  ]
+}

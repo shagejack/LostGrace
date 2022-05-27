@@ -28,6 +28,20 @@ public class RenderTypeLG extends RenderType {
             .disableDepthTest()
             .build();
 
+    public static final RenderType IMPACT = RenderTypeBuilder.builder()
+            .name("impact")
+            .vertexFormat(DefaultVertexFormat.BLOCK)
+            .vertexFormatMode(VertexFormat.Mode.QUADS)
+            .affectsCrumbling()
+            .sortOnUpload()
+            .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
+            .setTextureState(BLOCK_SHEET_MIPPED)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(TRANSLUCENT_TARGET)
+            .enableLightMap()
+            .disableDepthTest()
+            .build();
+
     public static final RenderType SPHERE = RenderTypeBuilder.builder()
             .name("sphere")
             .bufferSize(2097152)

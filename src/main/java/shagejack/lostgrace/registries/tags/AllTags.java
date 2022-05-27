@@ -1,4 +1,4 @@
-package shagejack.lostgrace.registries;
+package shagejack.lostgrace.registries.tags;
 
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;

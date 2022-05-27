@@ -3,18 +3,14 @@ package shagejack.lostgrace.contents.item.blackKnife;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -46,14 +42,14 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-public class BlackKnife extends SwordItem {
+public class BlackKnifeItem extends SwordItem {
 
     protected static final UUID MOVEMENT_SPEED_UUID = UUID.fromString("66040BBB-60CA-4083-85C4-518A93F3DC43");
     protected static final UUID ATTACK_RANGE_UUID = UUID.fromString("E141442D-10FC-431F-8A5F-EA2373F35ED9");
 
     private final float baseAttackDamage;
 
-    public BlackKnife(Properties pProperties) {
+    public BlackKnifeItem(Properties pProperties) {
         super(AllTiers.DESTINED, 1, -1.5F, pProperties);
         this.baseAttackDamage = AllTiers.DESTINED.getAttackDamageBonus();
     }
@@ -92,15 +88,16 @@ public class BlackKnife extends SwordItem {
             boolean isHumanBlood = isHumanBlood(stack);
             Optional<BloodAltarTileEntity> te = TileEntityUtils.get(BloodAltarTileEntity.class, level, pos, true);
 
-            if (te.isPresent() && te.get().isEmpty()) {
-                FluidStack fluid = new FluidStack(isHumanBlood ? AllFluids.sacredBlood.still().get() :  AllFluids.profaneBlood.still().get(), getBlood(stack));
-                int fill = te.get().bloodTank.fill(fluid, IFluidHandler.FluidAction.SIMULATE);
+            if (te.isPresent()) {
+                FluidStack fluid = new FluidStack(isHumanBlood ? AllFluids.sacredBlood.asFluid() : AllFluids.profaneBlood.asFluid(), getBlood(stack));
+                int fill = te.get().fillTankBlood(fluid, IFluidHandler.FluidAction.SIMULATE);
                 if (fill > 0) {
-                    te.get().bloodTank.fill(fluid, IFluidHandler.FluidAction.EXECUTE);
+                    te.get().fillTankBlood(fluid, IFluidHandler.FluidAction.EXECUTE);
                     setBlood(stack, blood - fill);
                 }
             }
 
+            // sanity check
             if (getBlood(stack) <= 0)
                 setHumanBlood(stack, false);
         }
@@ -153,9 +150,9 @@ public class BlackKnife extends SwordItem {
 
         if (blood > 0) {
             if (isHumanBlood) {
-                target.setHealth(target.getMaxHealth() - (float) blood / 50);
+                target.setHealth(target.getHealth() - (float) blood / 50);
             } else {
-                target.setHealth(target.getMaxHealth() - (float) blood / 100);
+                target.setHealth(target.getHealth() - (float) blood / 100);
             }
             target.setInvulnerable(false);
         }
@@ -186,9 +183,9 @@ public class BlackKnife extends SwordItem {
 
         if (blood > 0) {
             if (isHumanBlood) {
-                target.setHealth(target.getMaxHealth() - (float) blood / 50);
+                target.setHealth(target.getHealth() - (float) blood / 50);
             } else {
-                target.setHealth(target.getMaxHealth() - (float) blood / 100);
+                target.setHealth(target.getHealth() - (float) blood / 100);
             }
             target.setInvulnerable(false);
         }
@@ -228,8 +225,15 @@ public class BlackKnife extends SwordItem {
 
     @Override
     public void appendHoverText(ItemStack stack, @javax.annotation.Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        MutableComponent infoBloodText = new TranslatableComponent("lostgrace.info.destined_death").withStyle(ChatFormatting.DARK_RED).withStyle(ChatFormatting.BOLD);
-        tooltipComponents.add(infoBloodText);
+        MutableComponent infoDestinedDeathText = new TranslatableComponent("lostgrace.info.destined_death").withStyle(ChatFormatting.DARK_RED).withStyle(ChatFormatting.BOLD);
+        tooltipComponents.add(infoDestinedDeathText);
+
+        int blood = getBlood(stack);
+        if (blood > 0) {
+            int damage = isHumanBlood(stack) ? blood / 50 : blood / 100;
+            MutableComponent infoBloodText = new TranslatableComponent("lostgrace.info.bloodstained").append(" +" + damage + " ").append(new TranslatableComponent("lostgrace.info.damage")).withStyle(ChatFormatting.DARK_PURPLE).withStyle(ChatFormatting.BOLD);
+            tooltipComponents.add(infoBloodText);
+        }
     }
 
     @Override
@@ -243,6 +247,9 @@ public class BlackKnife extends SwordItem {
 
     public static void setBlood(ItemStack stack, int amount) {
         stack.getOrCreateTag().putInt("Blood", amount);
+
+        if (amount <= 0)
+            setHumanBlood(stack, false);
     }
 
     public static boolean isHumanBlood(ItemStack stack) {

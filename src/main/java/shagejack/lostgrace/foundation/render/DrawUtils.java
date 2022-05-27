@@ -96,20 +96,30 @@ public class DrawUtils {
     }
 
     public static void renderSphere(PoseStack renderStack, Vector3 pos, double radius, Color color, int alpha) {
-        renderSphere(renderStack, pos, radius, LightTexture.FULL_BRIGHT, color, alpha);
+        renderSphere(renderStack, pos, radius, LightTexture.FULL_BRIGHT, color, alpha, true);
     }
 
-    public static void renderSphere(PoseStack renderStack, Vector3 pos, double radius, int lightMapUV, Color color, int alpha) {
+    public static void renderSphere(PoseStack renderStack, Vector3 pos, double radius, int lightMapUV, Color color, int alpha, boolean clockwise) {
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer builder = buffer.getBuffer(RenderTypeLG.SPHERE);
 
-        List<TriangleFace> sphereFaces = new SphereBuilder().build(radius, 16);
+        List<TriangleFace> sphereFaces = new SphereBuilder().build(radius, 16, clockwise);
 
         for (TriangleFace face : sphereFaces) {
             renderTriangleWithColor(builder, renderStack, pos, face, lightMapUV, color, alpha);
         }
 
         buffer.endBatch(RenderTypeLG.SPHERE);
+    }
+
+    public static void renderSphere(MultiBufferSource buffer, PoseStack renderStack, Vector3 pos, double radius, int lightMapUV, Color color, int alpha, boolean clockwise) {
+        VertexConsumer builder = buffer.getBuffer(RenderTypeLG.SPHERE);
+
+        List<TriangleFace> sphereFaces = new SphereBuilder().build(radius, 16, clockwise);
+
+        for (TriangleFace face : sphereFaces) {
+            renderTriangleWithColor(builder, renderStack, pos, face, lightMapUV, color, alpha);
+        }
     }
 
     public static int renderInLevelText(PoseStack renderStack, Vector3 pos, Component text, Color color, float scale) {

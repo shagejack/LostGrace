@@ -64,7 +64,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                industrimania {
+                lostgrace {
                     source sourceSets.main
                 }
             }
@@ -78,7 +78,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             mods {
-                industrimania {
+                lostgrace {
                     source sourceSets.main
                 }
             }
@@ -92,10 +92,10 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'industrimania', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+            args '--mod', 'lostgrace', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
 
             mods {
-                industrimania {
+                lostgrace {
                     source sourceSets.main
                 }
             }
@@ -133,6 +133,8 @@ dependencies {
     minecraft 'net.minecraftforge:forge:1.18.2-40.1.21'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+
+    implementation fg.deobf("curse.maven:configured-457570:3721946")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     compileOnly fg.deobf("mezz.jei:jei-1.18.2:9.7.0.195:api")

@@ -7,15 +7,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
 import shagejack.lostgrace.contents.block.grace.GraceTileEntityLateInitializer;
 import shagejack.lostgrace.foundation.tile.TileEntityLateInitializationHandler;
-import shagejack.lostgrace.foundation.tile.TileEntityLateInitializer;
-import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 import shagejack.lostgrace.registries.block.AllBlocks;
 
-public class GoldenSeed extends Item {
-    public GoldenSeed(Properties properties) {
+public class GoldenSeedItem extends Item {
+    public GoldenSeedItem(Properties properties) {
         super(properties);
     }
 

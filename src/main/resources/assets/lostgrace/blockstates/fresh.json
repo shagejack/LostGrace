@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "lostgrace:block/fresh"
+      },
+      {
+        "model": "lostgrace:block/fresh",
+        "y": 90
+      },
+      {
+        "model": "lostgrace:block/fresh",
+        "y": 180
+      },
+      {
+        "model": "lostgrace:block/fresh",
+        "y": 270
+      }
+    ]
+  }
+}

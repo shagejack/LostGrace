@@ -1,5 +1,7 @@
 package shagejack.lostgrace.registries.block;
 
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -11,7 +13,11 @@ import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.registries.RegisterHandle;
 import shagejack.lostgrace.registries.item.ItemBuilder;
 import shagejack.lostgrace.registries.record.ItemBlock;
+import shagejack.lostgrace.registries.tags.TagBuilder;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -19,8 +25,9 @@ import java.util.function.Supplier;
 
 public class BlockBuilder {
     protected String name;
-    protected RegistryObject<Block> block;
+    protected RegistryObject<Block> registryObject;
     protected BlockBehaviour.Properties properties;
+    protected final List<String> tags = new ArrayList<>();
     protected BiFunction<Block, Item.Properties, ? extends BlockItem> blockItemFactory;
     protected String customItemName = "";
 
@@ -33,23 +40,15 @@ public class BlockBuilder {
         return this;
     }
 
-    public BlockBuilder defaultProperties() {
-        this.properties = BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5f, 6.0f);
-        return this;
-    }
-
-    public BlockBuilder properties(Function<BlockBehaviour.Properties, BlockBehaviour.Properties> factory) {
-        if (properties == null) {
-            this.properties = BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5f, 6.0f);
-        }
-        this.properties = factory.apply(this.properties);
-        return this;
-    }
-
     public BlockBuilder buildBlock(Supplier<Block> blockSupplier) {
         Objects.requireNonNull(name);
-        block = RegisterHandle.BLOCK_REGISTER.register(name, blockSupplier);
-        LostGrace.LOGGER.debug("register Block:{}", name);
+        registryObject = RegisterHandle.BLOCK_REGISTER.register(name, blockSupplier);
+        if (!tags.isEmpty()) {
+            TagBuilder.blockTag(registryObject, tags);
+            LostGrace.LOGGER.debug("Register Block: {} with Tags: {}", name, tags.toString());
+        } else {
+            LostGrace.LOGGER.debug("Register Block: {}", name);
+        }
         return this;
     }
 
@@ -58,7 +57,7 @@ public class BlockBuilder {
     }
 
     RegistryObject<Block> checkAlreadyBuild() {
-        return Objects.requireNonNull(block, "can't build ItemBlock before block is built");
+        return Objects.requireNonNull(registryObject, "can't build ItemBlock before block is built");
     }
 
     // =============================
@@ -80,8 +79,49 @@ public class BlockBuilder {
     }
 
     // =============================
+    //  No Item
+    // =============================
+
+    public RegistryObject<Block> noItem() {
+        return checkAlreadyBuild();
+    }
+
+    // =============================
     //  BlockBuilder Parameters
     // =============================
+
+    public BlockBuilder defaultProperties() {
+        this.properties = BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5f, 6.0f);
+        return this;
+    }
+
+    public BlockBuilder properties(Function<BlockBehaviour.Properties, BlockBehaviour.Properties> factory) {
+        if (properties == null) {
+            defaultProperties();
+        }
+        this.properties = factory.apply(this.properties);
+        return this;
+    }
+
+    public BlockBuilder material(Material material) {
+        this.properties = BlockBehaviour.Properties.of(material);
+        return this;
+    }
+
+    public BlockBuilder tags(TagKey<?>... tags) {
+        this.tags.addAll(Arrays.stream(tags).map(tag -> tag.location().toString()).toList());
+        return this;
+    }
+
+    public BlockBuilder tags(ResourceLocation... tags) {
+        this.tags.addAll(Arrays.stream(tags).map(ResourceLocation::toString).toList());
+        return this;
+    }
+
+    public BlockBuilder tags(String... tags) {
+        this.tags.addAll(List.of(tags));
+        return this;
+    }
 
     public BlockBuilder blockItemFactory(BiFunction<Block, Item.Properties, ? extends BlockItem> blockItemFactory) {
         this.blockItemFactory = blockItemFactory;
@@ -92,4 +132,5 @@ public class BlockBuilder {
         this.customItemName = itemName;
         return this;
     }
+
 }

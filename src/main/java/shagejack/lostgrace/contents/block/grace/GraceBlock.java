@@ -133,7 +133,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
         }
 
 
-        level.addParticle(ParticleTypes.FLAME, x + random.nextDouble() - 0.5D, y + random.nextDouble() - 0.5D, z + random.nextDouble() - 0.5D, 0.0D, 0.0D, 0.0D);
+        level.addParticle(ParticleTypes.END_ROD, x + random.nextDouble() - 0.5D, y + random.nextDouble() - 0.5D, z + random.nextDouble() - 0.5D, 0.0D, 0.0D, 0.0D);
     }
 
     @Override

@@ -15,6 +15,8 @@ public final class LostGraceConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> GRACE_FOG_ALPHA;
     public static final ForgeConfigSpec.ConfigValue<Integer> GRACE_FOG_COLOR;
 
+    public static final ForgeConfigSpec.ConfigValue<Double> IMPACT_EVENT_CHANCE;
+
     static {
         BUILDER.push("Lost Grace Config");
 
@@ -26,6 +28,8 @@ public final class LostGraceConfig {
         GRACE_FOG_ALPHA = BUILDER.comment("The integer alpha channel value which determines the max opacity of the fog when not teleporting. 255 means full opaque while 0 means full transparent. Default: 217",
                         "The fog fades in as its alpha channel value grows linearly from 0 to this value in 20 ticks. Using value greater than 255 is not recommended and will likely to cause unexpected problems.").define("Grace Fog Alpha", 217);
         GRACE_FOG_COLOR = BUILDER.comment("The integer ARGB color of the fog. Default: -4144960 (java.awt.Color.LIGHT_GRAY)").define("Grace Fog Color", Color.LIGHT_GRAY.getRGB());
+
+        IMPACT_EVENT_CHANCE = BUILDER.comment("The chance that Impact Event will happen for some reason... Default: 0.1").define("Impact Event Chance", 0.1D);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

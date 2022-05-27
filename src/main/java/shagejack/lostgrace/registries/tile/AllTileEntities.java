@@ -22,7 +22,7 @@ public class AllTileEntities {
             = new TileEntityBuilder<BloodAltarTileEntity>()
             .name("blood_altar")
             .tileEntity(BloodAltarTileEntity::new)
-            .validBlocks(AllBlocks.grace)
+            .validBlocks(AllBlocks.bloodAltar)
             .renderer(() -> BloodAltarRenderer::new)
             .build();
 
