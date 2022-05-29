@@ -16,6 +16,7 @@ public final class LostGraceConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> GRACE_FOG_COLOR;
 
     public static final ForgeConfigSpec.ConfigValue<Double> IMPACT_EVENT_CHANCE;
+    public static final ForgeConfigSpec.ConfigValue<Double> IMPACT_MAX_RADIUS;
 
     static {
         BUILDER.push("Lost Grace Config");
@@ -30,6 +31,7 @@ public final class LostGraceConfig {
         GRACE_FOG_COLOR = BUILDER.comment("The integer ARGB color of the fog. Default: -4144960 (java.awt.Color.LIGHT_GRAY)").define("Grace Fog Color", Color.LIGHT_GRAY.getRGB());
 
         IMPACT_EVENT_CHANCE = BUILDER.comment("The chance that Impact Event will happen for some reason... Default: 0.1").define("Impact Event Chance", 0.1D);
+        IMPACT_MAX_RADIUS = BUILDER.comment("The max influence radius of Impact Event. Default: 75.0").define("Impact Max Radius", 75.0D);
 
         BUILDER.pop();
         SPEC = BUILDER.build();

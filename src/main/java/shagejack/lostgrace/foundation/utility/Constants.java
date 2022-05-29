@@ -19,6 +19,7 @@ public class Constants {
     public static Color GRACE_FOG_COLOR;
 
     public static double IMPACT_EVENT_CHANCE;
+    public static double IMPACT_MAX_RADIUS;
 
     public static void init() {
         GRACE_FORCE_FIRST_PERSON_DISTANCE = LostGraceConfig.GRACE_FORCE_FIRST_PERSON_DISTANCE.get();
@@ -28,6 +29,7 @@ public class Constants {
         GRACE_FOG_ALPHA = LostGraceConfig.GRACE_FOG_ALPHA.get();
         GRACE_FOG_COLOR = new Color(LostGraceConfig.GRACE_FOG_COLOR.get());
         IMPACT_EVENT_CHANCE = LostGraceConfig.IMPACT_EVENT_CHANCE.get();
+        IMPACT_MAX_RADIUS = LostGraceConfig.IMPACT_MAX_RADIUS.get();
 
         LostGrace.LOGGER.info("Successfully initialized constants from config.");
     }

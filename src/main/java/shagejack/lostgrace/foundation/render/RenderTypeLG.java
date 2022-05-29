@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import shagejack.lostgrace.LostGrace;
 
 import java.util.function.UnaryOperator;
 
@@ -58,6 +59,21 @@ public class RenderTypeLG extends RenderType {
             .setCullState(NO_CULL)
             .build();
 
+    public static final RenderType SPHERE_TEX = RenderTypeBuilder.builder()
+            .name("sphere")
+            .bufferSize(2097152)
+            .affectsCrumbling()
+            .sortOnUpload()
+            .vertexFormat(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
+            .vertexFormatMode(VertexFormat.Mode.TRIANGLES)
+            .setShaderState(RenderStateShard.POSITION_TEX_SHADER)
+            .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
+            .setTransparencyState(RenderStateShard.TRANSLUCENT_TRANSPARENCY)
+            .setWriteMaskState(RenderStateShard.COLOR_WRITE)
+            .setOutputState(RenderStateShard.MAIN_TARGET)
+            .setDepthTestState(LEQUAL_DEPTH_TEST)
+            .setCullState(NO_CULL)
+            .build();
 
     public static class RenderTypeBuilder {
 
@@ -136,7 +152,7 @@ public class RenderTypeLG extends RenderType {
         }
 
         public RenderType build() {
-            return RenderType.create(name, vertexFormat, vertexFormatMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, stateBuilder.createCompositeState(pOutline));
+            return RenderType.create(LostGrace.MOD_ID + "_" + name, vertexFormat, vertexFormatMode, pBufferSize, pAffectsCrumbling, pSortOnUpload, stateBuilder.createCompositeState(pOutline));
         }
 
         public RenderTypeBuilder setCompositeState(UnaryOperator<CompositeState.CompositeStateBuilder> factory) {

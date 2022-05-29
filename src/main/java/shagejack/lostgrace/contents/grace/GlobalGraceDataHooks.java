@@ -18,10 +18,7 @@ public class GlobalGraceDataHooks {
 
         try {
             CompoundTag nbt = NbtIo.read(graceFile);
-
-            if (nbt != null) {
-                GlobalGraceSet.graceSet = deserializeNBT(nbt);
-            }
+            GlobalGraceSet.graceSet = deserializeNBT(nbt);
         } catch (Throwable throwable) {
             LostGrace.LOGGER.throwing(throwable);
         }
@@ -53,11 +50,13 @@ public class GlobalGraceDataHooks {
 
     public static Set<Grace> deserializeNBT(CompoundTag data) {
         Set<Grace> graces = Sets.newConcurrentHashSet();
-        CompoundTag tag = data.getCompound("GlobalGraceSet");
-        int i = 0;
-        while (tag.contains("Grace" + i, Tag.TAG_COMPOUND)) {
-            graces.add(new Grace(tag.getCompound("Grace" + i)));
-            i++;
+        if (data != null) {
+            CompoundTag tag = data.getCompound("GlobalGraceSet");
+            int i = 0;
+            while (tag.contains("Grace" + i, Tag.TAG_COMPOUND)) {
+                graces.add(new Grace(tag.getCompound("Grace" + i)));
+                i++;
+            }
         }
         return graces;
     }

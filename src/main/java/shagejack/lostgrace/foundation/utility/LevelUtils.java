@@ -4,27 +4,60 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
+
 public class LevelUtils {
 
     private LevelUtils() {
         throw new IllegalStateException(this.getClass().toString() + "should not be instantiated as it's a utility class.");
     }
 
-    public static void replaceInSphere(Level level, Vector3 center, double radius, BlockState replaceTo) {
-        replaceInSphere(level, center, radius, replaceTo, 1.0);
+    public static void replaceInSphere(Level level, BlockPos center, double radius, BlockState replaceTo) {
+        fillSphere(level, center, radius, replaceTo, ($, state) -> !state.isAir());
     }
 
-    public static void replaceInSphere(Level level, Vector3 center, double radius, BlockState replaceTo, double chance) {
-        for (int i = -(int)radius; i < radius + 1; i++) {
-            for (int j = -(int)radius; j < radius + 1; j++) {
-                for (int k = -(int)radius; k < radius + 1; k++) {
-                    BlockPos pos = new BlockPos(i, j, k);
-                    if (Vector3.atCenterOf(pos).distance(center) <= radius && level.getRandom().nextDouble() < chance) {
-                        level.setBlockAndUpdate(pos, replaceTo);
+    public static void replaceInSphere(Level level, BlockPos center, double radius, BlockState replaceTo, Predicate<BlockPos> predicate) {
+        fillSphere(level, center, radius, replaceTo, (pos, state) -> !state.isAir() && predicate.test(pos));
+    }
+
+    public static void replaceInSphere(Level level, BlockPos center, double radius, BlockState replaceTo, BiPredicate<BlockPos, BlockState> predicate) {
+        fillSphere(level, center, radius, replaceTo, (pos, state) -> !state.isAir() && predicate.test(pos, state));
+    }
+
+    public static void fillSphere(Level level, BlockPos center, double radius, BlockState replaceTo) {
+        fillSphere(level, center, radius, replaceTo, $ -> true);
+    }
+
+    public static void fillSphere(Level level, BlockPos center, double radius, BlockState replaceTo, Predicate<BlockPos> predicate) {
+        for (double i = -radius; i <= radius; i++) {
+            for (double j = -radius; j <= radius; j++) {
+                for (double k = -radius; k <= radius; k++) {
+                    if (i * i + j * j + k * k <= radius * radius) {
+                        BlockPos pos = new BlockPos(center.getX() + i, center.getY() + j, center.getZ() + k);
+                        if (predicate.test(pos)) {
+                            level.setBlockAndUpdate(pos, replaceTo);
+                        }
                     }
                 }
             }
         }
     }
+
+    public static void fillSphere(Level level, BlockPos center, double radius, BlockState replaceTo, BiPredicate<BlockPos, BlockState> predicate) {
+        for (double i = -radius; i <= radius; i++) {
+            for (double j = -radius; j <= radius; j++) {
+                for (double k = -radius; k <= radius; k++) {
+                    if (i * i + j * j + k * k <= radius * radius) {
+                        BlockPos pos = new BlockPos(center.getX() + i, center.getY() + j, center.getZ() + k);
+                        if (predicate.test(pos, level.getBlockState(pos))) {
+                            level.setBlockAndUpdate(pos, replaceTo);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
 }

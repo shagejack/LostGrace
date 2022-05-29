@@ -63,9 +63,6 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
 
         ms.pushPose();
 
-
-        ms.translate(0.0d, 0.0d, 0.0d);
-
         // render top only
         FluidRenderer.renderFluidStack(te.bloodTank.getFluid(), te, ms, bufferSource, xMin, xMax, yMin, yMax, zMin, zMax, true, true);
 
@@ -75,31 +72,13 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
     protected void renderOther(BloodAltarTileEntity te, BloodAltarPhase phase, int tick, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
         int brightness = LightTexture.FULL_BRIGHT;
 
+        TextureAtlasSprite spriteFresh = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.FRESH);
+
         switch(phase) {
             case GROW, DECAY, NONE -> {}
-            case BREED -> {
-                ms.pushPose();
-
-                Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-                Vec3 cameraPos = camera.getPosition();
-
-                ms.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
-
-                DrawUtils.renderSphere(bufferSource, ms, Vector3.atCenterOf(te.getBlockPos()), te.getBreedSphereRadius(), brightness, Color.RED, 255, true);
-
-                ms.popPose();
-            }
+            case BREED -> DrawUtils.renderSphereWithTexture(ms, te.getBreedSphereRadius(), spriteFresh, Color.RED, 240);
             case IMPACT_PRELUDE -> {
-                ms.pushPose();
-
-                Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-                Vec3 cameraPos = camera.getPosition();
-
-                ms.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
-
-                DrawUtils.renderSphere(bufferSource, ms, Vector3.atCenterOf(te.getBlockPos()), te.getBreedSphereRadius(), brightness, Color.RED, 255, true);
-
-                ms.popPose();
+                DrawUtils.renderSphereWithTexture(ms, te.getBreedSphereRadius(), spriteFresh, Color.RED, 240);
 
                 float s = (System.currentTimeMillis() % 1000) / 1000.0f;
                 if (s > 0.5f) {
@@ -113,7 +92,7 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
 
                 VertexConsumer builder = bufferSource.getBuffer(RenderTypeLG.IMPACT);
 
-                ms.translate(0.0, 25.0, 0.0);
+                ms.translate(0.0, 20.0, 0.0);
 
                 Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
                 ms.mulPose(rotation);
@@ -122,19 +101,15 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
 
                 float alpha = Math.min((tick - BloodAltarTileEntity.PHASE_ONE_END) / 100.0f * 0.8f, 0.8f);
 
-                // do other render
-                builder.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU0(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
-                builder.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU0(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
-                builder.vertex(matrix, scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU1(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
-                builder.vertex(matrix, scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU1(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+                // render cross
+                builder.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU1(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
+                builder.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU1(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+                builder.vertex(matrix, scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU0(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+                builder.vertex(matrix, scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, alpha).uv(spriteImpactCross.getU0(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
 
                 ms.popPose();
             }
             case IMPACT_EMERGENCE -> {
-
-                Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
-                Vec3 cameraPos = camera.getPosition();
-
                 float s = (System.currentTimeMillis() % 1000) / 1000.0f;
                 if (s > 0.5f) {
                     s = 1.0f - s;
@@ -148,20 +123,22 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
 
                 VertexConsumer builder = bufferSource.getBuffer(RenderTypeLG.IMPACT);
 
-                ms.translate(0.0, 25.0, 0.0);
+                ms.translate(0.0, 20.0, 0.0);
 
                 Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
                 ms.mulPose(rotation);
 
                 Matrix4f matrix = ms.last().pose();
 
-                // do other render
-                builder.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU0(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
-                builder.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU0(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
-                builder.vertex(matrix, scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU1(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
-                builder.vertex(matrix, scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU1(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+                // render cross
+                builder.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU1(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
+                builder.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU1(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+                builder.vertex(matrix, scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU0(), spriteImpactCross.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+                builder.vertex(matrix, scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteImpactCross.getU0(), spriteImpactCross.getV1()).uv2(brightness).normal(1,0,0).endVertex();
 
                 ms.popPose();
+
+                // render rings
 
                 ms.pushPose();
 
@@ -186,46 +163,39 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
                     s3 = 1.0f - s3;
                 }
 
-                float scaleRing1 = 2.0f + s1 * 0.1f;
-                float scaleRing2 = 3.0f + s2 * 0.3f;
-                float scaleRing3 = 5.0f + s3 * 0.5f;
+                float scaleRing1 = 4.0f + s1 * 0.2f;
+                float scaleRing2 = 6.0f + s2 * 0.5f;
+                float scaleRing3 = 10.0f + s3 * 0.8f;
 
                 if (alpha1 > 0) {
-                    DrawUtils.renderQuad(builder, ms, Vector3.atCenterOf(te.getBlockPos()).addY(23.5), Vector3.Y_NEG_AXIS, scaleRing1, spriteImpactRing, alpha1);
-                    DrawUtils.renderQuad(builder, ms, Vector3.atCenterOf(te.getBlockPos()).addY(23.5), Vector3.Y_POS_AXIS, scaleRing1, spriteImpactRing, alpha1);
+                    DrawUtils.renderQuad(builder, ms, Vector3.ZERO.addY(12.5), Vector3.Y_NEG_AXIS, scaleRing1, spriteImpactRing, alpha1);
+                    DrawUtils.renderQuad(builder, ms, Vector3.ZERO.addY(12.5), Vector3.Y_POS_AXIS, scaleRing1, spriteImpactRing, alpha1);
                 }
 
                 if (alpha2 > 0) {
-                    DrawUtils.renderQuad(builder, ms, Vector3.atCenterOf(te.getBlockPos()).addY(25), Vector3.Y_NEG_AXIS, scaleRing2, spriteImpactRing, alpha2);
-                    DrawUtils.renderQuad(builder, ms, Vector3.atCenterOf(te.getBlockPos()).addY(25), Vector3.Y_POS_AXIS, scaleRing2, spriteImpactRing, alpha2);
+                    DrawUtils.renderQuad(builder, ms, Vector3.ZERO.addY(15), Vector3.Y_NEG_AXIS, scaleRing2, spriteImpactRing, alpha2);
+                    DrawUtils.renderQuad(builder, ms, Vector3.ZERO.addY(25), Vector3.Y_POS_AXIS, scaleRing2, spriteImpactRing, alpha2);
                 }
 
                 if (alpha3 > 0) {
-                    DrawUtils.renderQuad(builder, ms, Vector3.atCenterOf(te.getBlockPos()).addY(26.5), Vector3.Y_NEG_AXIS, scaleRing3, spriteImpactRing, alpha3);
-                    DrawUtils.renderQuad(builder, ms, Vector3.atCenterOf(te.getBlockPos()).addY(26.5), Vector3.Y_POS_AXIS, scaleRing3, spriteImpactRing, alpha3);
+                    DrawUtils.renderQuad(builder, ms, Vector3.ZERO.addY(17.5), Vector3.Y_NEG_AXIS, scaleRing3, spriteImpactRing, alpha3);
+                    DrawUtils.renderQuad(builder, ms, Vector3.ZERO.addY(17.5), Vector3.Y_POS_AXIS, scaleRing3, spriteImpactRing, alpha3);
                 }
 
                 ms.popPose();
 
-                int impactTick = tick - BloodAltarTileEntity.PHASE_TWO_END - (BloodAltarTileEntity.TOTAL_TICKS - BloodAltarTileEntity.PHASE_TWO_END) / 3;
-
-                ms.pushPose();
-
-                ms.pushPose();
-
-                ms.translate(-cameraPos.x(), -cameraPos.y(), -cameraPos.z());
+                int impactTick = tick - BloodAltarTileEntity.PHASE_TWO_END - BloodAltarTileEntity.IMPACT_DELAY;
 
                 if (impactTick > 0) {
                     if (impactTick < 60) {
-                        DrawUtils.renderSphere(bufferSource, ms, Vector3.atCenterOf(te.getBlockPos()), impactTick / 60.0 * 20.0, brightness, Color.RED, 255, true);
+                        DrawUtils.renderSphereWithTexture(ms, impactTick / 60.0 * BloodAltarTileEntity.IMPACT_RADIUS_MIN, spriteFresh, Color.RED, 240);
                     } else if (impactTick < 120) {
-                        DrawUtils.renderSphere(bufferSource, ms, Vector3.atCenterOf(te.getBlockPos()), (impactTick - 60) / 60.0 * 30.0, brightness, Color.RED, 255, true);
+                        DrawUtils.renderSphereWithTexture(ms, (impactTick - 60) / 60.0 * BloodAltarTileEntity.IMPACT_RADIUS_MED, spriteFresh, Color.RED, 240);
                     } else if (impactTick < 240) {
-                        DrawUtils.renderSphere(bufferSource, ms, Vector3.atCenterOf(te.getBlockPos()), (impactTick - 120) / 120.0 * 40.0, brightness, Color.RED, 255, true);
+                        DrawUtils.renderSphereWithTexture(ms, (impactTick - 120) / 120.0 * BloodAltarTileEntity.IMPACT_RADIUS_MAX, spriteFresh, Color.RED, 240);
                     }
                 }
 
-                ms.popPose();
             }
         }
     }

@@ -47,7 +47,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     public static final BooleanProperty COOLDOWN = BlockStateProperties.ATTACHED;
 
-    private static final VoxelShape SHAPE = Block.box(4.0D, 4.0D, 4.0D, 12.0D, 12.0D, 12.0D);
+    private static final VoxelShape SHAPE = Block.box(4.0D, 8.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
     public GraceBlock(Properties properties) {
         super(properties);
@@ -126,7 +126,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, Random random) {
         double x = (double) pos.getX() + 0.5D;
-        double y = (double) pos.getY() + 0.5D;
+        double y = (double) pos.getY() + 0.75D;
         double z = (double) pos.getZ() + 0.5D;
         if (random.nextDouble() < 0.1D) {
             level.playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);

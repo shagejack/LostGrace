@@ -28,7 +28,8 @@ public enum AllPackets {
     DISCOVER_GRACE(DiscoverGracePacket.class, DiscoverGracePacket::new, PLAY_TO_CLIENT),
     PLAYER_GRACE_DATA(PlayerGraceDataPacket.class, PlayerGraceDataPacket::new, PLAY_TO_CLIENT),
     GRACE_TILE_UPDATE(GraceTileEntityUpdatePacket.class, GraceTileEntityUpdatePacket::new, PLAY_TO_CLIENT),
-    FLUID_UPDATE(FluidUpdatePacket.class, FluidUpdatePacket::new, PLAY_TO_CLIENT)
+    FLUID_UPDATE(FluidUpdatePacket.class, FluidUpdatePacket::new, PLAY_TO_CLIENT),
+    BLOOD_ALTAR_DATA(BloodAltarDataPacket.class, BloodAltarDataPacket::new, PLAY_TO_CLIENT)
 
     ;
 

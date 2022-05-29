@@ -152,8 +152,6 @@ public class GraceUIHandler implements ITickHandler {
 
         int alpha;
 
-        Matrix4f renderMatrix = renderStack.last().pose();
-
         if (!fading) {
             this.fadeTick = 20 - this.currentUI.getRenderTicks();
 

@@ -32,7 +32,7 @@ public class AllBlocks {
 
     public static final ItemBlock bloodAltar = new BlockBuilder()
             .name("blood_altar")
-            .properties(properties -> properties)
+            .properties(properties -> properties.strength(2.5f, 3600000.0f))
             .buildBlock(BloodAltarBlock::new)
             .buildItem();
 

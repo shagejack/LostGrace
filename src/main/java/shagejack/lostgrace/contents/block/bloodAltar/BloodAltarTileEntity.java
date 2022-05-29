@@ -3,14 +3,9 @@ package shagejack.lostgrace.contents.block.bloodAltar;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.targeting.TargetingConditions;
-import net.minecraft.world.entity.animal.Fox;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -19,13 +14,13 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import shagejack.lostgrace.foundation.fluid.FluidTankBase;
 import shagejack.lostgrace.foundation.fluid.ITankTileEntity;
+import shagejack.lostgrace.foundation.network.AllPackets;
+import shagejack.lostgrace.foundation.network.packet.BloodAltarDataPacket;
 import shagejack.lostgrace.foundation.network.packet.FluidUpdatePacket;
-import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.tile.BaseTileEntity;
 import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.DropUtils;
@@ -37,10 +32,8 @@ import shagejack.lostgrace.registries.fluid.AllFluids;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
-import java.awt.*;
 import java.util.*;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEntity, FluidUpdatePacket.IFluidPacketReceiver{
 
@@ -48,6 +41,11 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
     public static final int TOTAL_TICKS = 3600;
     public static final int PHASE_ONE_END = TOTAL_TICKS / 3;
     public static final int PHASE_TWO_END = 2 * TOTAL_TICKS / 3;
+
+    public static final double IMPACT_RADIUS_MIN = Constants.IMPACT_MAX_RADIUS * 0.333;
+    public static final double IMPACT_RADIUS_MED = Constants.IMPACT_MAX_RADIUS * 0.666;
+    public static final double IMPACT_RADIUS_MAX = Constants.IMPACT_MAX_RADIUS;
+    public static final int IMPACT_DELAY = 60;
 
     public FluidTankBase<BloodAltarTileEntity> bloodTank;
 
@@ -97,18 +95,18 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
                         }
                     }
 
-                    int impactTick = (BloodAltarTileEntity.TOTAL_TICKS - getRemainingTicks()) - BloodAltarTileEntity.PHASE_TWO_END - (BloodAltarTileEntity.TOTAL_TICKS - BloodAltarTileEntity.PHASE_TWO_END) / 3;
+                    int impactTick = (TOTAL_TICKS - getRemainingTicks()) - PHASE_TWO_END - IMPACT_DELAY;
 
                     if (impactTick > 0) {
                         if (impactTick < 60) {
                             if (impactTick % 4 == 0)
-                                LevelUtils.replaceInSphere(level, Vector3.atCenterOf(getBlockPos()), impactTick / 60.0 * 20.0, AllBlocks.fresh.block().get().defaultBlockState(), 0.5);
+                                LevelUtils.replaceInSphere(level, getBlockPos(), impactTick / 60.0 * IMPACT_RADIUS_MIN, AllBlocks.fresh.block().get().defaultBlockState(), ($, state) -> this.random.nextDouble() < 0.5 && !state.is(AllBlocks.bloodAltar.block().get()));
                         } else if (impactTick < 120) {
                             if (impactTick % 4 == 0)
-                                LevelUtils.replaceInSphere(level, Vector3.atCenterOf(getBlockPos()), (impactTick - 60) / 60.0 * 30.0, AllBlocks.fresh.block().get().defaultBlockState(), 0.8);
+                                LevelUtils.replaceInSphere(level, getBlockPos(), (impactTick - 60) / 60.0 * IMPACT_RADIUS_MED, AllBlocks.fresh.block().get().defaultBlockState(), ($, state) -> this.random.nextDouble() < 0.8 && !state.is(AllBlocks.bloodAltar.block().get()));
                         } else if (impactTick < 240) {
                             if (impactTick % 4 == 0)
-                                LevelUtils.replaceInSphere(level, Vector3.atCenterOf(getBlockPos()), (impactTick - 120) / 120.0 * 40.0, AllBlocks.fresh.block().get().defaultBlockState());
+                                LevelUtils.replaceInSphere(level, getBlockPos(), (impactTick - 120) / 120.0 * IMPACT_RADIUS_MAX, AllBlocks.fresh.block().get().defaultBlockState(), ($, state) -> !state.is(AllBlocks.bloodAltar.block().get()));
                         }
                     }
 
@@ -200,6 +198,8 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
             this.corrupt = true;
         }
 
+        syncToClient();
+
         this.bloodTank.empty();
 
         level.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BloodAltarBlock.LOCKED, true));
@@ -278,7 +278,7 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
             if (placed)
                 break;
 
-            pos = pos.relative(Direction.getRandom(level.getRandom()));
+            pos = pos.relative(Direction.getRandom(this.random));
 
             tries++;
         }
@@ -311,7 +311,7 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
             if (placed)
                 break;
 
-            pos = pos.relative(Direction.getRandom(level.getRandom()));
+            pos = pos.relative(Direction.getRandom(this.random));
 
             tries++;
         }
@@ -346,8 +346,8 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
     }
 
     public double getBreedSphereRadius() {
-        int minRadius = 12 + (int) (getBlockPos().asLong() % 4);
-        int extraRadius = (int) (getBlockPos().asLong() % 9);
+        int minRadius = 8 + (int) Math.abs(getBlockPos().asLong() % 4);
+        int extraRadius = 4 + (int) Math.abs(getBlockPos().asLong() % 9);
         double s = (getRemainingTicks() % 200) / 200.0;
         if (s > 0.5) {
             s = 1 - s;
@@ -356,5 +356,16 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
         s *= 2;
 
         return minRadius + s * extraRadius;
+    }
+
+    public void syncFromPacket(boolean corrupt) {
+        this.corrupt = corrupt;
+    }
+
+    public void syncToClient() {
+        if (level == null || level.isClientSide())
+            return;
+
+        AllPackets.sendToSameDimension(level, new BloodAltarDataPacket(getBlockPos(), corrupt));
     }
 }

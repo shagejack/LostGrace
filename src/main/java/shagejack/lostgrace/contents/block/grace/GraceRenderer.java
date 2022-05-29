@@ -47,15 +47,13 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         
         ms.pushPose();
 
-        ms.translate(0.5, 0.5, 0.5);
+        ms.translate(0.5, 0.75, 0.5);
 
         Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
         ms.mulPose(rotation);
 
         VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.GRACE);
         Matrix4f matrix = ms.last().pose();
-
-        // TODO: do shear
 
         buffer.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU0(), spriteHumanity.getV0()).uv2(brightness).normal(1,0,0).endVertex();
         buffer.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU0(), spriteHumanity.getV1()).uv2(brightness).normal(1,0,0).endVertex();

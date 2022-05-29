@@ -283,6 +283,10 @@ public record Vector3(double x, double y, double z) {
         return new BlockPos((int) x, (int) y, (int) z);
     }
 
+    public Vector3 integral() {
+        return new Vector3((int) x, (int) y, (int) z);
+    }
+
     public Quaternion asRotateAxis(double angle) {
         return new Quaternion(this.normalize().toVec3f(), (float) angle, false);
     }
