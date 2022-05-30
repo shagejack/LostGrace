@@ -30,6 +30,7 @@ public class ModSetup {
         forgeEventBus.addListener(BlackKnifeEventHandler::onBlackKnifeDropOnFloor);
 
         modEventBus.addListener(ItemPropertyOverridesRegistry::propertyOverrideRegistry);
+        modEventBus.addListener(EntityEventHandler::initAttributes);
 
         TickManager.register(TileEntityLateInitializationHandler.getInstance());
     }

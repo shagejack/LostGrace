@@ -7,6 +7,8 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
@@ -43,6 +45,7 @@ public class LostGrace {
             RegisterHandle.init();
 
             LOGGER.info("Setting up event listeners...");
+            modEventBus.addListener(LostGrace::commonInit);
             ModSetup.setup(modEventBus, forgeEventBus);
 
             ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, LostGraceConfig.SPEC, "lostgrace.toml");
@@ -56,6 +59,12 @@ public class LostGrace {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> LostGraceClient.onClient(modEventBus, forgeEventBus));
 
         TickManager.attachListeners(forgeEventBus);
+    }
+
+    public static void commonInit(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+
+        });
     }
 
     public static ResourceLocation asResource(String path) {

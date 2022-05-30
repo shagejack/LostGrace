@@ -2,17 +2,16 @@ package shagejack.lostgrace.registries.tile;
 
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.util.NonNullFunction;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.registries.RegisterHandle;
 import shagejack.lostgrace.registries.record.ItemBlock;
@@ -22,7 +21,7 @@ import java.util.function.Supplier;
 
 public class TileEntityBuilder<T extends BlockEntity> {
 
-    private RegistryObject<BlockEntityType<?>> blockEntityType;
+    private RegistryObject<BlockEntityType<?>> registryObject;
     public static final List<Binder<?>> tasks = new ArrayList<>();
 
     @FunctionalInterface
@@ -41,11 +40,11 @@ public class TileEntityBuilder<T extends BlockEntity> {
 
     public RegistryObject<BlockEntityType<?>> build() {
         BlockEntityFactory<T> factory = this.factory;
-        blockEntityType = RegisterHandle.BLOCK_ENTITY_TYPE_REGISTER.register(name, ()
+        registryObject = RegisterHandle.BLOCK_ENTITY_TYPE_REGISTER.register(name, ()
                 -> BlockEntityType.Builder.of(factory::create,
                         validBlocks.stream().map(RegistryObject::get).toArray(Block[]::new))
                 .build(null));
-        return blockEntityType;
+        return registryObject;
     }
 
     public TileEntityBuilder<T> name(String name) {
@@ -55,7 +54,7 @@ public class TileEntityBuilder<T extends BlockEntity> {
 
     public TileEntityBuilder<T> renderer(NonNullSupplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                tasks.add(new Binder(() -> blockEntityType, context -> renderer.get().apply(context))));
+                tasks.add(new Binder(() -> registryObject, context -> renderer.get().apply(context))));
         return this;
     }
 
@@ -69,16 +68,14 @@ public class TileEntityBuilder<T extends BlockEntity> {
         return this;
     }
 
-    public static void bind(final FMLClientSetupEvent event) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> tasks.forEach(Binder::register));
+    public static void bind(final EntityRenderersEvent.RegisterRenderers event) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> tasks.forEach(task -> task.register(event)));
     }
 
-    private record Binder<T extends BlockEntity>(
-            Supplier<RegistryObject<BlockEntityType<? extends T>>> blockEntityTypeSupplier,
-            BlockEntityRendererProvider<T> render) {
-        private void register() {
+    private record Binder<T extends BlockEntity>(Supplier<RegistryObject<BlockEntityType<? extends T>>> blockEntityTypeSupplier, BlockEntityRendererProvider<T> render) {
+        private void register(final EntityRenderersEvent.RegisterRenderers event) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                    BlockEntityRenderers.register(blockEntityTypeSupplier.get().get(), render)
+                    event.registerBlockEntityRenderer(blockEntityTypeSupplier.get().get(), render)
             );
         }
     }

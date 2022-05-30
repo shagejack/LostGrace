@@ -279,6 +279,10 @@ public record Vector3(double x, double y, double z) {
         return new Vector3f((float) x, (float) y, (float) z);
     }
 
+    public Vec3 toVec3() {
+        return new Vec3(x, y, z);
+    }
+
     public BlockPos toBlockPos() {
         return new BlockPos((int) x, (int) y, (int) z);
     }

@@ -194,7 +194,7 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
         this.isStarted = true;
 
         this.remainingTicks = TOTAL_TICKS;
-        if (bloodTank.getFluid().getFluid().isSame(AllFluids.profaneBlood.asFluid()) && level.getRandom().nextDouble() < Constants.IMPACT_EVENT_CHANCE) {
+        if (bloodTank.getFluid().getFluid().isSame(AllFluids.profaneBlood.asFluid()) && !level.isClientSide() && level.getRandom().nextDouble() < Constants.IMPACT_EVENT_CHANCE) {
             this.corrupt = true;
         }
 

@@ -10,11 +10,15 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.registries.block.AllBlocks;
+import shagejack.lostgrace.registries.entity.AllEntityTypes;
+import shagejack.lostgrace.registries.entity.EntityBuilder;
 import shagejack.lostgrace.registries.fluid.AllFluids;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
@@ -37,14 +41,20 @@ public class RegisterHandle {
 
 
     public static void init() {
-        var bus = FMLJavaModLoadingContext.get().getModEventBus();
+        var modBus = FMLJavaModLoadingContext.get().getModEventBus();
         new AllItems();
         new AllBlocks();
         new AllFluids();
         new AllTileEntities();
+        new AllEntityTypes();
         new AllSoundEvents();
 
-        bus.addListener((FMLClientSetupEvent event) -> TileEntityBuilder.bind(event));
+        modBus.addListener((EntityRenderersEvent.RegisterRenderers event) -> {
+            TileEntityBuilder.bind(event);
+            EntityBuilder.bindRenderers(event);
+        });
+
+        modBus.addListener((EntityAttributeCreationEvent event) -> EntityBuilder.bindAttributes(event));
 
         AllPackets.registerPackets();
     }
