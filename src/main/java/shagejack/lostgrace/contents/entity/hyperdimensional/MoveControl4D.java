@@ -24,7 +24,7 @@ public class MoveControl4D extends MoveControl {
 
     @Override
     public boolean hasWanted() {
-        return this.operation4D == Operation.MOVE_TO || this.operation4D == Operation.MOVE_TO_4D;
+        return this.operation4D == Operation.MOVE_TO_3D || this.operation4D == Operation.MOVE_TO_4D;
     }
 
     @Override
@@ -32,11 +32,17 @@ public class MoveControl4D extends MoveControl {
         this.wantedX = pX;
         this.wantedY = pY;
         this.wantedZ = pZ;
+        this.wantedW = 0.0D;
         this.speedModifier = pSpeed;
-        this.operation4D = Operation.MOVE_TO;
+        this.operation4D = Operation.MOVE_TO_3D;
     }
 
     public void setWantedPosition(double pX, double pY, double pZ, double pW, double pSpeed) {
+        if (Double.compare(pW, 0.0D) == 0) {
+            setWantedPosition(pX, pY, pZ, pSpeed);
+            return;
+        }
+
         this.wantedX = pX;
         this.wantedY = pY;
         this.wantedZ = pZ;
@@ -47,31 +53,39 @@ public class MoveControl4D extends MoveControl {
 
     @Override
     public void tick() {
-        if (this.operation4D == Operation.MOVE_TO) {
+        if (this.operation4D == Operation.MOVE_TO_3D) {
             this.operation4D = Operation.WAIT;
-            if (hasStraightLinePathIn3D()) {
-                double d0 = this.wantedX - this.mob.getX();
-                double d1 = this.wantedZ - this.mob.getZ();
-                double d2 = this.wantedY - this.mob.getY();
-                double d3 = d0 * d0 + d2 * d2 + d1 * d1;
-                if (d3 < (double)2.5000003E-7F) {
+            if (canMove()) {
+                double speed = this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
+                double speed3D = getSpeed3D(speed);
+                double speedW = getSpeedW(speed);
+                double nW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
+
+                Vector4 between = getWantedVector().subtract(getPosVector());
+                if (between.length() < (double)2.5000003E-7F) {
                     this.mob.setZza(0.0F);
                     return;
                 }
 
-                float f9 = (float)(Mth.atan2(d1, d0) * (double)(180F / (float)Math.PI)) - 90.0F;
-                this.mob.setYRot(this.rotlerp(this.mob.getYRot(), f9, 90.0F));
-                this.mob.setSpeed((float)(this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED)));
+                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + nW).move(this.mob.position()))) {
+                    this.mob4D.setW(nW);
+                }
+
+                float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;
+                this.mob.setYRot(this.rotlerp(this.mob.getYRot(), rot, 90.0F));
+                this.mob.setSpeed((float) speed3D);
+
             } else {
-                this.mob4D.setW(this.mob4D.getW() + this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.05);
+                this.mob4D.moveAwayFrom3D(this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.05);
             }
         } else if (this.operation4D == Operation.MOVE_TO_4D) {
             this.operation4D = Operation.WAIT;
+
             Optional<Vec3> intersectionPoint3D = getPointOfIntersection();
             if (intersectionPoint3D.isEmpty() || this.mob.getLevel().noCollision(this.mob4D.getLargestBoundingBox().move(intersectionPoint3D.get()))) {
                 // move straightly towards destination
                 Vector4 between = getWantedVector().subtract(getPosVector());
-                if (between.length() < (double)2.5000003E-7F) {
+                if (between.length() < 2.5E-7D) {
                     this.mob.setZza(0.0F);
                     return;
                 }
@@ -92,14 +106,15 @@ public class MoveControl4D extends MoveControl {
                 double speed3D = getSpeed3D(speed, target);
                 double speedW = getSpeedW(speed, target);
                 double nW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
-                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + nW).move(this.mob.position()))) {
-                    this.mob4D.setW(nW);
-                }
 
                 Vector4 between = target.subtract(getPosVector());
                 if (between.length() < (double)2.5000003E-7F) {
                     this.mob.setZza(0.0F);
                     return;
+                }
+
+                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + nW).move(this.mob.position()))) {
+                    this.mob4D.setW(nW);
                 }
 
                 float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;
@@ -112,26 +127,19 @@ public class MoveControl4D extends MoveControl {
 
     }
 
-    protected boolean hasStraightLinePathIn3D() {
-        AABB bounding = this.mob4D.getLargestBoundingBox();
+    protected boolean canMove() {
+        return canMove(getWantedVector());
+    }
+
+    protected boolean canMove(Vector4 vec) {
+        Vector4 stepVector = vec.subtract(getPosVector()).normalize().divide(5);
+        AABB bounding = this.mob4D.getBoundingBox(this.mob4D.getW() + stepVector.w());
+        bounding = bounding.move(this.mob.position());
 
         if (bounding.equals(Entity4D.EMPTY_BOUNDING))
             return true;
 
-        bounding = bounding.move(this.mob.position());
-
-        Vec3 betweenVector = new Vec3(this.wantedX - this.mob.getX(), this.wantedY - this.mob.getY(), this.wantedY - this.mob.getY());
-        double length = betweenVector.length();
-        Vec3 normalized = betweenVector.normalize();
-
-        for (int i = 0; i < length; i++) {
-            bounding = bounding.move(normalized);
-            if (!this.mob.getLevel().noCollision(bounding)) {
-                return false;
-            }
-        }
-
-        return true;
+        return !this.mob.getLevel().noCollision(bounding.move(stepVector.get3DPart().toVec3()));
     }
 
     protected Vector4 findEmptySpace() {
@@ -170,7 +178,7 @@ public class MoveControl4D extends MoveControl {
 
         if (w1 * w2 < 0) {
             double scale = w1 / (w1 - w2);
-            return Optional.of(new Vec3(x2 - x1, y2 - y1, z2 - z1).scale(scale));
+            return Optional.of(new Vec3(x1, y1, z1).add(new Vec3(x2 - x1, y2 - y1, z2 - z1).scale(scale)));
         }
 
         return Optional.empty();
@@ -206,7 +214,7 @@ public class MoveControl4D extends MoveControl {
 
     protected enum Operation {
         WAIT,
-        MOVE_TO,
+        MOVE_TO_3D,
         MOVE_TO_4D
     }
 

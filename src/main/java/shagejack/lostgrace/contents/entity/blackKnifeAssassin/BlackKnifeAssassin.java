@@ -206,7 +206,7 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
             LivingEntity livingentity = BlackKnifeAssassin.this.getTarget();
             if (livingentity != null) {
                 Vec3 vec3 = livingentity.getEyePosition();
-                ((MoveControl4D) BlackKnifeAssassin.this.moveControl).setWantedPosition(vec3.x, vec3.y, vec3.z, 0, 1.0D);
+                BlackKnifeAssassin.this.moveControl.setWantedPosition(vec3.x, vec3.y, vec3.z, 1.0D);
             }
         }
 
@@ -227,7 +227,7 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
             LivingEntity livingentity = BlackKnifeAssassin.this.getTarget();
             if (livingentity != null) {
                 Vec3 vec3 = livingentity.getEyePosition();
-                ((MoveControl4D) BlackKnifeAssassin.this.moveControl).setWantedPosition(vec3.x, vec3.y, vec3.z, 0, 1.0D);
+                BlackKnifeAssassin.this.moveControl.setWantedPosition(vec3.x, vec3.y, vec3.z, 1.0D);
             }
         }
     }
@@ -280,7 +280,7 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
                 ((MoveControl4D) BlackKnifeAssassin.this.moveControl).setWantedPosition((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.5D, (double) blockpos.getZ() + 0.5D, getW() + random.nextDouble(5.0D) - 10.0D, 0.25D);
             } else {
                 // move to 3D
-                ((MoveControl4D) BlackKnifeAssassin.this.moveControl).setWantedPosition((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.5D, (double) blockpos.getZ() + 0.5D, 0.0D, 0.25D);
+                BlackKnifeAssassin.this.moveControl.setWantedPosition((double) blockpos.getX() + 0.5D, (double) blockpos.getY() + 0.5D, (double) blockpos.getZ() + 0.5D, 0.25D);
             }
         }
     }
