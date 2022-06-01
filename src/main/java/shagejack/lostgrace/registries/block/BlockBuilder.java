@@ -1,13 +1,21 @@
 package shagejack.lostgrace.registries.block;
 
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ColorHandlerEvent;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.registries.RegisterHandle;
@@ -15,6 +23,7 @@ import shagejack.lostgrace.registries.item.ItemBuilder;
 import shagejack.lostgrace.registries.record.ItemBlock;
 import shagejack.lostgrace.registries.tags.TagBuilder;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -30,6 +39,9 @@ public class BlockBuilder {
     protected final List<String> tags = new ArrayList<>();
     protected BiFunction<Block, Item.Properties, ? extends BlockItem> blockItemFactory;
     protected String customItemName = "";
+
+    public static final List<Supplier<Runnable>> setupRenderLayerTasks = new ArrayList<>();
+    public static final List<BlockColorBinder> blockColorTasks = new ArrayList<>();
 
     public BlockBuilder() {
         this.defaultProperties();
@@ -49,6 +61,7 @@ public class BlockBuilder {
         } else {
             LostGrace.LOGGER.debug("Register Block: {}", name);
         }
+
         return this;
     }
 
@@ -128,9 +141,35 @@ public class BlockBuilder {
         return this;
     }
 
+    public BlockBuilder renderLayer(Supplier<Supplier<RenderType>> renderType) {
+        setupRenderLayerTasks.add(() -> () -> ItemBlockRenderTypes.setRenderLayer(registryObject.get(), renderType.get().get()));
+        return this;
+    }
+
     public BlockBuilder customItemName(String itemName) {
         this.customItemName = itemName;
         return this;
+    }
+
+    public BlockBuilder setBlockColor(Color color) {
+        return setBlockColor((state, blockAndTintGetter, pos, pTintIndex) -> color.getRGB());
+    }
+
+    public BlockBuilder setBlockColor(BlockColor blockColor) {
+        blockColorTasks.add(new BlockColorBinder(() -> registryObject, blockColor));
+        return this;
+    }
+
+    public static void registerColors(final ColorHandlerEvent.Block event) {
+        blockColorTasks.forEach(task -> task.register(event));
+    }
+
+    private record BlockColorBinder(Supplier<RegistryObject<Block>> blockSupplier, BlockColor blockColor) {
+        private void register(final ColorHandlerEvent.Block event) {
+            DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+                    event.getBlockColors().register(blockColor, blockSupplier.get().get())
+            );
+        }
     }
 
 }

@@ -16,8 +16,14 @@ public interface Entity4D {
 
     void setW(double w);
 
+    default void addW(double w) {
+        this.setW(this.getW() + w);
+    }
+
     default void moveTowards3D(double dW) {
-        setW(getW() > 0 ? Math.max(getW() - dW, 0) : Math.min(getW() + dW, 0));
+        if (Math.abs(getW()) > 0.0000025D) {
+            setW(getW() > 0 ? Math.max(getW() - dW, 0) : Math.min(getW() + dW, 0));
+        }
     }
 
     default void moveAwayFrom3D(double dW) {

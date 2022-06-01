@@ -5,6 +5,7 @@
   "block.lostgrace.rotten_fresh": "Rotten Fresh",
   "block.lostgrace.profane_blood": "Fresh Blood",
   "block.lostgrace.sacred_blood": "Fresh Blood",
+  "block.lostgrace.chalk_spell": "Unknown Spell",
 
   "item.lostgrace.memory_of_grace": "Memory of Grace",
   "item.lostgrace.golden_seed": "Golden Seed",
@@ -12,6 +13,8 @@
   "item.lostgrace.profane_blood_bucket": "Fresh Blood Bucket",
   "item.lostgrace.sacred_blood_bucket": "Fresh Blood Bucket",
   "item.lostgrace.scab": "Blood Scab",
+  "item.lostgrace.chalk": "Lily-white Chalk",
+  "item.lostgrace.spell_book_introduction": "Bloodstained \"Introduction to Runology\"",
   "item.lostgrace.music_disc_dies_irae": "Scarlet Music Disc",
   "item.lostgrace.music_disc_dies_irae.desc": "Giuseppe Verdi - Dies Irae",
   "item.lostgrace.music_disc_kappa": "Melancholy Music Disc",

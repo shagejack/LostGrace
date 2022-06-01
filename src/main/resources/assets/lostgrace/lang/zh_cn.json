@@ -5,6 +5,7 @@
   "block.lostgrace.rotten_fresh": "腐败的血肉",
   "block.lostgrace.profane_blood": "鲜血",
   "block.lostgrace.sacred_blood": "鲜血",
+  "block.lostgrace.chalk_spell": "未知符文",
 
   "item.lostgrace.memory_of_grace": "赐福记忆",
   "item.lostgrace.golden_seed": "黄金种子",
@@ -12,6 +13,8 @@
   "item.lostgrace.profane_blood_bucket": "鲜血桶",
   "item.lostgrace.sacred_blood_bucket": "鲜血桶",
   "item.lostgrace.scab": "血痂",
+  "item.lostgrace.chalk": "纯白粉笔",
+  "item.lostgrace.spell_book_introduction": "染血的《符文学导论》",
   "item.lostgrace.music_disc_dies_irae": "猩红的音乐唱片",
   "item.lostgrace.music_disc_dies_irae.desc": "朱塞佩·威尔第 - 神怒之日",
   "item.lostgrace.music_disc_kappa": "忧郁的音乐唱片",

@@ -59,7 +59,7 @@ public class MoveControl4D extends MoveControl {
                 double speed = this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
                 double speed3D = getSpeed3D(speed);
                 double speedW = getSpeedW(speed);
-                double nW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
+                double dW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
 
                 Vector4 between = getWantedVector().subtract(getPosVector());
                 if (between.length() < (double)2.5000003E-7F) {
@@ -67,8 +67,8 @@ public class MoveControl4D extends MoveControl {
                     return;
                 }
 
-                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + nW).move(this.mob.position()))) {
-                    this.mob4D.setW(nW);
+                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + dW).move(this.mob.position()))) {
+                    this.mob4D.addW(dW);
                 }
 
                 float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;
@@ -105,7 +105,7 @@ public class MoveControl4D extends MoveControl {
                 double speed = this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
                 double speed3D = getSpeed3D(speed, target);
                 double speedW = getSpeedW(speed, target);
-                double nW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
+                double dW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
 
                 Vector4 between = target.subtract(getPosVector());
                 if (between.length() < (double)2.5000003E-7F) {
@@ -113,8 +113,8 @@ public class MoveControl4D extends MoveControl {
                     return;
                 }
 
-                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + nW).move(this.mob.position()))) {
-                    this.mob4D.setW(nW);
+                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + dW).move(this.mob.position()))) {
+                    this.mob4D.addW(dW);
                 }
 
                 float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;

@@ -3,13 +3,20 @@ package shagejack.lostgrace.contents.entity.blackKnifeAssassin;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
+import net.minecraft.world.entity.ai.navigation.FlyingPathNavigation;
+import net.minecraft.world.entity.ai.navigation.PathNavigation;
+import net.minecraft.world.entity.ai.navigation.WallClimberNavigation;
 import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -24,12 +31,14 @@ import java.util.EnumSet;
 import java.util.Random;
 
 public class BlackKnifeAssassin extends Monster implements Entity4D {
+    private static final EntityDataAccessor<Byte> DATA_FLAGS_ID = SynchedEntityData.defineId(BlackKnifeAssassin.class, EntityDataSerializers.BYTE);
 
     public static final double DEFAULT_RADIUS = 5.0D;
 
     private double posW;
     private double radius;
     private Color color;
+    private int summonedTicks;
 
     public BlackKnifeAssassin(EntityType<? extends BlackKnifeAssassin> entityType, Level level) {
         super(entityType, level);
@@ -38,13 +47,24 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
         this.xpReward = 50;
         this.posW = 0.0D;
         this.radius = DEFAULT_RADIUS;
-        this.color = Color.GRAY;
+        this.color = Color.BLACK;
+        this.summonedTicks = 0;
     }
 
     public BlackKnifeAssassin(Level level, double posW, double radius) {
         this((EntityType<? extends BlackKnifeAssassin>) AllEntityTypes.blackKnifeAssassin.get(), level);
         this.posW = posW;
         this.radius = radius;
+    }
+
+    public BlackKnifeAssassin(Level level, double posW, double radius, boolean asSummoned) {
+        this((EntityType<? extends BlackKnifeAssassin>) AllEntityTypes.blackKnifeAssassin.get(), level);
+        this.posW = posW;
+        this.radius = radius;
+
+        if (asSummoned) {
+            this.summonedTicks = 100;
+        }
     }
 
     public void move(MoverType pType, Vec3 pPos) {
@@ -63,6 +83,14 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
         super.tick();
         this.noPhysics = false;
         this.setNoGravity(true);
+
+        if (summonedTicks > 0) {
+            if (this.getLevel().noCollision(this.getBoundingBox(this.getW() + 0.05).move(this.position()))) {
+                this.moveTowards3D(0.05);
+            }
+            summonedTicks--;
+        }
+
         this.getLevel().getEntitiesOfClass(LivingEntity.class, new AABB(this.blockPosition()).inflate(getRadiusIn3D())).stream().filter(entity -> Vector3.of(entity).distance(Vector3.atCenterOf(this.blockPosition())) <= getRadiusIn3D()).forEach(LivingEntity::kill);
     }
 
@@ -74,13 +102,15 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
     }
 
     public static AttributeSupplier.Builder createAttributes() {
-        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 500.0D).add(Attributes.ATTACK_DAMAGE, 20.0D);
+        return Monster.createMonsterAttributes().add(Attributes.MAX_HEALTH, 500.0D).add(Attributes.ATTACK_DAMAGE, 20.0D).add(Attributes.MOVEMENT_SPEED, 3.0D);
     }
 
     protected void defineSynchedData() {
         super.defineSynchedData();
+        this.entityData.define(DATA_FLAGS_ID, (byte)0);
     }
 
+    @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
         this.setW(tag.getDouble("PosW"));
@@ -90,13 +120,16 @@ public class BlackKnifeAssassin extends Monster implements Entity4D {
             this.setRadius(DEFAULT_RADIUS);
         }
         this.setColor(new Color(tag.getInt("Color")));
+        this.summonedTicks = tag.getInt("SummonedTicks");
     }
 
+    @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         tag.putDouble("PosW", getW());
         tag.putDouble("Radius", getRadius());
         tag.putInt("Color", getColor().getRGB());
+        tag.putInt("SummonedTicks", this.summonedTicks);
     }
 
     @Override

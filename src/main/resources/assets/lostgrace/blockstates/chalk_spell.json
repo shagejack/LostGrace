@@ -1,0 +1,27 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_0"
+      },
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_1"
+      },
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_2"
+      },
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_3"
+      },
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_4"
+      },
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_5"
+      },
+      {
+        "model": "lostgrace:block/chalk_spell/chalk_spell_6"
+      }
+    ]
+  }
+}

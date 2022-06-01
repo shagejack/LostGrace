@@ -1,11 +1,8 @@
 package shagejack.lostgrace.registries.block;
 
-import net.minecraft.tags.FluidTags;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.contents.block.blood.BloodLiquidBlock;
@@ -13,14 +10,10 @@ import shagejack.lostgrace.contents.block.bloodAltar.BloodAltarBlock;
 import shagejack.lostgrace.contents.block.fresh.FreshBlock;
 import shagejack.lostgrace.contents.block.fresh.RottenFreshBlock;
 import shagejack.lostgrace.contents.block.grace.GraceBlock;
+import shagejack.lostgrace.contents.block.spell.unkown.ChalkSpellBlock;
 import shagejack.lostgrace.registries.fluid.AllFluids;
 import shagejack.lostgrace.registries.item.ItemBuilder;
 import shagejack.lostgrace.registries.record.ItemBlock;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Supplier;
 
 public class AllBlocks {
 
@@ -63,4 +56,12 @@ public class AllBlocks {
             .properties(properties -> properties.noCollission().strength(100.0F).noDrops())
             .buildBlock(properties -> new BloodLiquidBlock(AllFluids.profaneBlood.still(), properties))
             .noItem();
+
+    public static final ItemBlock chalkSpell = new BlockBuilder()
+            .name("chalk_spell")
+            .material(Material.DECORATION)
+            .properties(properties -> properties.sound(SoundType.STONE).noCollission().noOcclusion().noDrops())
+            .renderLayer(() -> RenderType::cutoutMipped)
+            .buildBlock(ChalkSpellBlock::new)
+            .buildItem(ItemBuilder::noTab);
 }

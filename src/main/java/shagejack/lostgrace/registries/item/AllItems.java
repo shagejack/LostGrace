@@ -9,10 +9,12 @@ import net.minecraft.world.item.Rarity;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.contents.item.blackKnife.BlackKnifeItem;
 import shagejack.lostgrace.contents.item.blood.ScabItem;
+import shagejack.lostgrace.contents.item.chalk.ChalkItem;
 import shagejack.lostgrace.contents.item.goldenSeed.GoldenSeedItem;
 import shagejack.lostgrace.contents.item.memoryOfGrace.MemoryOfGraceItem;
 import shagejack.lostgrace.contents.item.record.DiesIraeRecordItem;
 import shagejack.lostgrace.contents.item.record.KappaRecordItem;
+import shagejack.lostgrace.contents.item.spellBook.SpellBookItem;
 import shagejack.lostgrace.registries.AllTabs;
 import shagejack.lostgrace.registries.fluid.AllFluids;
 
@@ -57,6 +59,16 @@ public class AllItems {
             )
             .name("scab")
             .build(ScabItem::new);
+
+    public static final RegistryObject<Item> chalk = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1).durability(128))
+            .name("chalk")
+            .build(ChalkItem::new);
+
+    public static final RegistryObject<Item> spellBookIntroduction = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1))
+            .name("spell_book_introduction")
+            .build(SpellBookItem::new);
 
     public static final RegistryObject<Item> musicDiscDiesIrae = new ItemBuilder()
             .properties(properties -> properties.stacksTo(1).tab(AllTabs.tabMain).rarity(Rarity.EPIC))
