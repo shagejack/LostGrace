@@ -49,13 +49,13 @@ public class EntityBuilder<T extends Entity> {
     }
 
     // only for living entities
-    public EntityBuilder<T> attribute(AttributeSupplier attributeSupplier) {
-        attributesTasks.add(new EntityBuilder.AttributesBinder(() -> registryObject, attributeSupplier));
+    public EntityBuilder<T> attribute(Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier) {
+        attributesTasks.add(new EntityBuilder.AttributesBinder(() -> registryObject, attributeSupplierBuilderSupplier));
         return this;
     }
 
-    public EntityBuilder<T> renderer(EntityRendererProvider<? extends T> renderer) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> rendererTasks.add(new EntityBuilder.RenderBinder(() -> registryObject, renderer)));
+    public EntityBuilder<T> renderer(Supplier<EntityRendererProvider<? extends T>> rendererProviderSupplier) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> rendererTasks.add(new EntityBuilder.RenderBinder(() -> registryObject, rendererProviderSupplier)));
         return this;
     }
 
@@ -72,16 +72,16 @@ public class EntityBuilder<T extends Entity> {
         rendererTasks.forEach(task -> task.register(event));
     }
 
-    private record AttributesBinder<T extends LivingEntity>(Supplier<RegistryObject<EntityType<? extends T>>> entityTypeSupplier, AttributeSupplier attributeSupplier) {
+    private record AttributesBinder<T extends LivingEntity>(Supplier<RegistryObject<EntityType<? extends T>>> entityTypeSupplier, Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier) {
         private void register(final EntityAttributeCreationEvent event) {
-            event.put(entityTypeSupplier.get().get(), attributeSupplier);
+            event.put(entityTypeSupplier.get().get(), attributeSupplierBuilderSupplier.get().build());
         }
     }
 
-    private record RenderBinder<T extends Entity>(Supplier<RegistryObject<EntityType<? extends T>>> entityTypeSupplier, EntityRendererProvider<T> render) {
+    private record RenderBinder<T extends Entity>(Supplier<RegistryObject<EntityType<? extends T>>> entityTypeSupplier, Supplier<EntityRendererProvider<T>> rendererProviderSupplier) {
         private void register(final EntityRenderersEvent.RegisterRenderers event) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                    event.registerEntityRenderer(entityTypeSupplier.get().get(), render)
+                    event.registerEntityRenderer(entityTypeSupplier.get().get(), rendererProviderSupplier.get())
             );
         }
     }

@@ -13,13 +13,13 @@ import shagejack.lostgrace.foundation.render.DrawUtils;
 import java.awt.*;
 
 @OnlyIn(Dist.CLIENT)
-public class BlackKnifeAssassinRenderer<T extends BlackKnifeAssassin> extends EntityRenderer<BlackKnifeAssassin> {
+public class BlackKnifeAssassinRenderer extends EntityRenderer<BlackKnifeAssassin> {
 
     public BlackKnifeAssassinRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 
-    public void render(T entity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
+    public void render(BlackKnifeAssassin entity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         double w = entity.getW();
         double radius3D = entity.getRadiusIn3D();
         Color color = entity.getColor();

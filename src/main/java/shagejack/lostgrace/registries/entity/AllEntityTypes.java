@@ -13,8 +13,8 @@ public class AllEntityTypes {
     public static final RegistryObject<EntityType<? extends Entity>> blackKnifeAssassin = EntityBuilder.<BlackKnifeAssassin>of(BlackKnifeAssassin::new, MobCategory.MONSTER)
             .name("black_knife_assassin")
             .builder(builder -> builder.fireImmune().immuneTo(Blocks.WITHER_ROSE))
-            .attribute(BlackKnifeAssassin.createAttributes())
-            .renderer(BlackKnifeAssassinRenderer::new)
+            .attribute(BlackKnifeAssassin::createAttributes)
+            .renderer(() -> BlackKnifeAssassinRenderer::new)
             .build();
 
 }
