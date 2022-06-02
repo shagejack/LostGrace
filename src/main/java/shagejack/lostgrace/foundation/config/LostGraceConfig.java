@@ -8,6 +8,8 @@ public final class LostGraceConfig {
     public static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
     public static final ForgeConfigSpec SPEC;
 
+    public static final ForgeConfigSpec.ConfigValue<Boolean> ENABLE_JEI_PLUGIN;
+
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_FORCE_FIRST_PERSON_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_MAX_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
@@ -20,6 +22,8 @@ public final class LostGraceConfig {
 
     static {
         BUILDER.push("Lost Grace Config");
+
+        ENABLE_JEI_PLUGIN = BUILDER.define("Enable JEI Plugin", true);
 
         GRACE_FORCE_FIRST_PERSON_DISTANCE = BUILDER.comment("The player-grace distance mentioned below is which between the player foot and the position 1.1 blocks above the grace center.",
                 "Player within this distance of graces will be forcibly changed to first person. This distance is also used to determine if a grace should be rendered in fog. Default: 5.5").define("Grace Force First Person Distance", 5.5D);

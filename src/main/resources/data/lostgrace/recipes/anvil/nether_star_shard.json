@@ -1,0 +1,11 @@
+{
+  "type": "lostgrace:anvil",
+  "ingredient": {
+    "item": "minecraft:nether_star"
+  },
+  "result": {
+    "item": "lostgrace:nether_star_shard",
+    "count": 3
+  },
+  "extra_count": 2
+}

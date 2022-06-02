@@ -55,40 +55,35 @@ public class MoveControl4D extends MoveControl {
     public void tick() {
         if (this.operation4D == Operation.MOVE_TO_3D) {
             this.operation4D = Operation.WAIT;
+            double speed = this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
+
             if (canMove()) {
-                double speed = this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
                 double speed3D = getSpeed3D(speed);
                 double speedW = getSpeedW(speed);
-                double dW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
 
                 Vector4 between = getWantedVector().subtract(getPosVector());
-                if (between.length() < (double)2.5000003E-7F) {
-                    this.mob.setZza(0.0F);
+                if (between.length() < (double)2.5000003E-7F)
                     return;
-                }
 
-                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + dW).move(this.mob.position()))) {
-                    this.mob4D.addW(dW);
-                }
+                this.mob4D.moveTowards3D(speedW * 0.05);
 
                 float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;
                 this.mob.setYRot(this.rotlerp(this.mob.getYRot(), rot, 90.0F));
-                this.mob.setSpeed((float) speed3D);
+
+                stepTowards3DPos(getWantedVector().get3DPart(), speed3D);
 
             } else {
-                this.mob4D.moveAwayFrom3D(this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED) * 0.05);
+                this.mob4D.moveAwayFrom3D(speed * 0.025);
             }
         } else if (this.operation4D == Operation.MOVE_TO_4D) {
             this.operation4D = Operation.WAIT;
 
             Optional<Vec3> intersectionPoint3D = getPointOfIntersection();
-            if (intersectionPoint3D.isEmpty() || this.mob.getLevel().noCollision(this.mob4D.getLargestBoundingBox().move(intersectionPoint3D.get()))) {
+            if (intersectionPoint3D.isEmpty() || this.mob.getLevel().noCollision(this.mob4D.getLargestBoundingBox().move(getPosVector().get3DPart().opposite().toVec3()).move(intersectionPoint3D.get()))) {
                 // move straightly towards destination
                 Vector4 between = getWantedVector().subtract(getPosVector());
-                if (between.length() < 2.5E-7D) {
-                    this.mob.setZza(0.0F);
+                if (between.length() < 2.5E-7D)
                     return;
-                }
 
                 float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;
                 this.mob.setYRot(this.rotlerp(this.mob.getYRot(), rot, 90.0F));
@@ -96,7 +91,8 @@ public class MoveControl4D extends MoveControl {
                 double speed = this.speedModifier * this.mob.getAttributeValue(Attributes.MOVEMENT_SPEED);
                 double speed3D = getSpeed3D(speed);
                 double speedW = between.w() > 0 ? getSpeedW(speed) : -getSpeedW(speed);
-                this.mob.setSpeed((float) speed3D);
+
+                stepTowards3DPos(getWantedVector().get3DPart(), speed3D);
                 this.mob4D.setW(this.mob4D.getW() + speedW * 0.05);
             } else {
                 // finding the nearest empty spot in 3d space and move towards it
@@ -108,42 +104,49 @@ public class MoveControl4D extends MoveControl {
                 double dW = this.mob4D.getW() > 0 ? speedW * 0.05 : speedW;
 
                 Vector4 between = target.subtract(getPosVector());
-                if (between.length() < (double)2.5000003E-7F) {
-                    this.mob.setZza(0.0F);
+                if (between.length() < (double)2.5000003E-7F)
                     return;
-                }
 
-                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + dW).move(this.mob.position()))) {
+                if (this.mob.getLevel().noCollision(this.mob4D.getBoundingBox(this.mob4D.getW() + dW))) {
                     this.mob4D.addW(dW);
                 }
 
                 float rot = (float)(Mth.atan2(between.z(), between.x()) * (double)(180F / (float)Math.PI)) - 90.0F;
                 this.mob.setYRot(this.rotlerp(this.mob.getYRot(), rot, 90.0F));
-                this.mob.setSpeed((float) speed3D);
+
+                stepTowards3DPos(target.get3DPart(), speed3D);
             }
-        } else {
-            this.mob.setZza(0);
         }
 
     }
 
-    protected boolean canMove() {
-        return canMove(getWantedVector());
+    protected void stepTowards3DPos(Vector3 pos, double speed) {
+        Vector3 currentPos = getPosVector().get3DPart();
+        this.mob.setPos(currentPos.add(pos.subtract(currentPos).normalize().multiply(speed).divide(20)).toVec3());
     }
 
-    protected boolean canMove(Vector4 vec) {
-        Vector4 stepVector = vec.subtract(getPosVector()).normalize().divide(5);
-        AABB bounding = this.mob4D.getBoundingBox(this.mob4D.getW() + stepVector.w());
-        bounding = bounding.move(this.mob.position());
+    protected Vector4 getStepVector() {
+        return getWantedVector().subtract(getPosVector()).normalize().divide(5);
+    }
 
-        if (bounding.equals(Entity4D.EMPTY_BOUNDING))
+    protected boolean canMove() {
+        return canMove(getStepVector());
+    }
+
+    protected boolean canMove(Vector4 stepVector) {
+        AABB bounding = this.mob4D.getBoundingBox(this.mob4D.getW() + stepVector.w());
+
+        if (bounding.getSize() < 0.00025D)
             return true;
 
-        return !this.mob.getLevel().noCollision(bounding.move(stepVector.get3DPart().toVec3()));
+        return this.mob.getLevel().noCollision(bounding.move(stepVector.get3DPart().toVec3()));
     }
 
     protected Vector4 findEmptySpace() {
-        Vector3 pos = getPosVector().get3DPart();
+        return findEmptySpace(getPosVector().get3DPart());
+    }
+
+    public Vector4 findEmptySpace(Vector3 pos) {
         Vector3 targetPos = pos;
 
         double radius = 2;
@@ -153,7 +156,7 @@ public class MoveControl4D extends MoveControl {
                 for (double phi = 0; phi <= 2 * Math.PI; phi += Math.PI / 9) {
                     targetPos = pos.add(radius * Math.cos(phi), radius * Math.cos(theta), radius * Math.sin(theta) * Math.sin(phi));
 
-                    if (this.mob.getLevel().noCollision(this.mob4D.getLargestBoundingBox().move(targetPos.toVec3())))
+                    if (this.mob.getLevel().noCollision(this.mob4D.getLargestBoundingBox().move(targetPos.subtract(pos).toVec3())))
                         break;
                 }
             }
@@ -195,7 +198,7 @@ public class MoveControl4D extends MoveControl {
     protected double getSpeedW(double speed, Vector4 target) {
         Vector4 between = target.subtract(getPosVector());
 
-        return speed * between.w() / between.length();
+        return speed * Math.abs(between.w()) / between.length();
     }
 
     protected double getSpeed3D(double speed, Vector4 target) {

@@ -13,6 +13,8 @@
   "item.lostgrace.profane_blood_bucket": "鲜血桶",
   "item.lostgrace.sacred_blood_bucket": "鲜血桶",
   "item.lostgrace.scab": "血痂",
+  "item.lostgrace.nether_star_shard": "下界之星碎片",
+  "item.lostgrace.sweet_dream_ashes": "酣梦余烬",
   "item.lostgrace.chalk": "纯白粉笔",
   "item.lostgrace.spell_book_introduction": "染血的《符文学导论》",
   "item.lostgrace.music_disc_dies_irae": "猩红的音乐唱片",
@@ -23,6 +25,8 @@
   "fluid.lostgrace.profane_blood": "鲜血",
   "fluid.lostgrace.sacred_blood": "鲜血",
 
+  "entity.lostgrace.black_knife_assassin": "\"黑刀刺客\"",
+
   "itemGroup.lostgrace": "失去的赐福",
 
   "key.categories.lostgrace": "失去的赐福",
@@ -30,7 +34,11 @@
 
   "lostgrace.info.destined_death": "命定之死",
   "lostgrace.info.bloodstained": "染血",
-  "lostgrace.info.damage": "伤害"
+  "lostgrace.info.damage": "伤害",
 
+  "lostgrace.jei.category.anvil": "铁砧粉碎",
+
+  "lostgrace.jei.info.base_output": "基础产出（实际产出平均分布）",
+  "lostgrace.jei.info.extra_output": "最大额外产出（实际产出平均分布）"
 
 }

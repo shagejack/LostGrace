@@ -60,6 +60,16 @@ public class AllItems {
             .name("scab")
             .build(ScabItem::new);
 
+    public static final RegistryObject<Item> sweetDreamAshes = new ItemBuilder()
+            .properties(properties -> properties)
+            .name("sweet_dream_ashes")
+            .build();
+
+    public static final RegistryObject<Item> netherStarShard = new ItemBuilder()
+            .properties(properties -> properties)
+            .name("nether_star_shard")
+            .build();
+
     public static final RegistryObject<Item> chalk = new ItemBuilder()
             .properties(properties -> properties.stacksTo(1).durability(128))
             .name("chalk")

@@ -9,4 +9,6 @@ public class AllTextures {
     public static final ResourceLocation FRESH = LostGrace.asResource("block/fresh/fresh");
     public static final ResourceLocation IMPACT_CROSS = LostGrace.asResource("block/impact/cross");
     public static final ResourceLocation IMPACT_RING = LostGrace.asResource("block/impact/ring");
+
+    public static final ResourceLocation ANVIL_RECIPE_CATEGORY_GUI_BACKGROUND = LostGrace.asResource("textures/gui/jei/anvil/background.png");
 }

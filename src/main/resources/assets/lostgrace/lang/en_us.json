@@ -13,6 +13,8 @@
   "item.lostgrace.profane_blood_bucket": "Fresh Blood Bucket",
   "item.lostgrace.sacred_blood_bucket": "Fresh Blood Bucket",
   "item.lostgrace.scab": "Blood Scab",
+  "item.lostgrace.nether_star_shard": "Nether Star Shard",
+  "item.lostgrace.sweet_dream_ashes": "Ashes of Sweet Dreams",
   "item.lostgrace.chalk": "Lily-white Chalk",
   "item.lostgrace.spell_book_introduction": "Bloodstained \"Introduction to Runology\"",
   "item.lostgrace.music_disc_dies_irae": "Scarlet Music Disc",
@@ -23,6 +25,8 @@
   "fluid.lostgrace.profane_blood": "Fresh Blood",
   "fluid.lostgrace.sacred_blood": "Fresh Blood",
 
+  "entity.lostgrace.black_knife_assassin": "\"Black Knife Assassin\"",
+
   "itemGroup.lostgrace": "Lost Grace",
 
   "key.categories.lostgrace": "Lost Grace",
@@ -30,5 +34,11 @@
 
   "lostgrace.info.destined_death": "Destined Death",
   "lostgrace.info.bloodstained": "Bloodstained",
-  "lostgrace.info.damage": "Damage"
+  "lostgrace.info.damage": "Damage",
+
+  "lostgrace.jei.category.anvil": "Anvil Smash",
+
+  "lostgrace.jei.info.base_output": "Base Output (Actual output is evenly distributed)",
+  "lostgrace.jei.info.extra_output": "Max Extra Output (Actual output is evenly distributed)"
+
 }

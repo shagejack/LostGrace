@@ -20,6 +20,14 @@ public interface Entity4D {
         this.setW(this.getW() + w);
     }
 
+    default double getWCloserTo3D(double dW) {
+        return getW() > 0 ? Math.max(getW() - dW, 0) : Math.min(getW() + dW, 0);
+    }
+
+    default double getWFartherTo3D(double dW) {
+        return getW() > 0 ? getW() + dW : getW() - dW;
+    }
+
     default void moveTowards3D(double dW) {
         if (Math.abs(getW()) > 0.0000025D) {
             setW(getW() > 0 ? Math.max(getW() - dW, 0) : Math.min(getW() + dW, 0));

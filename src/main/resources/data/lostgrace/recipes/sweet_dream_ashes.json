@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "lostgrace:nether_star_shard"
+  },
+  "result": "lostgrace:sweet_dream_ashes",
+  "experience": 0.0,
+  "cookingtime": 1200
+}
