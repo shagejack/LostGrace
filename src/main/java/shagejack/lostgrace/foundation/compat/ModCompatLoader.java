@@ -10,7 +10,6 @@ import java.util.Set;
 public class ModCompatLoader {
 
     protected final List<IModCompat> compat = Lists.newLinkedList();
-    protected final Set<String> crashedCompat = Sets.newHashSet();
 
     public void addModCompat(IModCompat modCompat) {
         if(shouldLoadCompat(modCompat)) {
@@ -19,15 +18,12 @@ public class ModCompatLoader {
     }
 
     public boolean shouldLoadCompat(IModCompat modCompat) {
-        return isModLoaded(modCompat) && isNotCrashed(modCompat.getId());
+        return isModLoaded(modCompat);
     }
 
     private boolean isModLoaded(IModCompat modCompat) {
         return ModList.get().isLoaded(modCompat.getId());
     }
 
-    private boolean isNotCrashed(String id) {
-        return !crashedCompat.contains(id);
-    }
 
 }
