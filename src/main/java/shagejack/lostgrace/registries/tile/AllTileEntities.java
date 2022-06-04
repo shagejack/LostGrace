@@ -4,6 +4,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.contents.block.bloodAltar.BloodAltarRenderer;
 import shagejack.lostgrace.contents.block.bloodAltar.BloodAltarTileEntity;
+import shagejack.lostgrace.contents.block.dreamPool.DreamPoolRenderer;
+import shagejack.lostgrace.contents.block.dreamPool.DreamPoolTileEntity;
 import shagejack.lostgrace.contents.block.grace.GraceRenderer;
 import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
 import shagejack.lostgrace.registries.block.AllBlocks;
@@ -24,6 +26,14 @@ public class AllTileEntities {
             .tileEntity(BloodAltarTileEntity::new)
             .validBlocks(AllBlocks.bloodAltar)
             .renderer(() -> BloodAltarRenderer::new)
+            .build();
+
+    public static final RegistryObject<BlockEntityType<?>> dreamPool
+            = new TileEntityBuilder<DreamPoolTileEntity>()
+            .name("dream_pool")
+            .tileEntity(DreamPoolTileEntity::new)
+            .validBlocks(AllBlocks.dreamPool)
+            .renderer(() -> DreamPoolRenderer::new)
             .build();
 
 }

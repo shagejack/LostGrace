@@ -39,7 +39,7 @@ public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEnt
     }
 
     protected void renderBlood(BloodAltarTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
-        if (te.bloodTank.isEmpty() && te.bloodTank.getFluidAmount() <= 0)
+        if (te.bloodTank.isEmpty())
             return;
 
         int amount = te.bloodTank.getFluidAmount();

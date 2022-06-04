@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "lostgrace:item/trina_crystal_ball/trina_crystal_ball"
+  }
+}

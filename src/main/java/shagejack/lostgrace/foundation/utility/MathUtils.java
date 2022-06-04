@@ -10,6 +10,14 @@ public class MathUtils {
         throw new IllegalStateException(this.getClass().toString() + "should not be instantiated as it's a utility class.");
     }
 
+    public static double lerp(double delta) {
+        return 2 * delta - 1;
+    }
+
+    public static double lerp(double delta, double from, double to) {
+        return from + delta * (to - from);
+    }
+
     public static BlockPos getBetweenClosedBlockPos(Vector3 toParse, Vector3 another) {
         return new BlockPos(betweenClosedInt(toParse.x(), another.x()), betweenClosedInt(toParse.y(), another.y()), betweenClosedInt(toParse.z(), another.z()));
     }

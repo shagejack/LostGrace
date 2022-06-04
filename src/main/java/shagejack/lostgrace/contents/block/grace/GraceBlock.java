@@ -8,6 +8,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.protocol.game.ClientboundSetTitleTextPacket;
 import net.minecraft.network.protocol.game.ClientboundSetTitlesAnimationPacket;
 import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -37,6 +38,7 @@ import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
 import shagejack.lostgrace.foundation.utility.DropUtils;
+import shagejack.lostgrace.foundation.utility.MathUtils;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
@@ -102,6 +104,11 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
             DiscoverGracePacket discoverGracePacket = new DiscoverGracePacket();
             AllPackets.sendToPlayer(serverPlayer, discoverGracePacket);
             MutableComponent component = new TextComponent("LOST GRACE DISCOVERED").withStyle(ChatFormatting.BOLD).withStyle(ChatFormatting.YELLOW);
+
+            if (level instanceof ServerLevel serverLevel) {
+                serverLevel.sendParticles(serverPlayer, ParticleTypes.FLAME, true, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 500, 0.0D, 0.0D, 0.0D, 0.3D);
+            }
+
             serverPlayer.connection.send(new ClientboundSetTitleTextPacket(component));
             serverPlayer.connection.send(new ClientboundSetTitlesAnimationPacket(10, 40, 10));
             serverPlayer.connection.send(new ClientboundSoundPacket(SoundEvents.END_PORTAL_SPAWN, SoundSource.BLOCKS, pos.getX(), pos.getY(), pos.getZ(), 1.0f, 1.0f));

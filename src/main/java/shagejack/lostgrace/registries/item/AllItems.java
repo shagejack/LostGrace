@@ -15,6 +15,9 @@ import shagejack.lostgrace.contents.item.memoryOfGrace.MemoryOfGraceItem;
 import shagejack.lostgrace.contents.item.record.DiesIraeRecordItem;
 import shagejack.lostgrace.contents.item.record.KappaRecordItem;
 import shagejack.lostgrace.contents.item.spellBook.SpellBookItem;
+import shagejack.lostgrace.contents.item.trinaCrystalBall.TrinaCrystalBallFullItem;
+import shagejack.lostgrace.contents.item.trinaCrystalBall.TrinaCrystalBallItem;
+import shagejack.lostgrace.registries.AllRarities;
 import shagejack.lostgrace.registries.AllTabs;
 import shagejack.lostgrace.registries.fluid.AllFluids;
 
@@ -33,7 +36,7 @@ public class AllItems {
             .build(GoldenSeedItem::new);
 
     public static final RegistryObject<Item> blackKnife = new ItemBuilder()
-            .properties(properties -> properties.stacksTo(1).fireResistant().rarity(Rarity.EPIC).setNoRepair())
+            .properties(properties -> properties.stacksTo(1).fireResistant().rarity(AllRarities.TRANSCENDENT).setNoRepair())
             .name("black_knife")
             .build(BlackKnifeItem::new);
 
@@ -48,6 +51,11 @@ public class AllItems {
             .name("sacred_blood_bucket")
             .build(properties -> new BucketItem(AllFluids.sacredBlood.asFluidSupplier(), properties));
 
+    public static final RegistryObject<Item> dreamBucket = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1).craftRemainder(BUCKET))
+            .name("dream_bucket")
+            .build(properties -> new BucketItem(AllFluids.dream.asFluidSupplier(), properties));
+
     public static final RegistryObject<Item> scab = new ItemBuilder()
             .properties(properties -> properties.food(new FoodProperties.Builder().alwaysEat().fast().nutrition(1).saturationMod(0.5f)
                     .effect(() -> new MobEffectInstance(MobEffects.CONFUSION, 200, 0), 0.1f)
@@ -60,14 +68,44 @@ public class AllItems {
             .name("scab")
             .build(ScabItem::new);
 
+    public static final RegistryObject<Item> brokenDream = new ItemBuilder()
+            .properties(properties -> properties)
+            .name("broken_dream")
+            .build();
+
+    public static final RegistryObject<Item> dreamShard = new ItemBuilder()
+            .properties(properties -> properties)
+            .name("dream_shard")
+            .build();
+
     public static final RegistryObject<Item> sweetDreamAshes = new ItemBuilder()
             .properties(properties -> properties)
             .name("sweet_dream_ashes")
             .build();
 
+    public static final RegistryObject<Item> dreambrew = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1))
+            .name("dreambrew")
+            .build();
+
     public static final RegistryObject<Item> netherStarShard = new ItemBuilder()
             .properties(properties -> properties)
             .name("nether_star_shard")
+            .build();
+
+    public static final RegistryObject<Item> trinaCrystalBall = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1))
+            .name("trina_crystal_ball")
+            .build(TrinaCrystalBallItem::new);
+
+    public static final RegistryObject<Item> trinaCrystalBallFull = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1))
+            .name("trina_crystal_ball_full")
+            .build(TrinaCrystalBallFullItem::new);
+
+    public static final RegistryObject<Item> crystalBall = new ItemBuilder()
+            .properties(properties -> properties.stacksTo(1))
+            .name("crystal_ball")
             .build();
 
     public static final RegistryObject<Item> chalk = new ItemBuilder()

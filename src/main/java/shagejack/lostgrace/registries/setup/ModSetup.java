@@ -3,6 +3,7 @@ package shagejack.lostgrace.registries.setup;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
+import shagejack.lostgrace.contents.effect.sleep.SleepEffectEventHandler;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.PlayerGraceEventHandler;
 import shagejack.lostgrace.contents.item.blackKnife.BlackKnifeEventHandler;
@@ -13,17 +14,19 @@ import shagejack.lostgrace.foundation.tile.TileEntityLateInitializationHandler;
 import shagejack.lostgrace.registries.AllCommands;
 import shagejack.lostgrace.registries.item.ItemPropertyOverridesRegistry;
 import shagejack.lostgrace.registries.recipe.AllRecipeTypes;
+import shagejack.lostgrace.registries.world.WorldGenEventHandler;
 
 public class ModSetup {
 
     public static void setup(IEventBus modEventBus, IEventBus forgeEventBus) {
         forgeEventBus.addGenericListener(Entity.class, PlayerGraceEventHandler::attachCapability);
-
-        forgeEventBus.addListener(AllCommands::registerCommand);
-
         forgeEventBus.addListener(PlayerGraceEventHandler::onPlayerCloned);
         forgeEventBus.addListener(PlayerGraceEventHandler::onRegisterCapabilities);
         forgeEventBus.addListener(PlayerGraceEventHandler::onPlayerRespawn);
+
+        forgeEventBus.addListener(WorldGenEventHandler::onBiomeLoad);
+
+        forgeEventBus.addListener(AllCommands::registerCommand);
 
         forgeEventBus.addListener(GlobalGraceSet::tickGrace);
         forgeEventBus.addListener(GlobalGraceSet::onDataLoad);
@@ -35,7 +38,9 @@ public class ModSetup {
         forgeEventBus.addListener(AnvilLifeCycle::onAnvilFall);
         forgeEventBus.addListener(AnvilLifeCycle::serverTick);
 
-        modEventBus.addGenericListener(RecipeSerializer.class, AllRecipeTypes::register);
+        forgeEventBus.addListener(SleepEffectEventHandler::checkBedExists);
+        forgeEventBus.addListener(SleepEffectEventHandler::hurt);
+
         modEventBus.addListener(ItemPropertyOverridesRegistry::propertyOverrideRegistry);
 
         TickManager.register(TileEntityLateInitializationHandler.getInstance());

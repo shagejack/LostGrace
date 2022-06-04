@@ -272,6 +272,11 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
         return super.distanceToSqr(pEntity) + getW() * getW();
     }
 
+    @Override
+    public float distanceTo(Entity pEntity) {
+        return (float) Math.sqrt(distanceToSqr(pEntity));
+    }
+
     public void startSeenByPlayer(ServerPlayer pPlayer) {
         super.startSeenByPlayer(pPlayer);
         this.bossEvent.addPlayer(pPlayer);

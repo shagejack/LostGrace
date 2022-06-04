@@ -12,6 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import shagejack.lostgrace.foundation.fluid.ITankTileEntity;
@@ -41,6 +42,10 @@ public class FluidRenderer {
         return stack.getFluid().getAttributes().getStillTexture();
     }
 
+    public static ResourceLocation getFluidTexture(Fluid fluid) {
+        return fluid.getAttributes().getStillTexture();
+    }
+
     public static int getFluidColor(FluidStack stack) {
         final var fluid = stack.getFluid();
         final var attributes = fluid.getAttributes();
@@ -67,6 +72,14 @@ public class FluidRenderer {
                 return stackColor;
             }
         }
+    }
+
+    public static TextureAtlasSprite getFluidTextureSprite(FluidStack stack) {
+        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(getFluidTexture(stack));
+    }
+
+    public static TextureAtlasSprite getFluidTextureSprite(Fluid fluid) {
+        return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(getFluidTexture(fluid));
     }
 
     public static void renderFluidStack(FluidStack stack, BlockEntity te, PoseStack ms, MultiBufferSource buffer, float xMin, float xMax, float yMin, float yMax, float zMin, float zMax) {

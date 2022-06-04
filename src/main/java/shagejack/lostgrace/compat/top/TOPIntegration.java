@@ -8,7 +8,7 @@ public class TOPIntegration implements Function<ITheOneProbe, Void> {
 
     @Override
     public Void apply(ITheOneProbe probe) {
-        probe.registerProvider(new TOPData());
+        probe.registerProvider(new TOPInfoProvider());
         return null;
     }
 }

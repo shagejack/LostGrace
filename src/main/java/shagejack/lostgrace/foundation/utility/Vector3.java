@@ -200,6 +200,10 @@ public record Vector3(double x, double y, double z) {
         return new Vector3(y * vec.z - z * vec.y, z * vec.x - x * vec.z, x * vec.y - y * vec.x);
     }
 
+    public Vector3 lerp(Vector3 toVec, double t) {
+        return this.add(toVec.subtract(this).multiply(t));
+    }
+
     public Vector3 opposite() {
         return new Vector3(-x, -y, -z);
     }

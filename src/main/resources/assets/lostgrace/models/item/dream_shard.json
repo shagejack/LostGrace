@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "lostgrace:item/dream_shard/dream_shard"
+  }
+}

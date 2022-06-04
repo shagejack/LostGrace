@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " L ",
+    "L#L",
+    " L "
+  ],
+  "key": {
+    "#": {
+      "item": "lostgrace:crystal_ball"
+    },
+    "L": {
+      "item": "lostgrace:trina_lily"
+    }
+  },
+  "result": {
+    "item": "lostgrace:trina_crystal_ball"
+  }
+}

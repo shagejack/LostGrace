@@ -35,7 +35,7 @@ import shagejack.lostgrace.registries.tile.AllTileEntities;
 import java.util.*;
 import java.util.List;
 
-public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEntity, FluidUpdatePacket.IFluidPacketReceiver{
+public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEntity, FluidUpdatePacket.IFluidPacketReceiver {
 
     public static final int CAPACITY = 1000;
     public static final int TOTAL_TICKS = 3600;

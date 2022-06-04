@@ -18,12 +18,14 @@ import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 
 public class ItemBuilder {
     protected String name;
     protected CreativeModeTab tab = AllTabs.tabMain;
     protected boolean hasTab = true;
     protected Item.Properties properties;
+    protected UnaryOperator<Item.Properties> operator;
     protected final List<String> tags = new ArrayList<>();
     protected RegistryObject<Item> registryObject;
 
@@ -41,11 +43,12 @@ public class ItemBuilder {
         return this;
     }
 
-    public ItemBuilder properties(Function<Item.Properties, Item.Properties> function) {
-        if (properties == null) {
-            this.properties = new Item.Properties();
+    public ItemBuilder properties(UnaryOperator<Item.Properties> operator) {
+        if (this.operator == null) {
+            this.operator = operator;
+        } else {
+            this.operator = (UnaryOperator<Item.Properties>) this.operator.andThen(operator);
         }
-        properties = function.apply(this.properties);
         return this;
     }
 
@@ -61,6 +64,14 @@ public class ItemBuilder {
     }
 
     public void checkProperties() {
+        if (properties == null) {
+            defaultProperties();
+        }
+
+        if (operator != null) {
+            this.properties = operator.apply(properties);
+        }
+
         if (hasTab) {
             this.properties.tab(tab);
         }

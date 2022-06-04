@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cross",
+  "textures": {
+    "cross": "lostgrace:block/trina_lily/trina_lily"
+  }
+}

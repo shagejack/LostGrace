@@ -10,7 +10,7 @@ public class Constants {
     public static final double PLAYER_SIGHT_Y_OFFSET = 1.7D;
     public static final double GRACE_DISTANCE_Y_OFFSET = 1.6D;
 
-    // configurable value
+    // grace
     public static double GRACE_FORCE_FIRST_PERSON_DISTANCE;
     public static double GRACE_MAX_DISTANCE;
     public static double GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
@@ -18,6 +18,10 @@ public class Constants {
     public static int GRACE_FOG_ALPHA;
     public static Color GRACE_FOG_COLOR;
 
+    // dream pool
+    public static int TICK_PER_THOUSANDTH;
+
+    // impact
     public static double IMPACT_EVENT_CHANCE;
     public static double IMPACT_MAX_RADIUS;
 
@@ -28,6 +32,9 @@ public class Constants {
         GRACE_FOG_RADIUS = LostGraceConfig.GRACE_FOG_RADIUS.get();
         GRACE_FOG_ALPHA = LostGraceConfig.GRACE_FOG_ALPHA.get();
         GRACE_FOG_COLOR = new Color(LostGraceConfig.GRACE_FOG_COLOR.get());
+
+        TICK_PER_THOUSANDTH = LostGraceConfig.TICK_PER_THOUSANDTH.get();
+
         IMPACT_EVENT_CHANCE = LostGraceConfig.IMPACT_EVENT_CHANCE.get();
         IMPACT_MAX_RADIUS = LostGraceConfig.IMPACT_MAX_RADIUS.get();
 

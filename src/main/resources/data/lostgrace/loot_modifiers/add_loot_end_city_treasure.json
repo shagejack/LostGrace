@@ -1,0 +1,11 @@
+{
+  "type": "lostgrace:add_loot_table",
+  "conditions":
+  [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/end_city_treasure"
+    }
+  ],
+  "loot_table": "lostgrace:chests/lg_end_city_treasure"
+}

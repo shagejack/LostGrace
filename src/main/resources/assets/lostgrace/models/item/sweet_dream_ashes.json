@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/handheld",
+  "textures": {
+    "layer0": "lostgrace:item/sweet_dream_ashes/sweet_dream_ashes"
+  }
+}

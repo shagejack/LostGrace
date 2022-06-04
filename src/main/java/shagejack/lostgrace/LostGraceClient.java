@@ -6,16 +6,18 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import shagejack.lostgrace.contents.block.grace.GraceRenderer;
 import shagejack.lostgrace.contents.block.grace.GraceUIHandler;
 import shagejack.lostgrace.foundation.handler.KeyInputHandler;
 import shagejack.lostgrace.foundation.handler.TickManager;
 import shagejack.lostgrace.registries.AllKeys;
 import shagejack.lostgrace.registries.AllTextures;
+import shagejack.lostgrace.registries.RegisterHandleClient;
 
 public class LostGraceClient {
 
     public static void onClient(IEventBus modEventBus, IEventBus forgeEventBus) {
+        RegisterHandleClient.init();
+
         LostGrace.LOGGER.info("Initializing Client...");
 
         modEventBus.addListener(LostGraceClient::clientInit);

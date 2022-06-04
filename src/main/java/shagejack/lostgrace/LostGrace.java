@@ -36,7 +36,9 @@ public class LostGrace {
 
         try {
 
-            modCompatLoader.addModCompat(new TOPModCompat());
+            if (LostGraceConfig.ENABLE_TOP_PLUGIN.get()) {
+                modCompatLoader.addModCompat(new TOPModCompat());
+            }
 
             LOGGER.info("Registering...");
             RegisterHandle.RegRegisters();
@@ -52,7 +54,7 @@ public class LostGrace {
 
             Constants.init();
         } catch (Exception e) {
-            LOGGER.error(e);
+            LOGGER.error("Mod Loading Failed", e);
             throw new RuntimeException();
         }
 
@@ -69,5 +71,8 @@ public class LostGrace {
 
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MOD_ID, path);
+    }
+    public static String asKey(String path) {
+        return MOD_ID + "." + path;
     }
 }

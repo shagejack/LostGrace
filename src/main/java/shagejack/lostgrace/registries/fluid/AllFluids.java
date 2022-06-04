@@ -29,4 +29,14 @@ public class AllFluids {
             .liquidBlock(() -> (LiquidBlock) AllBlocks.profaneBlood.get())
             .build();
 
+    public static final FluidPair dream
+            = new FluidBuilder("dream")
+            .tags(FluidTags.WATER)
+            .density(0)
+            .viscosity(0)
+            .tickRate(1)
+            .bucketItem(AllItems.dreamBucket)
+            .liquidBlock(() -> (LiquidBlock) AllBlocks.dream.get())
+            .build();
+
 }

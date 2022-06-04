@@ -42,11 +42,7 @@ public record BlockReference(BlockPos offset, Predicate<BlockState> statePredica
     }
 
     public boolean check(Level level, BlockPos pos, Direction direction) {
-        BlockPos rotatedOffset = getRotated(offset, direction);
-        if (!statePredicate.test(level.getBlockState(pos.offset(rotatedOffset)))) {
-            LostGrace.LOGGER.info("Incorrect BlockState {} at {}", level.getBlockState(pos.offset(rotatedOffset)), pos.offset(rotatedOffset));
-        }
-        return statePredicate.test(level.getBlockState(pos.offset(rotatedOffset)));
+        return statePredicate.test(level.getBlockState(pos.offset(getRotated(offset, direction))));
     }
 
     /**

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " D ",
+    "D#D",
+    " D "
+  ],
+  "key": {
+    "#": {
+      "item": "lostgrace:nether_star_shard"
+    },
+    "D": {
+      "item": "lostgrace:broken_dream"
+    }
+  },
+  "result": {
+    "item": "lostgrace:dream_shard"
+  }
+}
