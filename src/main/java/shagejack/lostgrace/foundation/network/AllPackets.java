@@ -25,6 +25,7 @@ public enum AllPackets {
     TELEPORT_GRACE(TeleportGracePacket.class, TeleportGracePacket::new, PLAY_TO_SERVER),
 
     // Server to Client
+    GLOBAL_GRACE_SET(GlobalGraceSetLoadingPacket.class, GlobalGraceSetLoadingPacket::new, PLAY_TO_CLIENT),
     DISCOVER_GRACE(DiscoverGracePacket.class, DiscoverGracePacket::new, PLAY_TO_CLIENT),
     PLAYER_GRACE_DATA(PlayerGraceDataPacket.class, PlayerGraceDataPacket::new, PLAY_TO_CLIENT),
     GRACE_TILE_UPDATE(GraceTileEntityUpdatePacket.class, GraceTileEntityUpdatePacket::new, PLAY_TO_CLIENT),

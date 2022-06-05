@@ -3,17 +3,13 @@ package shagejack.lostgrace.contents.block.grace;
 import net.minecraft.client.CameraType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.world.ForgeChunkManager;
-import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
@@ -57,7 +53,7 @@ public class GraceTileEntity extends BaseTileEntity {
         if (level == null)
             return;
 
-        if (this.grace == null || grace.equals(Grace.NULL) || grace.getLevel() == null || !grace.getRawName().equals(graceName))
+        if (this.grace == null || grace.equals(Grace.NULL) || grace.getDimension() == null || !grace.getRawName().equals(graceName))
             this.grace = getGrace(true);
 
         if (locked) {

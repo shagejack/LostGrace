@@ -1,7 +1,6 @@
 package shagejack.lostgrace.registries.setup;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.eventbus.api.IEventBus;
 import shagejack.lostgrace.contents.effect.sleep.SleepEffectEventHandler;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
@@ -12,13 +11,12 @@ import shagejack.lostgrace.contents.recipe.anvil.AnvilLifeCycle;
 import shagejack.lostgrace.foundation.handler.TickManager;
 import shagejack.lostgrace.foundation.tile.TileEntityLateInitializationHandler;
 import shagejack.lostgrace.registries.AllCommands;
-import shagejack.lostgrace.registries.item.ItemPropertyOverridesRegistry;
-import shagejack.lostgrace.registries.recipe.AllRecipeTypes;
 import shagejack.lostgrace.registries.world.WorldGenEventHandler;
 
-public class ModSetup {
+public class ModCommonEventSetup {
 
     public static void setup(IEventBus modEventBus, IEventBus forgeEventBus) {
+
         forgeEventBus.addGenericListener(Entity.class, PlayerGraceEventHandler::attachCapability);
         forgeEventBus.addListener(PlayerGraceEventHandler::onPlayerCloned);
         forgeEventBus.addListener(PlayerGraceEventHandler::onRegisterCapabilities);
@@ -40,8 +38,6 @@ public class ModSetup {
 
         forgeEventBus.addListener(SleepEffectEventHandler::checkBedExists);
         forgeEventBus.addListener(SleepEffectEventHandler::hurt);
-
-        modEventBus.addListener(ItemPropertyOverridesRegistry::propertyOverrideRegistry);
 
         TickManager.register(TileEntityLateInitializationHandler.getInstance());
     }

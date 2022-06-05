@@ -1,18 +1,13 @@
 package shagejack.lostgrace.contents.grace;
 
 import com.google.common.collect.Sets;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
 
-import java.io.*;
 import java.util.List;
 import java.util.Set;
 
@@ -31,7 +26,7 @@ public class GlobalGraceSet {
     }
 
     public static void addGrace(Grace grace) {
-        if (grace != null && grace.getLevel() != null &&  !grace.equals(Grace.NULL) && !grace.getLevel().isClientSide()) {
+        if (grace != null && grace.getDimension() != null &&  !grace.equals(Grace.NULL) && !grace.isClientSide()) {
             if (graceSet.add(grace)) {
                 checkGraceForPlayers();
             }
@@ -39,7 +34,7 @@ public class GlobalGraceSet {
     }
 
     public static void removeGrace(Grace grace) {
-        if (grace != null && grace.getLevel() != null && !grace.getLevel().isClientSide()) {
+        if (grace != null && grace.getDimension() != null && !grace.isClientSide()) {
             if (graceSet.remove(grace)) {
                 checkGraceForPlayers();
             }
@@ -53,7 +48,7 @@ public class GlobalGraceSet {
             IDLE--;
         } else {
             boolean modified = graceSet.removeIf(grace -> {
-                if (grace != null && grace.getLevel() != null) {
+                if (grace != null && grace.getDimension() != null) {
                     // only check grace in loaded chunk
                     if (grace.getLevel().isLoaded(grace.getPos())) {
                         if (grace.getLevel().getBlockEntity(grace.getPos()) instanceof GraceTileEntity te) {
@@ -95,12 +90,16 @@ public class GlobalGraceSet {
 
     @SubscribeEvent
     public static void onDataLoad(WorldEvent.Load event) {
-        GlobalGraceDataHooks.loadData();
+        if (!event.getWorld().isClientSide()) {
+            GlobalGraceDataHooks.loadData();
+        }
     }
 
     @SubscribeEvent
     public static void onDataSave(WorldEvent.Save event) {
-        GlobalGraceDataHooks.saveData();
+        if (!event.getWorld().isClientSide()) {
+            GlobalGraceDataHooks.saveData();
+        }
     }
 
 }

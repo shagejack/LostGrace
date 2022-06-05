@@ -72,6 +72,7 @@ public class PlayerGraceData implements IGraceHandler {
                 break;
             }
         }
+
         if (i == graces.size()) {
             graces.add(grace);
             this.lastVisitedGraceIndex = graces.size() - 1;
@@ -96,7 +97,7 @@ public class PlayerGraceData implements IGraceHandler {
     @Override
     public void checkGrace(Set<Grace> graceSet) {
         this.graces = this.graces.stream()
-                .filter(grace -> (grace.getLevel() != null && !grace.getLevel().isLoaded(grace.getPos())) || graceSet.contains(grace))
+                .filter(grace -> (grace.getDimension() != null && !grace.getLevel().isLoaded(grace.getPos())) || graceSet.contains(grace))
                 .collect(Collectors.toList());
     }
 

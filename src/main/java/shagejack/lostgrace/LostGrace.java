@@ -7,7 +7,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.*;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
@@ -19,7 +18,7 @@ import shagejack.lostgrace.foundation.config.LostGraceConfig;
 import shagejack.lostgrace.foundation.handler.TickManager;
 import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.registries.RegisterHandle;
-import shagejack.lostgrace.registries.setup.ModSetup;
+import shagejack.lostgrace.registries.setup.ModCommonEventSetup;
 
 @Mod(LostGrace.MOD_ID)
 public class LostGrace {
@@ -37,21 +36,21 @@ public class LostGrace {
         try {
 
             if (LostGraceConfig.ENABLE_TOP_PLUGIN.get()) {
+                LOGGER.info("TOP Plugin Loaded.");
                 modCompatLoader.addModCompat(new TOPModCompat());
             }
 
             LOGGER.info("Registering...");
             RegisterHandle.RegRegisters();
 
-            LOGGER.info("Initializing...");
+            LOGGER.info("Initializing register & register event listeners...");
             RegisterHandle.init();
 
-            LOGGER.info("Setting up event listeners...");
-            modEventBus.addListener(LostGrace::commonInit);
-            ModSetup.setup(modEventBus, forgeEventBus);
+            LOGGER.info("Setting up common event listeners...");
+            ModCommonEventSetup.setup(modEventBus, forgeEventBus);
 
+            LOGGER.info("Initializing Configuration...");
             ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, LostGraceConfig.SPEC, "lostgrace.toml");
-
             Constants.init();
         } catch (Exception e) {
             LOGGER.error("Mod Loading Failed", e);
@@ -61,12 +60,6 @@ public class LostGrace {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> LostGraceClient.onClient(modEventBus, forgeEventBus));
 
         TickManager.attachListeners(forgeEventBus);
-    }
-
-    public static void commonInit(final FMLCommonSetupEvent event) {
-        event.enqueueWork(() -> {
-
-        });
     }
 
     public static ResourceLocation asResource(String path) {

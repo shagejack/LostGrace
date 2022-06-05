@@ -23,12 +23,14 @@ public class PlayerGraceEventHandler {
         handler.ifPresent(graceData -> {
             Grace grace = graceData.getLastGrace();
             if (grace != Grace.NULL && GlobalGraceSet.contains(grace)) {
-                Level graceLevel = grace.getLevel();
-                Vec3 pos = Vec3.atCenterOf(grace.getPos());
-                if (graceLevel instanceof ServerLevel targetLevel) {
-                    if (player instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(serverPlayer.getYRot()), Mth.wrapDegrees(serverPlayer.getXRot()));
-                        graceData.visitGrace(grace, false);
+                if (!grace.isClientSide()) {
+                    Level graceLevel = grace.getLevel();
+                    Vec3 pos = Vec3.atCenterOf(grace.getPos());
+                    if (graceLevel instanceof ServerLevel targetLevel) {
+                        if (player instanceof ServerPlayer serverPlayer) {
+                            serverPlayer.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(serverPlayer.getYRot()), Mth.wrapDegrees(serverPlayer.getXRot()));
+                            graceData.visitGrace(grace, false);
+                        }
                     }
                 }
             }

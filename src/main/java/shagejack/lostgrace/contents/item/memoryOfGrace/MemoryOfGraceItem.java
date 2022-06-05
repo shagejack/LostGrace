@@ -1,6 +1,5 @@
 package shagejack.lostgrace.contents.item.memoryOfGrace;
 
-import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -15,18 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.world.ForgeChunkManager;
-import net.minecraftforge.server.ServerLifecycleHooks;
-import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.foundation.utility.Vector3;
-
-import java.util.concurrent.atomic.AtomicReference;
 
 public class MemoryOfGraceItem extends Item {
     public MemoryOfGraceItem(Properties properties) {

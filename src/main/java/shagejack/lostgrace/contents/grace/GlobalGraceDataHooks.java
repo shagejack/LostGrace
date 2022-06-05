@@ -7,6 +7,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.storage.LevelResource;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import shagejack.lostgrace.LostGrace;
+import shagejack.lostgrace.foundation.network.AllPackets;
+import shagejack.lostgrace.foundation.network.packet.GlobalGraceSetLoadingPacket;
 
 import java.io.File;
 import java.util.Set;
@@ -19,6 +21,7 @@ public class GlobalGraceDataHooks {
         try {
             CompoundTag nbt = NbtIo.read(graceFile);
             GlobalGraceSet.graceSet = deserializeNBT(nbt);
+            syncToClient(GlobalGraceSet.graceSet);
         } catch (Throwable throwable) {
             LostGrace.LOGGER.throwing(throwable);
         }
@@ -62,5 +65,9 @@ public class GlobalGraceDataHooks {
     }
 
     // public static void clearData() {}
+
+    public static void syncToClient(Set<Grace> graceSet) {
+        AllPackets.sendToAll(new GlobalGraceSetLoadingPacket(graceSet));
+    }
 
 }

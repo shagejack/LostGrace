@@ -2,21 +2,18 @@ package shagejack.lostgrace.contents.block.grace;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.RenderLevelLastEvent;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
-import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
@@ -27,16 +24,14 @@ import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.render.SphereBuilder;
 import shagejack.lostgrace.foundation.render.TriangleFace;
-import shagejack.lostgrace.foundation.utility.Constants;
-import shagejack.lostgrace.foundation.utility.ITickHandler;
-import shagejack.lostgrace.foundation.utility.TileEntityUtils;
-import shagejack.lostgrace.foundation.utility.Vector3;
+import shagejack.lostgrace.foundation.utility.*;
 import shagejack.lostgrace.registries.AllTextures;
 
 import java.awt.*;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 public class GraceUIHandler implements ITickHandler {
 
@@ -187,8 +182,10 @@ public class GraceUIHandler implements ITickHandler {
         List<Grace> graces = graceHandler.getAllGracesFound();
 
         for (Grace grace : graces) {
+            double graceOffset = grace.hashCode() * 0.114514D;
+
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
-            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(renderOffset) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
+            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(renderOffset) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getDimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
                 Vector3 graceVector = pos.subtract(renderOffset).normalize().multiply(5);
 
                 Player player = Minecraft.getInstance().player;
@@ -199,6 +196,7 @@ public class GraceUIHandler implements ITickHandler {
                 if (Vector3.of(player.getViewVector(pTick)).includedAngleDegree(graceVector) < Constants.GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE) {
                     // render focused grace
                     float s = (System.currentTimeMillis() % 10000) / 10000.0f;
+                    double planeRotation = 360 * MathUtils.ranged(s, graceOffset);
                     if (s > 0.5f) {
                         s = 1.0f - s;
                     }
@@ -208,7 +206,7 @@ public class GraceUIHandler implements ITickHandler {
 
                     Vector3 renderPos = renderOffset.add(graceVector.multiply(1 - currentUI.getTeleportTicks() / 60.0));
 
-                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite().normalize(), scale, spriteHumanity, 255);
+                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite().normalize(), planeRotation, scale, spriteHumanity, 255);
 
                     Color textColor = new Color(255, 215, 0);
 
@@ -217,15 +215,22 @@ public class GraceUIHandler implements ITickHandler {
                     }
                 } else {
                     // render distant graces
-                    float s = (System.currentTimeMillis() % 10000) / 10000.0f;
+                    double s = (System.currentTimeMillis() % 10000) / 10000.0f;
+                    double s2 = MathUtils.ranged(s, 2 * s + graceOffset);
+                    double planeRotation = 360 * MathUtils.ranged(s, graceOffset);
                     if (s > 0.5f) {
                         s = 1.0f - s;
                     }
-                    float scale = 0.125f + s * 0.025f;
+                    float scale = (float) (0.125f + s * 0.025f);
+
+                    if (s2 > 0.5f) {
+                        s2 = 1.0f - s2;
+                    }
+                    int graceAlpha = (int) (64 + 128 * s2);
 
                     Vector3 renderPos = renderOffset.add(graceVector);
 
-                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite().normalize(), scale, spriteHumanity, 127);
+                    DrawUtils.renderQuad(vertexConsumer, renderStack, renderPos, graceVector.opposite().normalize(), planeRotation, scale, spriteHumanity, graceAlpha);
 
                 }
 
@@ -260,7 +265,7 @@ public class GraceUIHandler implements ITickHandler {
         List<Grace> graces = graceHandler.getAllGracesFound().stream().filter(grace -> {
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
             // interact with distant grace
-            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(playerPos) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getLevel().dimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
+            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(playerPos) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getDimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
                 Vector3 graceVector = pos.subtract(playerPos.addY(Constants.PLAYER_SIGHT_Y_OFFSET)).normalize();
                 return Vector3.of(player.getViewVector(1.0F)).includedAngleDegree(graceVector) < Constants.GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
             }

@@ -10,6 +10,15 @@ public class MathUtils {
         throw new IllegalStateException(this.getClass().toString() + "should not be instantiated as it's a utility class.");
     }
 
+    public static double ranged(double original, double offset) {
+        return original + offset > 0 ? (original + offset) % 1 : 1 + (original + offset) % 1;
+    }
+
+    public static double ranged(double min, double max, double original, double offset) {
+        double ratio = (original + offset) / (max - min);
+        return lerp(ratio > 0 ? ratio % 1 : 1 + ratio % 1, min, max);
+    }
+
     public static double lerp(double delta) {
         return 2 * delta - 1;
     }

@@ -1,5 +1,6 @@
 package shagejack.lostgrace.registries.entity;
 
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -7,7 +8,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.common.util.NonNullFunction;
+import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.RegistryObject;
@@ -54,8 +58,8 @@ public class EntityBuilder<T extends Entity> {
         return this;
     }
 
-    public EntityBuilder<T> renderer(Supplier<EntityRendererProvider<? extends T>> rendererProviderSupplier) {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> rendererTasks.add(new EntityBuilder.RenderBinder(() -> registryObject, rendererProviderSupplier)));
+    public EntityBuilder<T> renderer(NonNullSupplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? extends T>>> rendererProviderSupplier) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> rendererTasks.add(new EntityBuilder.RenderBinder(() -> registryObject, context -> rendererProviderSupplier.get().apply(context))));
         return this;
     }
 
@@ -78,10 +82,10 @@ public class EntityBuilder<T extends Entity> {
         }
     }
 
-    private record RenderBinder<T extends Entity>(Supplier<RegistryObject<EntityType<? extends T>>> entityTypeSupplier, Supplier<EntityRendererProvider<T>> rendererProviderSupplier) {
+    private record RenderBinder<T extends Entity>(Supplier<RegistryObject<EntityType<? extends T>>> entityTypeSupplier, EntityRendererProvider<T> renderer) {
         private void register(final EntityRenderersEvent.RegisterRenderers event) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                    event.registerEntityRenderer(entityTypeSupplier.get().get(), rendererProviderSupplier.get())
+                    event.registerEntityRenderer(entityTypeSupplier.get().get(), renderer)
             );
         }
     }

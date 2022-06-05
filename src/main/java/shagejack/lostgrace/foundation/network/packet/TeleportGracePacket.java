@@ -1,17 +1,15 @@
 package shagejack.lostgrace.foundation.network.packet;
 
-import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.world.ForgeChunkManager;
 import net.minecraftforge.network.NetworkEvent;
 import net.minecraftforge.server.ServerLifecycleHooks;
-import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
@@ -52,7 +50,12 @@ public class TeleportGracePacket extends SimplePacketBase {
             if (this.grace == null || this.grace.equals(Grace.NULL))
                 return;
 
-            ServerPlayer player = ServerLifecycleHooks.getCurrentServer().getPlayerList().getPlayer(this.playerUUID);
+            MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+
+            if (server == null)
+                return;
+
+            ServerPlayer player = server.getPlayerList().getPlayer(this.playerUUID);
 
             if (player == null)
                 return;

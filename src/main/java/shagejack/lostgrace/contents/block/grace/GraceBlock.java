@@ -68,6 +68,9 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult result) {
+        if (level.isClientSide())
+            return InteractionResult.CONSUME;
+
         LazyOptional<IGraceHandler> handler = player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY);
         AtomicBoolean interacted = new AtomicBoolean(false);
         withTileEntityDo(level, pos, te -> {

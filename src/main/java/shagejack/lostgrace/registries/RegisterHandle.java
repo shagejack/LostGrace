@@ -63,12 +63,6 @@ public class RegisterHandle {
         modBus.addGenericListener(MobEffect.class, AllMobEffects::bind);
         modBus.addGenericListener(Potion.class, AllPotions::bind);
         modBus.addListener((FMLCommonSetupEvent event) -> AllBrewingRecipes.init());
-        modBus.addListener(BlockBuilder::registerColors);
-
-        modBus.addListener((EntityRenderersEvent.RegisterRenderers event) -> {
-            TileEntityBuilder.bind(event);
-            EntityBuilder.bindRenderers(event);
-        });
 
         modBus.addListener((EntityAttributeCreationEvent event) -> EntityBuilder.bindAttributes(event));
 
