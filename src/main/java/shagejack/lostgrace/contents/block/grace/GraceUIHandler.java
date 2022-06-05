@@ -17,6 +17,7 @@ import net.minecraftforge.event.TickEvent;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.handler.ITickHandler;
 import shagejack.lostgrace.foundation.handler.KeyInputHandler;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.TeleportGracePacket;

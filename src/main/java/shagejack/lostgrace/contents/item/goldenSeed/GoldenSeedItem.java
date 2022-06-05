@@ -26,7 +26,7 @@ public class GoldenSeedItem extends Item {
         if (level.getBlockState(inPos).is(Blocks.FIRE)) {
             level.setBlock(inPos, AllBlocks.grace.block().get().defaultBlockState(), 3);
             if (seedStack.hasCustomHoverName()) {
-                TileEntityLateInitializationHandler.getInstance().add(new GraceTileEntityLateInitializer(level, inPos, te -> te.setGraceName(entity.getItem().getHoverName().getContents())));
+                TileEntityLateInitializationHandler.getInstance().offer(new GraceTileEntityLateInitializer(level, inPos, te -> te.setGraceName(entity.getItem().getHoverName().getContents())));
             }
             entity.remove(Entity.RemovalReason.KILLED);
             return true;

@@ -1,17 +1,17 @@
 package shagejack.lostgrace.foundation.tile;
 
 import net.minecraftforge.event.TickEvent;
-import shagejack.lostgrace.foundation.utility.ITickHandler;
+import shagejack.lostgrace.foundation.handler.ITickHandler;
 
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class TileEntityLateInitializationHandler implements ITickHandler {
 
     private static final TileEntityLateInitializationHandler INSTANCE = new TileEntityLateInitializationHandler();
 
-    public List<TileEntityLateInitializer<?>> initializers = new ArrayList<>();
+    public Queue<TileEntityLateInitializer<?>> initializers = new ConcurrentLinkedQueue<>();
 
     private TileEntityLateInitializationHandler() {}
 
@@ -19,12 +19,12 @@ public class TileEntityLateInitializationHandler implements ITickHandler {
         return INSTANCE;
     }
 
-    public boolean add(TileEntityLateInitializer<?> initializer) {
+    public boolean offer(TileEntityLateInitializer<?> initializer) {
         // server side only
         if (initializer.getLevel().isClientSide())
             return false;
 
-        return initializers.add(initializer);
+        return initializers.offer(initializer);
     }
 
     @Override
@@ -34,16 +34,7 @@ public class TileEntityLateInitializationHandler implements ITickHandler {
 
     @Override
     public void tick(TickEvent.Type type, Object... context) {
-        int index = 0;
-        int size = initializers.size();
-        while (index < size) {
-            if (initializers.get(index).tick()) {
-                initializers.remove(index);
-                size--;
-            } else {
-                index++;
-            }
-        }
+        initializers.removeIf(TileEntityLateInitializer::tick);
     }
 
     @Override
