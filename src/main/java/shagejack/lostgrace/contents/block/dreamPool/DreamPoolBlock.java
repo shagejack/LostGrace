@@ -71,6 +71,7 @@ public class DreamPoolBlock extends BaseTileEntityBlock<DreamPoolTileEntity> {
         return DreamPoolTileEntity.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BlockEntityType<? extends DreamPoolTileEntity> getTileEntityType() {
         return (BlockEntityType<? extends DreamPoolTileEntity>) AllTileEntities.dreamPool.get();

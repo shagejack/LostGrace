@@ -2,10 +2,8 @@ package shagejack.lostgrace.foundation.compat;
 
 import com.google.common.collect.Lists;
 import net.minecraftforge.fml.ModList;
-import org.apache.commons.compress.utils.Sets;
 
 import java.util.List;
-import java.util.Set;
 
 public class ModCompatLoader {
 

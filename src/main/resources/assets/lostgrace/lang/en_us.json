@@ -5,6 +5,7 @@
   "block.lostgrace.rotten_fresh": "Rotten Fresh",
   "block.lostgrace.profane_blood": "Fresh Blood",
   "block.lostgrace.sacred_blood": "Fresh Blood",
+  "block.lostgrace.dream": "Dream",
   "block.lostgrace.dream_pool": "Dream Pool",
   "block.lostgrace.trina_lily": "Trina's Lily",
   "block.lostgrace.chalk_spell": "Unknown Spell",
@@ -52,6 +53,8 @@
   "lostgrace.info.destined_death": "Destined Death",
   "lostgrace.info.bloodstained": "Bloodstained",
   "lostgrace.info.damage": "Damage",
+
+  "lostgrace.top.info.grace_name": "Grace Name",
 
   "lostgrace.jei.category.anvil": "Anvil Smash",
 

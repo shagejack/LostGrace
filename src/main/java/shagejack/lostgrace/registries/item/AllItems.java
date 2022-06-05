@@ -26,12 +26,12 @@ import static net.minecraft.world.item.Items.BUCKET;
 public class AllItems {
 
     public static final RegistryObject<Item> memoryOfGrace = new ItemBuilder()
-            .properties(properties -> properties.stacksTo(1))
+            .properties(properties -> properties.stacksTo(1).rarity(AllRarities.LEGENDARY))
             .name("memory_of_grace")
             .build(MemoryOfGraceItem::new);
 
     public static final RegistryObject<Item> goldenSeed = new ItemBuilder()
-            .properties(properties -> properties.stacksTo(1).fireResistant())
+            .properties(properties -> properties.stacksTo(1).fireResistant().rarity(AllRarities.LEGENDARY))
             .name("golden_seed")
             .build(GoldenSeedItem::new);
 
@@ -94,12 +94,12 @@ public class AllItems {
             .build();
 
     public static final RegistryObject<Item> trinaCrystalBall = new ItemBuilder()
-            .properties(properties -> properties.stacksTo(1))
+            .properties(properties -> properties.stacksTo(1).rarity(AllRarities.LEGENDARY))
             .name("trina_crystal_ball")
             .build(TrinaCrystalBallItem::new);
 
     public static final RegistryObject<Item> trinaCrystalBallFull = new ItemBuilder()
-            .properties(properties -> properties.stacksTo(1))
+            .properties(properties -> properties.stacksTo(1).rarity(AllRarities.LEGENDARY))
             .name("trina_crystal_ball_full")
             .build(TrinaCrystalBallFullItem::new);
 

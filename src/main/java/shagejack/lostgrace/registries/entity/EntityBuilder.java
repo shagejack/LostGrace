@@ -8,7 +8,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.util.NonNullFunction;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -53,11 +52,13 @@ public class EntityBuilder<T extends Entity> {
     }
 
     // only for living entities
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public EntityBuilder<T> attribute(Supplier<AttributeSupplier.Builder> attributeSupplierBuilderSupplier) {
         attributesTasks.add(new EntityBuilder.AttributesBinder(() -> registryObject, attributeSupplierBuilderSupplier));
         return this;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public EntityBuilder<T> renderer(NonNullSupplier<NonNullFunction<EntityRendererProvider.Context, EntityRenderer<? extends T>>> rendererProviderSupplier) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> rendererTasks.add(new EntityBuilder.RenderBinder(() -> registryObject, context -> rendererProviderSupplier.get().apply(context))));
         return this;

@@ -2,14 +2,8 @@ package shagejack.lostgrace.foundation.tile;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.MinecraftForge;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public abstract class BaseTileEntity extends SyncedTileEntity implements IPartialSafeNBT{
     private boolean initialized = false;

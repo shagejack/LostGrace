@@ -1,7 +1,6 @@
 package shagejack.lostgrace.contents.block.dreamPool;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
@@ -10,7 +9,6 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -19,7 +17,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.registries.ForgeRegistries;
 import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.FluidRenderer;
@@ -172,7 +169,7 @@ public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntit
 
         ms.pushPose();
 
-        ms.translate(.5, .5, .5);
+        ms.translate(.5, .75, .5);
 
         DrawUtils.renderSphereWithTexture(ms, processDreamAmount / 2400.0, sprite, Color.WHITE, 255);
 

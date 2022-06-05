@@ -52,6 +52,7 @@ public class TileEntityBuilder<T extends BlockEntity> {
         return this;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public TileEntityBuilder<T> renderer(NonNullSupplier<NonNullFunction<BlockEntityRendererProvider.Context, BlockEntityRenderer<? super T>>> renderer) {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
                 tasks.add(new Binder(() -> registryObject, context -> renderer.get().apply(context))));

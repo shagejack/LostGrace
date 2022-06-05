@@ -5,6 +5,7 @@
   "block.lostgrace.rotten_fresh": "腐败的血肉",
   "block.lostgrace.profane_blood": "鲜血",
   "block.lostgrace.sacred_blood": "鲜血",
+  "block.lostgrace.dream": "梦浆",
   "block.lostgrace.dream_pool": "蓄梦池",
   "block.lostgrace.trina_lily": "托莉娜睡莲",
   "block.lostgrace.chalk_spell": "未知符文",
@@ -52,6 +53,8 @@
   "lostgrace.info.destined_death": "命定之死",
   "lostgrace.info.bloodstained": "染血",
   "lostgrace.info.damage": "伤害",
+
+  "lostgrace.top.info.grace_name": "赐福名",
 
   "lostgrace.jei.category.anvil": "铁砧粉碎",
 

@@ -10,8 +10,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.resources.ResourceLocation;
-import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
 import shagejack.lostgrace.registries.AllTextures;
@@ -31,7 +29,7 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         if (grace.getSummonRemainingTicks() > 0) {
             float treeScale = 5.0f;
 
-            // render golden tree
+            // TODO: render golden tree
             // ms.pushPose();
 
             // ms.popPose();

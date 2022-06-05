@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " L ",
+    "NLN",
     "L#L",
-    " L "
+    "NLN"
   ],
   "key": {
     "#": {
@@ -11,6 +11,9 @@
     },
     "L": {
       "item": "lostgrace:trina_lily"
+    },
+    "N": {
+      "item": "lostgrace:nether_star_shard"
     }
   },
   "result": {

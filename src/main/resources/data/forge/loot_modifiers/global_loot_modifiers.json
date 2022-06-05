@@ -1,6 +1,9 @@
 {
   "replace": false,
   "entries": [
-    "lostgrace:add_loot_end_city_treasure"
+    "lostgrace:add_loot_end_city_treasure",
+    "lostgrace:add_stronghold_library",
+    "lostgrace:add_buried_treasure",
+    "lostgrace:add_bastion_treasure"
   ]
 }

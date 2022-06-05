@@ -8,7 +8,6 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -64,6 +63,7 @@ public class AllFeatures {
         return register(BuiltinRegistries.PLACED_FEATURE, id, new PlacedFeature(Holder.hackyErase(feature), List.copyOf(placementModifiers)));
     }
 
+    @SuppressWarnings("unchecked")
     private static <V extends T, T> Holder<V> register(Registry<T> registry, ResourceLocation id, V value) {
         return (Holder<V>) BuiltinRegistries.register(registry, id, value);
     }

@@ -4,15 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.phys.Vec3;
 import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.FluidRenderer;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
@@ -21,7 +18,6 @@ import shagejack.lostgrace.foundation.utility.Vector3;
 import shagejack.lostgrace.registries.AllTextures;
 
 import java.awt.*;
-import java.util.List;
 
 public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEntity> {
 

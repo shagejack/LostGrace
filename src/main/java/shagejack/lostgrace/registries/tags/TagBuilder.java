@@ -2,7 +2,6 @@ package shagejack.lostgrace.registries.tags;
 
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.registries.datagen.DataGenHandle;

@@ -1,6 +1,5 @@
 package shagejack.lostgrace.contents.recipe.anvil;
 
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.FallingBlockEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;

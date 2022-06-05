@@ -1,9 +1,5 @@
 package shagejack.lostgrace.contents.block.bloodAltar;
 
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.IProbeInfoAccessor;
-import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -27,7 +23,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
 import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
-import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 import shagejack.lostgrace.foundation.utility.VoxelShapeUtils;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
@@ -98,6 +93,7 @@ public class BloodAltarBlock extends BaseTileEntityBlock<BloodAltarTileEntity> {
         return BloodAltarTileEntity.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BlockEntityType<? extends BloodAltarTileEntity> getTileEntityType() {
         return (BlockEntityType<? extends BloodAltarTileEntity>) AllTileEntities.bloodAltar.get();

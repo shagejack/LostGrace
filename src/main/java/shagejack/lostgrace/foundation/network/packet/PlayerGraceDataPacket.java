@@ -8,7 +8,6 @@ import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.contents.grace.PlayerGraceData;
 
-import java.util.Objects;
 import java.util.function.Supplier;
 
 public class PlayerGraceDataPacket extends SimplePacketBase {

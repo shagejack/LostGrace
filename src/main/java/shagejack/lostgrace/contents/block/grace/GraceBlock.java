@@ -38,7 +38,6 @@ import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
 import shagejack.lostgrace.foundation.utility.DropUtils;
-import shagejack.lostgrace.foundation.utility.MathUtils;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
@@ -128,6 +127,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
         return GraceTileEntity.class;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public BlockEntityType<? extends GraceTileEntity> getTileEntityType() {
         return (BlockEntityType<? extends GraceTileEntity>) AllTileEntities.grace.get();

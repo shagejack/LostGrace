@@ -28,6 +28,7 @@ public abstract class TileEntityDataPacket<TE extends SyncedTileEntity> extends 
 		writeData(buffer);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void handle(Supplier<NetworkEvent.Context> context) {
 		NetworkEvent.Context ctx = context.get();

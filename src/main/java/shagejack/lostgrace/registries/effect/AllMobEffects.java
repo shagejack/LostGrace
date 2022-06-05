@@ -1,20 +1,12 @@
 package shagejack.lostgrace.registries.effect;
 
 import net.minecraft.world.effect.MobEffect;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistry;
-import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.contents.effect.sleep.SleepEffect;
-import shagejack.lostgrace.registries.RegisterHandle;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class AllMobEffects {
 

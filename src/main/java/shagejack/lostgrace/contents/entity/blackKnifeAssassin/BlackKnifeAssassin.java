@@ -57,12 +57,14 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
         this.xpReward = 50;
     }
 
+    @SuppressWarnings("unchecked")
     public BlackKnifeAssassin(Level level, double posW, double radius) {
         this((EntityType<? extends BlackKnifeAssassin>) AllEntityTypes.blackKnifeAssassin.get(), level);
         this.setW(posW);
         this.setRadius(radius);
     }
 
+    @SuppressWarnings("unchecked")
     public BlackKnifeAssassin(Level level, double posW, double radius, boolean asSummoned) {
         this((EntityType<? extends BlackKnifeAssassin>) AllEntityTypes.blackKnifeAssassin.get(), level);
         this.setW(posW);

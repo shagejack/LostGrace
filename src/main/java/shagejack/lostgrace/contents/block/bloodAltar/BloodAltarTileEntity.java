@@ -33,7 +33,6 @@ import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
 import java.util.*;
-import java.util.List;
 
 public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEntity, FluidUpdatePacket.IFluidPacketReceiver {
 
@@ -77,17 +76,13 @@ public class BloodAltarTileEntity extends BaseTileEntity implements ITankTileEnt
             remainingTicks--;
 
             switch(getPhase()) {
-                case GROW -> {
-                    expandFresh();
-                }
+                case GROW -> expandFresh();
                 case BREED, IMPACT_PRELUDE -> {
                     if (!level.isClientSide()) {
                         level.getEntitiesOfClass(LivingEntity.class, new AABB(getBlockPos()).inflate(getBreedSphereRadius())).stream().filter(entity -> Vector3.of(entity).distance(Vector3.atCenterOf(getBlockPos())) <= getBreedSphereRadius()).forEach(LivingEntity::kill);
                     }
                 }
-                case DECAY -> {
-                    rotFresh();
-                }
+                case DECAY -> rotFresh();
                 case IMPACT_EMERGENCE -> {
                     if (remainingTicks == TOTAL_TICKS - PHASE_TWO_END) {
                         if (level.isClientSide()) {
