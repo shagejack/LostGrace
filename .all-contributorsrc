@@ -1,0 +1,25 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "ShageJack",
+      "name": "shagejack.eth",
+      "avatar_url": "https://avatars.githubusercontent.com/u/24351349?v=4",
+      "profile": "http://N/A",
+      "contributions": [
+        "ideas",
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "LostGrace",
+  "projectOwner": "ShageJack",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
