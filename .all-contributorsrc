@@ -14,6 +14,15 @@
         "ideas",
         "code"
       ]
+    },
+    {
+      "login": "MalayPrime",
+      "name": "MalayP",
+      "avatar_url": "https://avatars.githubusercontent.com/u/25426509?v=4",
+      "profile": "https://github.com/MalayPrime",
+      "contributions": [
+        "design"
+      ]
     }
   ],
   "contributorsPerLine": 7,
