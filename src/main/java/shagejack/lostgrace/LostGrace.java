@@ -59,6 +59,7 @@ public class LostGrace {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> LostGraceClient.onClient(modEventBus, forgeEventBus));
 
         TickManager.attachListeners(forgeEventBus);
+        
     }
 
     public static ResourceLocation asResource(String path) {

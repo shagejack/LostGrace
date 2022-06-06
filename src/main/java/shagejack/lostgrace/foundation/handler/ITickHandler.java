@@ -1,4 +1,4 @@
-package shagejack.lostgrace.foundation.utility;
+package shagejack.lostgrace.foundation.handler;
 
 import net.minecraftforge.event.TickEvent;
 

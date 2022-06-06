@@ -3,7 +3,6 @@ package shagejack.lostgrace.foundation.handler;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import shagejack.lostgrace.foundation.utility.ITickHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;

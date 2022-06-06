@@ -22,10 +22,12 @@ public class LostGraceClient {
     }
 
     public static void clientInit(final FMLClientSetupEvent event) {
+        LostGrace.LOGGER.info("Registering Key Bindings...");
         AllKeys.init();
     }
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
+        LostGrace.LOGGER.info("Stitching Texture...");
         if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
