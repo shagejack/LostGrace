@@ -36,7 +36,7 @@ public class AllFeatures {
     static {
 
         FEATURE_PATCH_TRINA_LILY = register(LostGrace.asResource("patch_trina_lily"), Feature.RANDOM_PATCH,
-                randomPatchConfiguration(AllBlocks.trinaLily.block().get(), 64, 4, BlockPredicate.matchesTag(BlockTags.DIRT, BELOW))
+                randomPatchConfiguration(AllBlocks.trinaLily.block().get(), 64, 1, BlockPredicate.matchesTag(BlockTags.DIRT, BELOW))
         );
 
         PATCH_TRINA_LILY = register(LostGrace.asResource("patch_trina_lily"), FEATURE_PATCH_TRINA_LILY,

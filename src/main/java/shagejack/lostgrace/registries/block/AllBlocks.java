@@ -13,7 +13,7 @@ import shagejack.lostgrace.contents.block.dreamPool.DreamPoolBlock;
 import shagejack.lostgrace.contents.block.fresh.FreshBlock;
 import shagejack.lostgrace.contents.block.fresh.RottenFreshBlock;
 import shagejack.lostgrace.contents.block.grace.GraceBlock;
-import shagejack.lostgrace.contents.block.spell.unkown.ChalkSpellBlock;
+import shagejack.lostgrace.contents.block.spell.ChalkRuneBlock;
 import shagejack.lostgrace.contents.block.trinaLily.TrinaLilyBlock;
 import shagejack.lostgrace.registries.fluid.AllFluids;
 import shagejack.lostgrace.registries.item.ItemBuilder;
@@ -81,11 +81,11 @@ public class AllBlocks {
             .buildBlock(TrinaLilyBlock::new)
             .buildItem(itemBuilder -> itemBuilder.properties(properties -> properties.rarity(Rarity.EPIC)));
 
-    public static final ItemBlock chalkSpell = new BlockBuilder()
-            .name("chalk_spell")
+    public static final ItemBlock chalkRune = new BlockBuilder()
+            .name("chalk_rune")
             .material(Material.DECORATION)
             .properties(properties -> properties.sound(SoundType.STONE).noCollission().noOcclusion().noDrops())
             .renderLayer(() -> RenderType::cutoutMipped)
-            .buildBlock(ChalkSpellBlock::new)
+            .buildBlock(ChalkRuneBlock::new)
             .buildItem(ItemBuilder::noTab);
 }

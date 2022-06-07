@@ -8,7 +8,7 @@
   "block.lostgrace.dream": "梦浆",
   "block.lostgrace.dream_pool": "蓄梦池",
   "block.lostgrace.trina_lily": "托莉娜睡莲",
-  "block.lostgrace.chalk_spell": "未知符文",
+  "block.lostgrace.chalk_rune": "未知符文",
 
   "item.lostgrace.memory_of_grace": "赐福记忆",
   "item.lostgrace.golden_seed": "黄金种子",
@@ -54,11 +54,17 @@
   "lostgrace.info.bloodstained": "染血",
   "lostgrace.info.damage": "伤害",
 
+  "lostgrace.info.chalk_no_book": "我到底该画什么？我可能需要一本符文书……",
+
   "lostgrace.top.info.grace_name": "赐福名",
 
   "lostgrace.jei.category.anvil": "铁砧粉碎",
 
   "lostgrace.jei.info.base_output": "基础产出（实际产出平均分布）",
-  "lostgrace.jei.info.extra_output": "最大额外产出（实际产出平均分布）"
+  "lostgrace.jei.info.extra_output": "最大额外产出（实际产出平均分布）",
+
+  "lostgrace.jei.info.golden_seed": "你需要通过鲜血祭坛向外神献祭来获得黄金种子……",
+  "lostgrace.jei.info.broken_dream": "采集梦浆倒入蓄梦池中，只要足够多，诸生灵残破的梦境或许能够凝结成这种东西……",
+  "lostgrace.jei.info.trina_crystal_ball": "圣托莉娜水晶球可以保存并稳定安眠者的梦境，尽管其在释放到现实的瞬间就化作梦浆——残破梦境的融合物。"
 
 }

@@ -57,13 +57,13 @@ public class AnvilRecipeCategory implements IRecipeCategory<AnvilRecipe> {
         return new RecipeType<>(AllRecipeTypes.ANVIL.getId(), AnvilRecipe.class);
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated
     @Override
     public ResourceLocation getUid() {
         return AllRecipeTypes.ANVIL.getId();
     }
 
-    @Deprecated(forRemoval = true)
+    @Deprecated
     @Override
     public Class<? extends AnvilRecipe> getRecipeClass() {
         return AnvilRecipe.class;

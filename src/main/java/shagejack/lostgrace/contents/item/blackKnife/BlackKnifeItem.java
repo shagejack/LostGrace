@@ -133,6 +133,7 @@ public class BlackKnifeItem extends SwordItem {
 
     @Override
     public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        setInvisible(stack, false);
         MobEffectInstance effect = attacker.getEffect(MobEffects.INVISIBILITY);
         if (effect != null && effect.getAmplifier() == 0) {
             attacker.removeEffect(MobEffects.INVISIBILITY);

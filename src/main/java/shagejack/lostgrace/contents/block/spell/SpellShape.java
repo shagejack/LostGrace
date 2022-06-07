@@ -14,14 +14,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
-public class Spell {
-    public static final Spell NULL = new Spell(new ArrayList<>(), false, $ -> false);
+public class SpellShape {
+    public static final SpellShape NULL = new SpellShape(new ArrayList<>(), false, $ -> false);
 
     List<BlockReference> blockReferences;
     boolean rotatable;
     Predicate<Level> levelPredicate;
 
-    public Spell(List<BlockReference> blockReferences, boolean rotatable, Predicate<Level> levelPredicate) {
+    public SpellShape(List<BlockReference> blockReferences, boolean rotatable, Predicate<Level> levelPredicate) {
         this.blockReferences = blockReferences;
         this.rotatable = rotatable;
         this.levelPredicate = levelPredicate;
@@ -98,8 +98,8 @@ public class Spell {
             return this.statePredicate(BlockBehaviour.BlockStateBase::isAir);
         }
 
-        public Builder spell(SpellType spellType) {
-            return this.block(spellType.getSpellBlock());
+        public Builder spell(RuneType runeType) {
+            return this.block(runeType.getRuneBlock());
         }
 
         public Builder tag(TagKey<Block> tag) {
@@ -131,8 +131,8 @@ public class Spell {
             return this;
         }
 
-        public Spell build() {
-            return new Spell(this.blockReferences, this.rotatable, this.levelPredicate);
+        public SpellShape build() {
+            return new SpellShape(this.blockReferences, this.rotatable, this.levelPredicate);
         }
 
     }

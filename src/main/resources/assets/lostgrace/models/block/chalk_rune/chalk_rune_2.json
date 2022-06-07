@@ -1,7 +1,7 @@
 {
 	"ambientocclusion": false,
 	"textures": {
-		"0": "lostgrace:block/chalk_spell/chalk_spell_4",
+		"0": "lostgrace:block/chalk_rune/chalk_rune_2",
 		"particle": "#0"
 	},
 	"elements": [

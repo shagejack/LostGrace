@@ -8,7 +8,7 @@
   "block.lostgrace.dream": "Dream",
   "block.lostgrace.dream_pool": "Dream Pool",
   "block.lostgrace.trina_lily": "Trina's Lily",
-  "block.lostgrace.chalk_spell": "Unknown Spell",
+  "block.lostgrace.chalk_rune": "Unknown Spell",
 
   "item.lostgrace.memory_of_grace": "Memory of Grace",
   "item.lostgrace.golden_seed": "Golden Seed",
@@ -39,7 +39,7 @@
 
   "fluid.lostgrace.profane_blood": "Fresh Blood",
   "fluid.lostgrace.sacred_blood": "Fresh Blood",
-  "fluid.lostgrace.dream": "Dream Pulp",
+  "fluid.lostgrace.dream": "Dream Syrup",
 
   "effect.lostgrace.sleep": "Hypnos",
 
@@ -54,11 +54,17 @@
   "lostgrace.info.bloodstained": "Bloodstained",
   "lostgrace.info.damage": "Damage",
 
+  "lostgrace.info.chalk_no_book": "What should I actually draw? Maybe I need a book about runes...",
+
   "lostgrace.top.info.grace_name": "Grace Name",
 
   "lostgrace.jei.category.anvil": "Anvil Smash",
 
   "lostgrace.jei.info.base_output": "Base Output (Actual output is evenly distributed)",
-  "lostgrace.jei.info.extra_output": "Max Extra Output (Actual output is evenly distributed)"
+  "lostgrace.jei.info.extra_output": "Max Extra Output (Actual output is evenly distributed)",
+
+  "lostgrace.jei.info.golden_seed": "You need to sacrifice to Outer Gods through the blood altar to get the golden seeds...",
+  "lostgrace.jei.info.broken_dream": "Collect Dream Syrup and pour it into the dream pool. The broken dreams of all creatures may be able to condense into this, if enough...",
+  "lostgrace.jei.info.trina_crystal_ball": "The St. Trina's Crystal Ball has ability to preserve and stabilize dreams of those who affected by Hypnos. Although they would become Dream Syrup - a fusion of broken dreams - the moment they are released into reality."
 
 }
