@@ -1,0 +1,21 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "lostgrace:block/rune_stone"
+      },
+      {
+        "model": "lostgrace:block/rune_stone",
+        "y": 90
+      },
+      {
+        "model": "lostgrace:block/rune_stone",
+        "y": 180
+      },
+      {
+        "model": "lostgrace:block/rune_stone",
+        "y": 270
+      }
+    ]
+  }
+}

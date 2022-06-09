@@ -1,5 +1,6 @@
 package shagejack.lostgrace.contents.item.memoryOfGrace;
 
+import net.minecraft.network.protocol.game.ClientboundSetExperiencePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -15,10 +16,13 @@ import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.player.PlayerXpEvent;
+import net.minecraftforge.server.ServerLifecycleHooks;
 import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.config.LostGraceConfig;
 import shagejack.lostgrace.foundation.utility.Vector3;
 
 public class MemoryOfGraceItem extends Item {
@@ -33,14 +37,17 @@ public class MemoryOfGraceItem extends Item {
     }
 
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entity) {
-        if (entity instanceof Player player) {
+        if (entity instanceof ServerPlayer player) {
             if (!level.isClientSide()) {
                 player.resetStat(Stats.CUSTOM.get(Stats.TIME_SINCE_REST));
                 player.clearFire();
 
-                if (!player.isCreative() && !player.isSpectator() && !level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
+                if (LostGraceConfig.MEMORY_OF_GRACE_DROP_EXPERIENCE.get() && !player.isCreative() && !player.isSpectator() && !level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) {
                     int reward = net.minecraftforge.event.ForgeEventFactory.getExperienceDrop(player, null, getExperience(player));
                     player.experienceLevel = 0;
+                    player.experienceProgress = 0;
+                    player.totalExperience = 0;
+                    player.connection.send(new ClientboundSetExperiencePacket(0, 0, 0));
                     ExperienceOrb.award((ServerLevel) level, player.position(), reward);
                 }
 
@@ -52,10 +59,8 @@ public class MemoryOfGraceItem extends Item {
                         Level graceLevel = grace.getLevel();
                         Vector3 pos = Vector3.atCenterOf(grace.getPos());
                         if (graceLevel instanceof ServerLevel targetLevel) {
-                            if (player instanceof ServerPlayer serverPlayer) {
-                                serverPlayer.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(serverPlayer.getYRot()), Mth.wrapDegrees(serverPlayer.getXRot()));
-                                graceData.visitGrace(grace, false);
-                            }
+                            player.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(player.getYRot()), Mth.wrapDegrees(player.getXRot()));
+                            graceData.visitGrace(grace, false);
                         }
                     } else {
                         player.stopUsingItem();

@@ -18,6 +18,7 @@ public final class LostGraceConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> TRINA_LILY_GEN_IN_TRIES;
 
     public static final String CATEGORY_GRACE = "grace";
+    public static final ForgeConfigSpec.ConfigValue<Boolean> MEMORY_OF_GRACE_DROP_EXPERIENCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_FORCE_FIRST_PERSON_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_MAX_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
@@ -45,9 +46,10 @@ public final class LostGraceConfig {
         BUILDER.pop();
 
         BUILDER.comment("Grace Settings").push(CATEGORY_GRACE);
+        MEMORY_OF_GRACE_DROP_EXPERIENCE = BUILDER.comment("If using Memory of Grace drops player's experience. Default: true").define("memoryOfGraceDropExperience", true);
         GRACE_FORCE_FIRST_PERSON_DISTANCE = BUILDER.comment("The player-grace distance mentioned below is which between the player foot and the position 1.1 blocks above the grace center.",
                 "Player within this distance of graces will be forcibly changed to first person. This distance is also used to determine if a grace should be rendered in fog. Default: 5.5").define("graceForceFirstPersonDistance", 5.5D);
-        GRACE_MAX_DISTANCE = BUILDER.comment("The max distance allowed to interact with grace and to render fog. Default: 3.5").define("graceMaxDistance", 3.5D);
+        GRACE_MAX_DISTANCE = BUILDER.comment("The max distance allowed to interact with grace and to render fog. Default: 4.0").define("graceMaxDistance", 4.0D);
         GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE = BUILDER.comment("When the player is in fog, a grace will be selected if the included angle between player sight vector and the vector from player head to the grace is smaller than this angle expressed in degrees. Default: 3.0").define("Grace Teleport Selection Deviation Degree", 3.0D);
         GRACE_FOG_RADIUS = BUILDER.comment("The radius of the fog sphere which appears when player touches the grace. Default: 6.0").define("graceFogRadius", 6.0D);
         GRACE_FOG_ALPHA = BUILDER.comment("The integer alpha channel value which determines the max opacity of the fog when not teleporting. 255 means full opaque while 0 means full transparent. Default: 217",

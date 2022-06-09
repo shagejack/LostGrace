@@ -27,12 +27,11 @@ import java.util.List;
 public class GraceTileEntity extends BaseTileEntity {
 
     private Grace grace = null;
-    private boolean loaded;
-    protected Player interactedPlayer = null;
 
     protected int cooldown;
     protected int summoned;
     protected boolean locked;
+    protected boolean isTable;
 
     protected int syncCounter = 1200;
 
@@ -56,10 +55,12 @@ public class GraceTileEntity extends BaseTileEntity {
         if (this.grace == null || grace.equals(Grace.NULL) || grace.getDimension() == null || !grace.getRawName().equals(graceName))
             this.grace = getGrace(true);
 
-        if (locked) {
+        this.isTable = GraceBlock.isTableGrace(level, getBlockPos());
+
+        if (locked || isTable) {
             List<Player> players = new ArrayList<>();
             for(Player player : level.players()) {
-                if (Vector3.of(getBlockPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5).distance(Vector3.of(player.position())) < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE) {
+                if (Vector3.of(getBlockPos()).add(0.5, isTable ? 0.5 : Constants.GRACE_DISTANCE_Y_OFFSET, 0.5).distance(Vector3.of(player.position())) < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE) {
                     players.add(player);
                 }
             }
@@ -108,7 +109,8 @@ public class GraceTileEntity extends BaseTileEntity {
 
     @OnlyIn(Dist.CLIENT)
     public void createFog() {
-        if (Minecraft.getInstance().player == null || !this.isLocked()) {
+
+        if (Minecraft.getInstance().player == null || (!this.isLocked() && !isTable)) {
             renderFog = false;
             return;
         }
@@ -122,7 +124,7 @@ public class GraceTileEntity extends BaseTileEntity {
 
         graceHandler.ifPresent(handler -> {
             if (handler.isGraceActivated() && handler.getLastGrace().equals(this.getGrace())) {
-                Vector3 center = Vector3.of(getBlockPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5);
+                Vector3 center = Vector3.of(getBlockPos()).add(0.5, isTable ? 0.5 : Constants.GRACE_DISTANCE_Y_OFFSET, 0.5);
                 double distance = Vector3.of(Minecraft.getInstance().player.position()).distance(center);
 
                 this.renderFog = true;
@@ -154,6 +156,10 @@ public class GraceTileEntity extends BaseTileEntity {
         }
         this.locked = tag.getBoolean("Locked");
         this.graceName = tag.getString("GraceName");
+    }
+
+    public boolean isTable() {
+        return this.isTable;
     }
 
     public boolean isLocked() {

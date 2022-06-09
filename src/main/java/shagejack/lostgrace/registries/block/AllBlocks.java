@@ -53,6 +53,13 @@ public class AllBlocks {
             .buildBlock(RottenFreshBlock::new)
             .buildItem();
 
+    public static final ItemBlock runeStone = new BlockBuilder()
+            .name("rune_stone")
+            .material(Material.STONE)
+            .properties(properties -> properties)
+            .buildBlock(Block::new)
+            .buildItem();
+
     public static final RegistryObject<Block> sacredBlood = new BlockBuilder()
             .name("sacred_blood")
             .material(Material.WATER)

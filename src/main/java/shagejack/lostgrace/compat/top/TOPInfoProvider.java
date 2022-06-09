@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -38,6 +39,10 @@ public class TOPInfoProvider implements IProbeInfoProvider {
                         }
                     }
                 });
+
+                if (te.isLocked()) {
+                    iProbeInfo.mcText(new TranslatableComponent("lostgrace.top.info.grace_using").withStyle(ChatFormatting.RED).withStyle(ChatFormatting.BOLD));
+                }
             });
         }
 

@@ -3,6 +3,7 @@
   "block.lostgrace.blood_altar": "Blood Altar",
   "block.lostgrace.fresh": "Creepy Fresh",
   "block.lostgrace.rotten_fresh": "Rotten Fresh",
+  "block.lostgrace.rune_stone": "Rune Stone",
   "block.lostgrace.profane_blood": "Fresh Blood",
   "block.lostgrace.sacred_blood": "Fresh Blood",
   "block.lostgrace.dream": "Dream",
@@ -57,6 +58,7 @@
   "lostgrace.info.chalk_no_book": "What should I actually draw? Maybe I need a book about runes...",
 
   "lostgrace.top.info.grace_name": "Grace Name",
+  "lostgrace.top.info.grace_using": "Being Used",
 
   "lostgrace.jei.category.anvil": "Anvil Smash",
 

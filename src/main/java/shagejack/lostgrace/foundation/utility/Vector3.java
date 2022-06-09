@@ -6,16 +6,20 @@ import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import it.unimi.dsi.fastutil.doubles.Double2DoubleFunction;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
+import org.apache.logging.log4j.util.TriConsumer;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
+import java.util.function.UnaryOperator;
 
 public record Vector3(double x, double y, double z) {
 
@@ -204,6 +208,22 @@ public record Vector3(double x, double y, double z) {
         return this.add(toVec.subtract(this).multiply(t));
     }
 
+    public Vector3 quadraticInterpolation(Vector3 toVec, double t) {
+        return functionalInterpolation(toVec, dt -> 2 * dt - dt * dt, t);
+    }
+
+    /**
+     * method to get functional interpolated vectors
+     * @param toVec the end point
+     * @param rangedFunction a mapping from delta T to scale of Y (usually 0.0 - 1.0)
+     * @param t delta T (usually) between 0.0 and 1.0
+     * @return the interpolated vector
+     */
+    public Vector3 functionalInterpolation(Vector3 toVec, Double2DoubleFunction rangedFunction, double t) {
+        Vector3 between = toVec.subtract(this);
+        return between.setY(0).multiply(t).setY(between.y() * rangedFunction.applyAsDouble(t));
+    }
+
     public Vector3 opposite() {
         return new Vector3(-x, -y, -z);
     }
@@ -243,24 +263,8 @@ public record Vector3(double x, double y, double z) {
         return this.includedAngle(vec) * 180 / Math.PI;
     }
 
-    public static Iterator<Vector3> iterator(Vector3 from, Vector3 to, int divider) {
-        return new VecIterator(from, to, divider);
-    }
-
-    public Iterator<Vector3> iterator(Vector3 to, int divider) {
-        return iterator(this, to, divider);
-    }
-
-    public Iterator<Vector3> iterator(int divider) {
-        return iterator(this, divider);
-    }
-
-    public static Iterator<Vector3> formulaIterator(Vector3 start, IntFunction<Vector3> addVectorFun, int times) {
-        return new VecFormulaIterator(start, addVectorFun, times);
-    }
-
-    public Iterator<Vector3> formulaIterator(IntFunction<Vector3> addVectorFun, int times) {
-        return formulaIterator(this, addVectorFun, times);
+    public Vector3 apply(UnaryOperator<Vector3> operator) {
+        return operator.apply(this);
     }
 
     public CompoundTag serializeNBT() {
@@ -343,71 +347,6 @@ public record Vector3(double x, double y, double z) {
         quaternion1.conj();
         quaternion.mul(quaternion1);
         return new Vector3(quaternion.i(), quaternion.j(), quaternion.k());
-    }
-
-    public static class VecIterator implements Iterator<Vector3> {
-
-        Vector3 from;
-        Vector3 to;
-
-        int size;
-        int cursor = 0;
-
-        public VecIterator(Vector3 from, Vector3 to, int size) {
-            this.from = from;
-            this.to = to;
-            this.size = size;
-        }
-
-        public VecIterator(Vector3 vec, int size) {
-            this.from = ZERO;
-            this.to = vec;
-            this.size = size;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return cursor != size;
-        }
-
-        @Override
-        public Vector3 next() {
-            Vector3 vec = from.add(to.subtract(from).multiply((double) this.cursor / size));
-            this.cursor++;
-            return vec;
-        }
-    }
-
-    public static class VecFormulaIterator implements Iterator<Vector3> {
-
-        Vector3 currentPoint;
-        IntFunction<Vector3> addVec;
-
-        int times;
-        int cursor = 0;
-
-        public VecFormulaIterator(Vector3 startPoint, IntFunction<Vector3> addVec, int times) {
-            this.currentPoint = startPoint;
-            this.addVec = addVec;
-            this.times = times;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return cursor != times;
-        }
-
-        @Override
-        public Vector3 next() {
-            if (cursor == 0) {
-                this.cursor++;
-                return currentPoint;
-            }
-
-            Vector3 vec = currentPoint.add(addVec.apply(cursor));
-            this.cursor++;
-            return vec;
-        }
     }
 
 }

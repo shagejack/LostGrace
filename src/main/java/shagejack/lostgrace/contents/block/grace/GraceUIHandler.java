@@ -123,10 +123,12 @@ public class GraceUIHandler implements ITickHandler {
             return;
         }
 
-        IGraceHandler graceHandler = this.currentUI.getGraceHandler();
-        double distance = Vector3.of(player).distance(Vector3.of(this.currentUI.getPos()).add(0.5, Constants.GRACE_DISTANCE_Y_OFFSET, 0.5));
+        boolean isTableGrace = GraceBlock.isTableGrace(this.currentUI.getLevel(), this.currentUI.getPos());
 
-        if(distance > 3) {
+        IGraceHandler graceHandler = this.currentUI.getGraceHandler();
+        double distance = Vector3.of(player).distance(Vector3.of(this.currentUI.getPos()).add(0.5, isTableGrace ? 0.5 : Constants.GRACE_DISTANCE_Y_OFFSET, 0.5));
+
+        if(distance > Constants.GRACE_MAX_DISTANCE) {
             if (fadeTick > 0) {
                 this.renderFog(renderStack, renderOffset, pTick, true);
             }
@@ -134,7 +136,7 @@ public class GraceUIHandler implements ITickHandler {
         }
 
         this.renderFog(renderStack, renderOffset, pTick, false);
-        this.renderGraces(renderStack, renderOffset, pTick, graceHandler);
+        this.renderGraces(renderStack, renderOffset, pTick, graceHandler, isTableGrace);
     }
 
     private void renderFog(PoseStack renderStack, Vector3 renderOffset, float pTick, boolean fading) {
@@ -174,7 +176,7 @@ public class GraceUIHandler implements ITickHandler {
         renderStack.popPose();
     }
     
-    private void renderGraces(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler) {
+    private void renderGraces(PoseStack renderStack, Vector3 renderOffset, float pTick, IGraceHandler graceHandler, boolean isTableGrace) {
         TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.GUIDANCE);
 
         MultiBufferSource.BufferSource buffer = Minecraft.getInstance().renderBuffers().bufferSource();
@@ -185,7 +187,7 @@ public class GraceUIHandler implements ITickHandler {
             double graceOffset = grace.hashCode() * 0.114514D;
 
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
-            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(renderOffset) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getDimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
+            if (pos.addY(isTableGrace ? 0 : Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(renderOffset) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getDimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
                 Vector3 graceVector = pos.subtract(renderOffset).normalize().multiply(5);
 
                 Player player = Minecraft.getInstance().player;
@@ -247,6 +249,8 @@ public class GraceUIHandler implements ITickHandler {
         if (this.validate())
             return;
 
+        boolean isTableGrace = GraceBlock.isTableGrace(this.currentUI.getLevel(), this.currentUI.getPos());
+
         IGraceHandler graceHandler = this.currentUI.getGraceHandler();
 
         Player player = Minecraft.getInstance().player;
@@ -265,7 +269,7 @@ public class GraceUIHandler implements ITickHandler {
         List<Grace> graces = graceHandler.getAllGracesFound().stream().filter(grace -> {
             Vector3 pos = Vector3.of(grace.getPos()).add(0.5, 0.5, 0.5);
             // interact with distant grace
-            if (pos.addY(Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(playerPos) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getDimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
+            if (pos.addY(isTableGrace ? 0 : Constants.GRACE_DISTANCE_Y_OFFSET - 0.5).distance(playerPos) > Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || !grace.getDimension().location().equals(Minecraft.getInstance().level != null ? Minecraft.getInstance().level.dimension().location() : null)) {
                 Vector3 graceVector = pos.subtract(playerPos.addY(Constants.PLAYER_SIGHT_Y_OFFSET)).normalize();
                 return Vector3.of(player.getViewVector(1.0F)).includedAngleDegree(graceVector) < Constants.GRACE_TELEPORT_SELECTION_DEVIATION_DEGREE;
             }

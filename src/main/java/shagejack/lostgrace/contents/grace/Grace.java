@@ -10,8 +10,11 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.server.ServerLifecycleHooks;
+import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
+import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class Grace {
     public static final Grace NULL = new Grace();
@@ -165,5 +168,18 @@ public class Grace {
             tag.putBoolean("IsClientSide", isClientSide);
         }
         return tag;
+    }
+
+    public Optional<GraceTileEntity> getGraceTileEntity() {
+        return TileEntityUtils.get(GraceTileEntity.class, this.getLevel(), this.getPos());
+    }
+
+    public boolean isTable() {
+        Optional<GraceTileEntity> te = getGraceTileEntity();
+
+        if (te.isEmpty())
+            return false;
+
+        return te.get().isTable();
     }
 }

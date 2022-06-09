@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import shagejack.lostgrace.foundation.utility.Vector3;
 
 public abstract class BaseTileEntity extends SyncedTileEntity implements IPartialSafeNBT{
     private boolean initialized = false;
@@ -90,5 +91,9 @@ public abstract class BaseTileEntity extends SyncedTileEntity implements IPartia
     public final CompoundTag writeClient(CompoundTag tag) {
         write(tag, true);
         return tag;
+    }
+
+    public Vector3 getCenterPos() {
+        return Vector3.atCenterOf(this.getBlockPos());
     }
 }

@@ -38,6 +38,7 @@ import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
 import shagejack.lostgrace.foundation.utility.DropUtils;
+import shagejack.lostgrace.registries.block.AllBlocks;
 import shagejack.lostgrace.registries.item.AllItems;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
@@ -49,6 +50,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
     public static final BooleanProperty COOLDOWN = BlockStateProperties.ATTACHED;
 
     private static final VoxelShape SHAPE = Block.box(4.0D, 8.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+    private static final VoxelShape TABLE_SHAPE = Block.box(0.0D, 8.0D, 0.0D, 16.0D, 24.0D, 16.0D);
 
     public GraceBlock(Properties properties) {
         super(properties);
@@ -62,7 +64,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     @Override
     public @NotNull VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context) {
-        return state.getValue(COOLDOWN) ? Shapes.empty() : SHAPE;
+        return isTableGrace(worldIn, pos) ? TABLE_SHAPE : state.getValue(COOLDOWN) ? Shapes.empty() : SHAPE;
     }
 
     @Override
@@ -101,7 +103,9 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
     }
 
     public void firstVisit(Level level, BlockPos pos, Player player) {
-        level.setBlock(pos, level.getBlockState(pos).setValue(COOLDOWN, true), 3);
+        if (!isTableGrace(level, pos)) {
+            level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(COOLDOWN, true));
+        }
         if (player instanceof ServerPlayer serverPlayer) {
             DiscoverGracePacket discoverGracePacket = new DiscoverGracePacket();
             AllPackets.sendToPlayer(serverPlayer, discoverGracePacket);
@@ -118,8 +122,10 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
     }
 
     public void commonVisit(Level level, BlockPos pos, Player player) {
-        level.setBlock(pos, level.getBlockState(pos).setValue(COOLDOWN, true), 3);
-        withTileEntityDo(level, pos, te -> te.setLocked(true));
+        if (!isTableGrace(level, pos)) {
+            level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(COOLDOWN, true));
+            withTileEntityDo(level, pos, te -> te.setLocked(true));
+        }
     }
 
     @Override
@@ -142,7 +148,6 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
             level.playLocalSound(x, y, z, SoundEvents.FURNACE_FIRE_CRACKLE, SoundSource.BLOCKS, 1.0F, 1.0F, false);
         }
 
-
         level.addParticle(ParticleTypes.END_ROD, x + random.nextDouble() - 0.5D, y + random.nextDouble() - 0.5D, z + random.nextDouble() - 0.5D, 0.0D, 0.0D, 0.0D);
     }
 
@@ -160,5 +165,21 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
             DropUtils.dropItemStack(level, pos, dropSeed);
             level.removeBlockEntity(pos);
         }
+    }
+
+    public static boolean isTableGrace(BlockGetter level, BlockPos pos) {
+        return isRuneStone(level, pos.offset(0, -1, 0)) &&
+                isRuneStone(level, pos.offset(1, -1, 0)) &&
+                isRuneStone(level, pos.offset(-1, -1, 0)) &&
+                isRuneStone(level, pos.offset(0, -1, 1)) &&
+                isRuneStone(level, pos.offset(0, -1, -1)) &&
+                isRuneStone(level, pos.offset(1, -1, 1)) &&
+                isRuneStone(level, pos.offset(1, -1, -1)) &&
+                isRuneStone(level, pos.offset(-1, -1, 1)) &&
+                isRuneStone(level, pos.offset(-1, -1, -1));
+    }
+
+    public static boolean isRuneStone(BlockGetter level, BlockPos pos) {
+        return level.getBlockState(pos).is(AllBlocks.runeStone.block().get());
     }
 }

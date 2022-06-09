@@ -3,6 +3,7 @@
   "block.lostgrace.blood_altar": "鲜血祭坛",
   "block.lostgrace.fresh": "蠕动的血肉",
   "block.lostgrace.rotten_fresh": "腐败的血肉",
+  "block.lostgrace.rune_stone": "符文石",
   "block.lostgrace.profane_blood": "鲜血",
   "block.lostgrace.sacred_blood": "鲜血",
   "block.lostgrace.dream": "梦浆",
@@ -57,6 +58,7 @@
   "lostgrace.info.chalk_no_book": "我到底该画什么？我可能需要一本符文书……",
 
   "lostgrace.top.info.grace_name": "赐福名",
+  "lostgrace.top.info.grace_using": "正在被使用",
 
   "lostgrace.jei.category.anvil": "铁砧粉碎",
 
