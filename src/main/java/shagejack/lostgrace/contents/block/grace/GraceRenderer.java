@@ -48,7 +48,7 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         }
         float scale = 0.5f + s * 0.1f;
 
-        boolean isTableGrace = GraceBlock.isTableGrace(grace.getLevel(), grace.getBlockPos());
+        boolean isTableGrace = grace.isTableGrace();
 
         TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.HUMANITY);
         

@@ -13,6 +13,7 @@ import shagejack.lostgrace.contents.block.dreamPool.DreamPoolBlock;
 import shagejack.lostgrace.contents.block.fresh.FreshBlock;
 import shagejack.lostgrace.contents.block.fresh.RottenFreshBlock;
 import shagejack.lostgrace.contents.block.grace.GraceBlock;
+import shagejack.lostgrace.contents.block.runeStone.RuneStoneBlock;
 import shagejack.lostgrace.contents.block.spell.ChalkRuneBlock;
 import shagejack.lostgrace.contents.block.trinaLily.TrinaLilyBlock;
 import shagejack.lostgrace.registries.fluid.AllFluids;
@@ -57,7 +58,7 @@ public class AllBlocks {
             .name("rune_stone")
             .material(Material.STONE)
             .properties(properties -> properties)
-            .buildBlock(Block::new)
+            .buildBlock(RuneStoneBlock::new)
             .buildItem();
 
     public static final RegistryObject<Block> sacredBlood = new BlockBuilder()

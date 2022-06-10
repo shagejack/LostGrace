@@ -123,7 +123,8 @@ public class GraceUIHandler implements ITickHandler {
             return;
         }
 
-        boolean isTableGrace = GraceBlock.isTableGrace(this.currentUI.getLevel(), this.currentUI.getPos());
+        Optional<GraceTileEntity> te = TileEntityUtils.get(GraceTileEntity.class, this.currentUI.getLevel(), this.currentUI.getPos());
+        boolean isTableGrace = te.isPresent() && te.get().isTableGrace();
 
         IGraceHandler graceHandler = this.currentUI.getGraceHandler();
         double distance = Vector3.of(player).distance(Vector3.of(this.currentUI.getPos()).add(0.5, isTableGrace ? 0.5 : Constants.GRACE_DISTANCE_Y_OFFSET, 0.5));
@@ -249,7 +250,8 @@ public class GraceUIHandler implements ITickHandler {
         if (this.validate())
             return;
 
-        boolean isTableGrace = GraceBlock.isTableGrace(this.currentUI.getLevel(), this.currentUI.getPos());
+        Optional<GraceTileEntity> te = TileEntityUtils.get(GraceTileEntity.class, this.currentUI.getLevel(), this.currentUI.getPos());
+        boolean isTableGrace = te.isPresent() && te.get().isTableGrace();
 
         IGraceHandler graceHandler = this.currentUI.getGraceHandler();
 

@@ -21,6 +21,10 @@ public abstract class BaseTileEntity extends SyncedTileEntity implements IPartia
 
     }
 
+    public void onPlace() {
+
+    }
+
     public void tick() {
         if (!initialized && hasLevel()) {
             initialize();

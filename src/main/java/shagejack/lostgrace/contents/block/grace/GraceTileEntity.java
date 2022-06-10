@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,6 +20,7 @@ import shagejack.lostgrace.foundation.network.packet.GraceTileEntityUpdatePacket
 import shagejack.lostgrace.foundation.tile.BaseTileEntity;
 import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.Vector3;
+import shagejack.lostgrace.registries.block.AllBlocks;
 import shagejack.lostgrace.registries.tile.AllTileEntities;
 
 import java.util.ArrayList;
@@ -54,8 +56,6 @@ public class GraceTileEntity extends BaseTileEntity {
 
         if (this.grace == null || grace.equals(Grace.NULL) || grace.getDimension() == null || !grace.getRawName().equals(graceName))
             this.grace = getGrace(true);
-
-        this.isTable = GraceBlock.isTableGrace(level, getBlockPos());
 
         if (locked || isTable) {
             List<Player> players = new ArrayList<>();
@@ -144,6 +144,7 @@ public class GraceTileEntity extends BaseTileEntity {
         tag.putInt("Summoned", this.summoned);
         tag.putBoolean("Locked", this.locked);
         tag.putString("GraceName", this.graceName);
+        tag.putBoolean("IsTable", this.isTable);
     }
 
     @Override
@@ -156,10 +157,15 @@ public class GraceTileEntity extends BaseTileEntity {
         }
         this.locked = tag.getBoolean("Locked");
         this.graceName = tag.getString("GraceName");
+        this.isTable = tag.getBoolean("IsTable");
     }
 
     public boolean isTable() {
         return this.isTable;
+    }
+
+    public void setTable(boolean isTable) {
+        this.isTable = isTable;
     }
 
     public boolean isLocked() {
@@ -229,5 +235,35 @@ public class GraceTileEntity extends BaseTileEntity {
         GlobalGraceSet.removeGrace(getGrace());
 
         super.onRemoved();
+    }
+
+    @Override
+    public void onPlace() {
+        tryInitTableGrace();
+    }
+
+    public void tryInitTableGrace() {
+        if (this.isTableGrace())
+            this.setTable(true);
+    }
+
+    public boolean isTableGrace() {
+        if (level == null)
+            return false;
+
+        BlockPos pos = getBlockPos();
+        return isRuneStone(level, pos.offset(0, -1, 0)) &&
+                isRuneStone(level, pos.offset(1, -1, 0)) &&
+                isRuneStone(level, pos.offset(-1, -1, 0)) &&
+                isRuneStone(level, pos.offset(0, -1, 1)) &&
+                isRuneStone(level, pos.offset(0, -1, -1)) &&
+                isRuneStone(level, pos.offset(1, -1, 1)) &&
+                isRuneStone(level, pos.offset(1, -1, -1)) &&
+                isRuneStone(level, pos.offset(-1, -1, 1)) &&
+                isRuneStone(level, pos.offset(-1, -1, -1));
+    }
+
+    public static boolean isRuneStone(BlockGetter level, BlockPos pos) {
+        return level.getBlockState(pos).is(AllBlocks.runeStone.block().get());
     }
 }

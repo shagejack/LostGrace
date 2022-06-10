@@ -20,5 +20,12 @@ public abstract class BaseTileEntityBlock<T extends BaseTileEntity> extends Bloc
         }
     }
 
+    @Deprecated
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
+        if (state.hasBlockEntity() && oldState.getBlock() != state.getBlock()) {
+            withTileEntityDo(level, pos, T::onPlace);
+        }
+    }
+
 
 }
