@@ -35,6 +35,10 @@ public class TrinaCrystalBallItem extends Item {
 
         if (entityOptional.isPresent()) {
             LivingEntity entity = entityOptional.get();
+
+            if (player.equals(entity))
+                return InteractionResult.FAIL;
+
             if (entity.hasEffect(AllMobEffects.SLEEP)) {
                 entity.removeEffect(AllMobEffects.SLEEP);
                 entity.stopSleeping();

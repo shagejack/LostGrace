@@ -107,7 +107,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     public void firstVisit(Level level, BlockPos pos, Player player) {
         withTileEntityDo(level, pos, te -> {
-            if (te.isTableGrace()) {
+            if (!te.isTableGrace()) {
                 level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(COOLDOWN, true));
             }
         });
@@ -129,9 +129,9 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     public void commonVisit(Level level, BlockPos pos, Player player) {
         withTileEntityDo(level, pos, te -> {
-            if (te.isTableGrace()) {
-            level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(COOLDOWN, true));
-            te.setLocked(true);
+            if (!te.isTableGrace()) {
+                level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(COOLDOWN, true));
+                te.setLocked(true);
             }
         });
     }

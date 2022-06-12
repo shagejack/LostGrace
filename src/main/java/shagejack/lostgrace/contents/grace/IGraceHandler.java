@@ -68,7 +68,7 @@ public interface IGraceHandler extends INBTSerializable<CompoundTag> {
     }
 
     default void tryDeactivateGrace(ServerPlayer player) {
-        if (!getLastGrace().getDimension().equals(player.getLevel().dimension())) {
+        if (getLastGrace() == Grace.NULL || !getLastGrace().getDimension().equals(player.getLevel().dimension())) {
             deactivateGrace();
             syncToClient(player);
             return;

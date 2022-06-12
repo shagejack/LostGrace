@@ -59,7 +59,7 @@ public class MemoryOfGraceItem extends Item {
                         Level graceLevel = grace.getLevel();
                         Vector3 pos = Vector3.atCenterOf(grace.getPos());
                         if (graceLevel instanceof ServerLevel targetLevel) {
-                            player.teleportTo(targetLevel, pos.x(), pos.y(), pos.z(), Mth.wrapDegrees(player.getYRot()), Mth.wrapDegrees(player.getXRot()));
+                            player.teleportTo(targetLevel, pos.x(), pos.y() - 0.2D, pos.z(), Mth.wrapDegrees(player.getYRot()), Mth.wrapDegrees(player.getXRot()));
                             graceData.visitGrace(grace, false);
                         }
                     } else {
