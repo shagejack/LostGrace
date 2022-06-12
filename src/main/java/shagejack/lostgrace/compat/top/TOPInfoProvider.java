@@ -35,7 +35,7 @@ public class TOPInfoProvider implements IProbeInfoProvider {
                 player.getCapability(GraceProvider.GRACE_HANDLER_CAPABILITY).ifPresent(graceHandler -> {
                     if (graceHandler.contains(te.getGrace())) {
                         if (te.getGrace().hasName()) {
-                            iProbeInfo.mcText(new TextComponent(I18n.get("lostgrace.top.info.grace_name") + ": " + te.getGraceName()).withStyle(ChatFormatting.GOLD));
+                            iProbeInfo.mcText(new TranslatableComponent("lostgrace.top.info.grace_name").append(": " + te.getGraceName()).withStyle(ChatFormatting.GOLD));
                         }
                     }
                 });
