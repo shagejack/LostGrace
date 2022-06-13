@@ -214,6 +214,7 @@ public class GraceUIHandler implements ITickHandler {
                     Color textColor = new Color(255, 215, 0);
 
                     if (grace.hasName()) {
+                        // TODO: fix text rendering of graces above and below relative to the player
                         DrawUtils.renderInLevelText(renderStack, renderPos.addY(1.1 * scale), grace.getHoverName(), textColor, scale);
                     }
                 } else {

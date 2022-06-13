@@ -5,6 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -126,7 +127,7 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
         this.noPhysics = false;
         this.setNoGravity(true);
 
-        this.setCustomName(TextUtils.corrupt(I18n.get("entity.lostgrace.black_knife_assassin"), this.getRandom()));
+        this.setCustomName(new TranslatableComponent("entity.lostgrace.black_knife_assassin").withStyle(TextUtils.randomFormat(this.getRandom())));
 
         if (getSummonedTicks() > 0) {
             if (this.getLevel().noCollision(this.getBoundingBox(getWCloserTo3D(this.getRadius() / 100)))) {

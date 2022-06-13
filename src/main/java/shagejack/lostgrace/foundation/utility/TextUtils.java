@@ -3,6 +3,7 @@ package shagejack.lostgrace.foundation.utility;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +41,11 @@ public class TextUtils {
             }
         }
         return component;
+    }
+
+    // TODO: corrupt translatable component
+    public static Component corrupt(TranslatableComponent text, Random random) {
+        return text;
     }
 
 }
