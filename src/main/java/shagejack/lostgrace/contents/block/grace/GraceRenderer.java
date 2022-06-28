@@ -89,6 +89,8 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         if (distance < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || distance > 64)
             return;
 
+        // render particles
+
         long t = System.currentTimeMillis();
         double s1 = 0.1 + t % 7600 / 4000.0;
         Random dRandom = new Random(t / 7600 + grace.getGrace().hashCode());

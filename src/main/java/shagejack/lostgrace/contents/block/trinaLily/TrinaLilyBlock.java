@@ -30,7 +30,7 @@ public class TrinaLilyBlock extends FlowerBlock {
 
         for(int i = 0; i < 3; ++i) {
             if (pRandom.nextBoolean()) {
-                pLevel.addParticle(ParticleTypes.END_ROD, d0 + pRandom.nextDouble() / 5.0D, (double)pPos.getY() + (0.5D - pRandom.nextDouble()), d1 + pRandom.nextDouble() / 5.0D, 0.0D, 0.0D, 0.0D);
+                pLevel.addParticle(ParticleTypes.END_ROD, d0 + (pRandom.nextBoolean() ? pRandom.nextDouble() / 5.0D : - pRandom.nextDouble() / 5.0D), (double)pPos.getY() + (0.5D - pRandom.nextDouble()), d1 + (pRandom.nextBoolean() ? pRandom.nextDouble() / 5.0D : - pRandom.nextDouble() / 5.0D), 0.0D, 0.0D, 0.0D);
             }
         }
 

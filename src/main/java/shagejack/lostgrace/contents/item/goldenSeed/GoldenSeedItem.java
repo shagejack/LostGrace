@@ -28,7 +28,7 @@ public class GoldenSeedItem extends Item {
             if (seedStack.hasCustomHoverName()) {
                 TileEntityLateInitializationHandler.getInstance().offer(new GraceTileEntityLateInitializer(level, inPos, te -> te.setGraceName(entity.getItem().getHoverName().getContents())));
             }
-            entity.remove(Entity.RemovalReason.KILLED);
+            entity.discard();
             return true;
         }
         return false;

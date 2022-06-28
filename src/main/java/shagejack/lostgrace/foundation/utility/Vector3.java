@@ -64,34 +64,47 @@ public record Vector3(double x, double y, double z) {
         return random(RAND);
     }
 
+    /**
+     * Get a random 3d vector between (-1, -1, -1) and (1, 1, 1). This method is actually equivalent to getRandomPos(random, Vector3.of(-1, -1, -1), Vector3.of(1, 1, 1)). <br/> <br/>
+     * WARNING: Usage like Vector3.random(random).normalized() are not promised to be evenly distributed. Use Vector3#randomNormal instead.
+     * @param random The random instance that gives out the random 3d vector.
+     * @return the random 3d vector.
+     */
     public static Vector3 random(Random random) {
         return new Vector3(random.nextDouble() * (random.nextBoolean() ? 1 : -1), random.nextDouble() * (random.nextBoolean() ? 1 : -1), random.nextDouble() * (random.nextBoolean() ? 1 : -1));
     }
 
-    public static List<Vector3> getRandomPos(Random random, Vector3 a, Vector3 b, int size) {
-        List<Vector3> result = Lists.newArrayListWithExpectedSize(size);
-        for (int i = 0; i < size; i++) {
-            result.add(a.add(b.subtract(a).multiply(random.nextDouble(), random.nextDouble(), random.nextDouble())));
-        }
-        return result;
+    public static Vector3 randomNormal() {
+        return randomNormal(RAND);
     }
 
-    public static List<Vector3> getRandomPos(Vector3 a, Vector3 b, int size) {
-        return getRandomPos(RAND, a, b, size);
+    /**
+     * Get a random normalized 3d vector evenly distributed on the surface of a sphere of radius 1.
+     * @param random The random instance that gives out the random 3d vector.
+     * @return the random normalized 3d vector.
+     */
+    public static Vector3 randomNormal(Random random) {
+        double theta = 2 * Math.PI * random.nextDouble();
+        double phi = random.nextDouble() * (random.nextBoolean() ? Math.PI : -Math.PI);
+        return new Vector3(Math.cos(phi) * Math.sin(theta), Math.sin(phi), Math.cos(phi) * Math.cos(theta));
     }
 
-    public static List<BlockPos> getRandomBlockPos(Random random, Vector3 a, Vector3 b, int size) {
-        List<BlockPos> result = Lists.newArrayListWithExpectedSize(size);
+    public static Vector3 getRandomPos(Random random, Vector3 a, Vector3 b) {
+        return a.add(b.subtract(a).multiply(random.nextDouble(), random.nextDouble(), random.nextDouble()));
+    }
+
+    public static Vector3 getRandomPos(Vector3 a, Vector3 b) {
+        return getRandomPos(RAND, a, b);
+    }
+
+    public static BlockPos getRandomBlockPos(Random random, Vector3 a, Vector3 b) {
         final BlockPos posA = MathUtils.getBetweenClosedBlockPos(a, b);
         final BlockPos posB = MathUtils.getBetweenClosedBlockPos(b, a);
-        for (int i = 0; i < size; i++) {
-            result.add(MathUtils.randomBetweenBlockPos(random, posA, posB));
-        }
-        return result;
+        return MathUtils.randomBetweenBlockPos(random, posA, posB);
     }
 
-    public static List<BlockPos> getRandomBlockPos(Vector3 a, Vector3 b, int size) {
-        return getRandomBlockPos(RAND, a, b, size);
+    public static BlockPos getRandomBlockPos(Vector3 a, Vector3 b) {
+        return getRandomBlockPos(RAND, a, b);
     }
 
     public Vector3 copy() {
@@ -347,6 +360,19 @@ public record Vector3(double x, double y, double z) {
         quaternion1.conj();
         quaternion.mul(quaternion1);
         return new Vector3(quaternion.i(), quaternion.j(), quaternion.k());
+    }
+
+    public void apply(DoubleTriConsumer consumer) {
+        consumer.accept(this.x(), this.y(), this.z());
+    }
+
+    public void apply(Consumer<Vector3> consumer) {
+        consumer.accept(this);
+    }
+
+    @FunctionalInterface
+    public interface DoubleTriConsumer {
+        void accept(double x, double y, double z);
     }
 
 }

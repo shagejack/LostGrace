@@ -27,10 +27,11 @@ public class LostGraceClient {
     }
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        LostGrace.LOGGER.info("Stitching Texture...");
         if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
             return;
         }
+
+        LostGrace.LOGGER.info("Stitching Texture...");
         event.addSprite(AllTextures.HUMANITY);
         event.addSprite(AllTextures.GUIDANCE);
         event.addSprite(AllTextures.IMPACT_CROSS);

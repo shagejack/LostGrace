@@ -9,11 +9,14 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,6 +29,8 @@ import shagejack.lostgrace.registries.fluid.AllFluids;
 
 import java.awt.*;
 import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntity> {
@@ -37,6 +42,7 @@ public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntit
         renderDream(te, partialTicks, ms, buffer, light, overlay);
         renderDreamEffect(te, partialTicks, ms, buffer, light, overlay);
         renderProcessedDream(te, partialTicks, ms, buffer, light, overlay);
+        renderDreamParticles(te);
     }
 
     protected void renderDream(DreamPoolTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
@@ -91,13 +97,13 @@ public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntit
 
                     ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
 
-                    Vector3 randomScale = Vector3.random(random).multiply(5);
-                    Vector3 moveVector = Vector3.random(random).multiply(moveMultiplier * range / 3.0);
-                    Vector3 randomOffset = Vector3.random(random).multiply(range).add(moveVector);
+                    Vector3 randomScale = Vector3.randomNormal(random).multiply(5);
+                    Vector3 moveVector = Vector3.randomNormal(random).multiply(moveMultiplier * range / 3.0);
+                    Vector3 randomOffset = Vector3.randomNormal(random).multiply(range).add(moveVector);
 
                     ms.translate(randomOffset.x(), range + randomOffset.y(), randomOffset.z());
                     ms.scale(randomScale.xF(), randomScale.yF(), randomScale.zF());
-                    ms.mulPose(Vector3.random(random).asRotateAxis(random.nextDouble(2 * Math.PI)));
+                    ms.mulPose(Vector3.randomNormal(random).asRotateAxis(random.nextDouble(2 * Math.PI)));
 
                     itemRenderer.renderStatic(stack, ItemTransforms.TransformType.FIXED, light, overlay, ms, bufferSource, 0);
 
@@ -112,13 +118,13 @@ public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntit
 
                     BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 
-                    Vector3 randomScale = Vector3.random(random).multiply(5);
-                    Vector3 moveVector = Vector3.random(random).multiply(moveMultiplier * range / 3.0);
-                    Vector3 randomOffset = Vector3.random(random).multiply(range).add(moveVector);
+                    Vector3 randomScale = Vector3.randomNormal(random).multiply(5);
+                    Vector3 moveVector = Vector3.randomNormal(random).multiply(moveMultiplier * range / 3.0);
+                    Vector3 randomOffset = Vector3.randomNormal(random).multiply(range).add(moveVector);
 
                     ms.translate(randomOffset.x(), range + randomOffset.y(), randomOffset.z());
                     ms.scale(randomScale.xF(), randomScale.yF(), randomScale.zF());
-                    ms.mulPose(Vector3.random(random).asRotateAxis(random.nextDouble(2 * Math.PI)));
+                    ms.mulPose(Vector3.randomNormal(random).asRotateAxis(random.nextDouble(2 * Math.PI)));
 
                     blockRenderer.renderSingleBlock(state, ms, bufferSource, light, overlay, te.getModelData());
 
@@ -136,14 +142,14 @@ public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntit
 
                     EntityRenderDispatcher entityRenderer = Minecraft.getInstance().getEntityRenderDispatcher();
 
-                    Vector3 randomScale = Vector3.random(random).multiply(5);
-                    Vector3 moveVector = Vector3.random(random).multiply(moveMultiplier * range / 3.0);
-                    Vector3 randomOffset = Vector3.random(random).multiply(range).add(moveVector);
+                    Vector3 randomScale = Vector3.randomNormal(random).multiply(5);
+                    Vector3 moveVector = Vector3.randomNormal(random).multiply(moveMultiplier * range / 3.0);
+                    Vector3 randomOffset = Vector3.randomNormal(random).multiply(range).add(moveVector);
 
                     ms.pushPose();
 
                     ms.scale(randomScale.xF(), randomScale.yF(), randomScale.zF());
-                    ms.mulPose(Vector3.random(random).asRotateAxis(random.nextDouble(2 * Math.PI)));
+                    ms.mulPose(Vector3.randomNormal(random).asRotateAxis(random.nextDouble(2 * Math.PI)));
 
                     double d0 = Mth.lerp(partialTicks, entity.xOld, entity.getX()) + randomOffset.x();
                     double d1 = Mth.lerp(partialTicks, entity.yOld, entity.getY()) + range + randomOffset.y();
@@ -157,6 +163,22 @@ public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntit
             }
 
         }
+    }
+
+    protected void renderDreamParticles(DreamPoolTileEntity te) {
+        if (te.tank.isEmpty())
+            return;
+
+        if (te.getLevel() == null)
+            return;
+
+        if (Minecraft.getInstance().isPaused())
+            return;
+
+        if (Minecraft.getInstance().player == null)
+            return;
+
+        // TODO: render processed dream particles
     }
 
     protected void renderProcessedDream(DreamPoolTileEntity te, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {

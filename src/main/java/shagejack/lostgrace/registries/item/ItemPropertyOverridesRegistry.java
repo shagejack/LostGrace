@@ -12,7 +12,6 @@ public class ItemPropertyOverridesRegistry {
     public static void propertyOverrideRegistry(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ItemProperties.register(AllItems.blackKnife.get(), LostGrace.asResource("blood"), (itemStack, clientLevel, livingEntity, entityId) -> itemStack.getOrCreateTag().getInt("Blood") / 1000F);
-
             ItemProperties.register(AllItems.blackKnife.get(), LostGrace.asResource("invisible"), (itemStack, clientLevel, livingEntity, entityId) -> BlackKnifeItem.isInvisible(itemStack) ? 1.0F : 0.0F);
         });
     }

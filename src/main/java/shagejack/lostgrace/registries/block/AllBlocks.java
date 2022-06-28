@@ -9,6 +9,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.contents.block.blood.BloodLiquidBlock;
 import shagejack.lostgrace.contents.block.bloodAltar.BloodAltarBlock;
+import shagejack.lostgrace.contents.block.dream.DreamLiquidBlock;
 import shagejack.lostgrace.contents.block.dreamPool.DreamPoolBlock;
 import shagejack.lostgrace.contents.block.fresh.FreshBlock;
 import shagejack.lostgrace.contents.block.fresh.RottenFreshBlock;
@@ -79,7 +80,7 @@ public class AllBlocks {
             .name("dream")
             .material(Material.WATER)
             .properties(properties -> properties.noCollission().strength(100.0F).noDrops())
-            .buildBlock(properties -> new LiquidBlock(AllFluids.dream.still(), properties))
+            .buildBlock(properties -> new DreamLiquidBlock(AllFluids.dream.still(), properties))
             .noItem();
 
     public static final ItemBlock trinaLily = new BlockBuilder()
