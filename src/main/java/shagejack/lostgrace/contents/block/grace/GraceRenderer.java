@@ -42,7 +42,7 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
             // ms.popPose();
         }
 
-        float s = (System.currentTimeMillis() % 1000) / 1000.0f;
+        float s = (System.currentTimeMillis() % 4000) / 4000.0f;
         if (s > 0.5f) {
             s = 1.0f - s;
         }
@@ -64,7 +64,7 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
         ms.mulPose(rotation);
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.GRACE);
+        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
         Matrix4f matrix = ms.last().pose();
 
         buffer.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU0(), spriteHumanity.getV0()).uv2(brightness).normal(1,0,0).endVertex();

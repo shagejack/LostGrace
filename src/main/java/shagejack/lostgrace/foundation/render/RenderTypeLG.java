@@ -15,12 +15,25 @@ public class RenderTypeLG extends RenderType {
         super(name, vertexFormat, mode, bufferSize, affectsCrumbling, sortOnUpload, setup, clear);
     }
 
-    public static final RenderType GRACE = RenderTypeBuilder.builder()
-            .name("grace")
+    public static final RenderType HUMANITY = RenderTypeBuilder.builder()
+            .name("humanity")
+            .bufferSize(2097152)
             .vertexFormat(DefaultVertexFormat.BLOCK)
             .vertexFormatMode(VertexFormat.Mode.QUADS)
             .affectsCrumbling()
-            .sortOnUpload()
+            .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
+            .setTextureState(BLOCK_SHEET_MIPPED)
+            .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+            .setOutputState(TRANSLUCENT_TARGET)
+            .enableLightMap()
+            .build();
+
+    public static final RenderType GRACE = RenderTypeBuilder.builder()
+            .name("grace")
+            .bufferSize(2097152)
+            .vertexFormat(DefaultVertexFormat.BLOCK)
+            .vertexFormatMode(VertexFormat.Mode.QUADS)
+            .affectsCrumbling()
             .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
             .setTextureState(BLOCK_SHEET_MIPPED)
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -34,8 +47,7 @@ public class RenderTypeLG extends RenderType {
             .vertexFormat(DefaultVertexFormat.BLOCK)
             .vertexFormatMode(VertexFormat.Mode.QUADS)
             .affectsCrumbling()
-            .sortOnUpload()
-            .setShaderState(RENDERTYPE_TRANSLUCENT_SHADER)
+            .setShaderState(RENDERTYPE_CUTOUT_MIPPED_SHADER)
             .setTextureState(BLOCK_SHEET_MIPPED)
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
             .setOutputState(TRANSLUCENT_TARGET)
@@ -47,7 +59,6 @@ public class RenderTypeLG extends RenderType {
             .name("sphere")
             .bufferSize(2097152)
             .affectsCrumbling()
-            .sortOnUpload()
             .vertexFormat(DefaultVertexFormat.POSITION_COLOR)
             .vertexFormatMode(VertexFormat.Mode.TRIANGLES)
             .setShaderState(RenderStateShard.POSITION_COLOR_SHADER)
@@ -60,10 +71,9 @@ public class RenderTypeLG extends RenderType {
             .build();
 
     public static final RenderType SPHERE_TEX = RenderTypeBuilder.builder()
-            .name("sphere")
+            .name("sphere_tex")
             .bufferSize(2097152)
             .affectsCrumbling()
-            .sortOnUpload()
             .vertexFormat(DefaultVertexFormat.POSITION_TEX_LIGHTMAP_COLOR)
             .vertexFormatMode(VertexFormat.Mode.TRIANGLES)
             .setShaderState(RenderStateShard.POSITION_TEX_SHADER)

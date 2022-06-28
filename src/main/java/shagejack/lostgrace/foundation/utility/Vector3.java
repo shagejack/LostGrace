@@ -18,6 +18,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
@@ -276,10 +277,6 @@ public record Vector3(double x, double y, double z) {
         return this.includedAngle(vec) * 180 / Math.PI;
     }
 
-    public Vector3 apply(UnaryOperator<Vector3> operator) {
-        return operator.apply(this);
-    }
-
     public CompoundTag serializeNBT() {
         CompoundTag tag = new CompoundTag();
         tag.putDouble("X", x);
@@ -362,6 +359,10 @@ public record Vector3(double x, double y, double z) {
         return new Vector3(quaternion.i(), quaternion.j(), quaternion.k());
     }
 
+    public Vector3 apply(UnaryOperator<Vector3> operator) {
+        return operator.apply(this);
+    }
+
     public void apply(DoubleTriConsumer consumer) {
         consumer.accept(this.x(), this.y(), this.z());
     }
@@ -374,5 +375,4 @@ public record Vector3(double x, double y, double z) {
     public interface DoubleTriConsumer {
         void accept(double x, double y, double z);
     }
-
 }

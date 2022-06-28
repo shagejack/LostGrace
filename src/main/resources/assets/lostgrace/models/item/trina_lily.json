@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "lostgrace:block/trina_lily/trina_lily"
+    "layer0": "lostgrace:item/trina_lily/trina_lily"
   }
 }

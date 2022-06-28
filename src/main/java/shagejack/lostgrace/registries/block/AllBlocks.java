@@ -87,6 +87,7 @@ public class AllBlocks {
             .name("trina_lily")
             .material(Material.PLANT)
             .properties(properties -> properties.noCollission().instabreak().sound(SoundType.GRASS))
+            .renderLayer(() -> RenderType::cutoutMipped)
             .buildBlock(TrinaLilyBlock::new)
             .buildItem(itemBuilder -> itemBuilder.properties(properties -> properties.rarity(Rarity.EPIC)));
 
