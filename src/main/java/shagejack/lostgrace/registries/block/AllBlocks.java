@@ -1,10 +1,13 @@
 package shagejack.lostgrace.registries.block;
 
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.contents.block.blood.BloodLiquidBlock;
@@ -86,7 +89,7 @@ public class AllBlocks {
     public static final ItemBlock trinaLily = new BlockBuilder()
             .name("trina_lily")
             .material(Material.PLANT)
-            .properties(properties -> properties.noCollission().instabreak().sound(SoundType.GRASS))
+            .properties(properties -> properties.noCollission().instabreak().sound(SoundType.GRASS).lightLevel(state -> 4))
             .renderLayer(() -> RenderType::cutoutMipped)
             .buildBlock(TrinaLilyBlock::new)
             .buildItem(itemBuilder -> itemBuilder.properties(properties -> properties.rarity(Rarity.EPIC)));
@@ -98,4 +101,12 @@ public class AllBlocks {
             .renderLayer(() -> RenderType::cutoutMipped)
             .buildBlock(ChalkRuneBlock::new)
             .buildItem(ItemBuilder::noTab);
+
+    private static boolean always(BlockState state, BlockGetter getter, BlockPos pos) {
+        return true;
+    }
+
+    private static boolean never(BlockState state, BlockGetter getter, BlockPos pos) {
+        return false;
+    }
 }

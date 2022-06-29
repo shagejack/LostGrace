@@ -35,7 +35,6 @@ public class BlockBuilder {
     protected String name;
     protected RegistryObject<Block> registryObject;
     protected BlockBehaviour.Properties properties;
-    protected UnaryOperator<BlockBehaviour.Properties> operator;
     protected final List<String> tags = new ArrayList<>();
     protected BiFunction<Block, Item.Properties, ? extends BlockItem> blockItemFactory;
     protected String customItemName = "";
@@ -78,7 +77,6 @@ public class BlockBuilder {
     // =============================
 
     public ItemBlock buildItem(Function<ItemBuilder, ItemBuilder> factory) {
-        checkProperties();
         final var itemName = this.customItemName.isEmpty() ? this.name : this.customItemName;
         final var block = checkAlreadyBuild();
         final ItemBuilder itemBuilder = new ItemBuilder().name(itemName);
@@ -104,27 +102,16 @@ public class BlockBuilder {
     //  BlockBuilder Parameters
     // =============================
 
-    public void checkProperties() {
-        if (properties == null) {
-            defaultProperties();
-        }
-
-        if (operator != null) {
-            this.properties = operator.apply(properties);
-        }
-    }
-
     public BlockBuilder defaultProperties() {
         this.properties = BlockBehaviour.Properties.of(Material.STONE).sound(SoundType.STONE).strength(1.5f, 6.0f);
         return this;
     }
 
     public BlockBuilder properties(UnaryOperator<BlockBehaviour.Properties> operator) {
-        if (this.operator == null) {
-            this.operator = operator;
-        } else {
-            this.operator = (UnaryOperator<BlockBehaviour.Properties>) this.operator.andThen(operator);
+        if (this.properties == null) {
+            defaultProperties();
         }
+        this.properties = operator.apply(properties);
         return this;
     }
 
