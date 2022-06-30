@@ -6,7 +6,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
-import shagejack.lostgrace.contents.entity.blackKnifeAssassin.BlackKnifeAssassin;
+import shagejack.lostgrace.contents.entity.chronophage.Chronophage;
 import shagejack.lostgrace.foundation.utility.ColorUtils;
 
 import java.util.Optional;
@@ -14,7 +14,7 @@ import java.util.function.BiConsumer;
 
 public enum SpellType {
     NULL(SpellShape.NULL, ($0, $1) -> {}),
-    SUMMON_BLACK_KNIFE_ASSASSIN(
+    SUMMON_CHRONOPHAGE(
             new SpellShape.Builder()
                     .spell(RuneType.UNKNOWN)
                     .append(0, 0)
@@ -113,10 +113,10 @@ public enum SpellType {
                 level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 level.explode(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 16, Explosion.BlockInteraction.DESTROY);
                 double radius = 3 + level.getRandom().nextDouble() * 5;
-                BlackKnifeAssassin blackKnifeAssassin = new BlackKnifeAssassin(level, radius, radius, true);
-                blackKnifeAssassin.setPos(Vec3.atCenterOf(summonPos));
-                blackKnifeAssassin.setColor(ColorUtils.getRandomColor(level.getRandom()));
-                level.addFreshEntity(blackKnifeAssassin);
+                Chronophage chronophage = new Chronophage(level, radius, radius, true);
+                chronophage.setPos(Vec3.atCenterOf(summonPos));
+                chronophage.setColor(ColorUtils.getRandomColor(level.getRandom()));
+                level.addFreshEntity(chronophage);
             }
     )
     ;

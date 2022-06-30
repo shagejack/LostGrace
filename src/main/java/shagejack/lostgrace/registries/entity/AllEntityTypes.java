@@ -5,16 +5,16 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.registries.RegistryObject;
-import shagejack.lostgrace.contents.entity.blackKnifeAssassin.BlackKnifeAssassin;
-import shagejack.lostgrace.contents.entity.blackKnifeAssassin.BlackKnifeAssassinRenderer;
+import shagejack.lostgrace.contents.entity.chronophage.Chronophage;
+import shagejack.lostgrace.contents.entity.chronophage.ChronophageRenderer;
 
 public class AllEntityTypes {
 
-    public static final RegistryObject<EntityType<? extends Entity>> blackKnifeAssassin = EntityBuilder.<BlackKnifeAssassin>of(BlackKnifeAssassin::new, MobCategory.MONSTER)
-            .name("black_knife_assassin")
+    public static final RegistryObject<EntityType<? extends Entity>> chronophage = EntityBuilder.<Chronophage>of(Chronophage::new, MobCategory.MONSTER)
+            .name("chronophage")
             .builder(builder -> builder.fireImmune().immuneTo(Blocks.WITHER_ROSE))
-            .attribute(BlackKnifeAssassin::createAttributes)
-            .renderer(() -> BlackKnifeAssassinRenderer::new)
+            .attribute(Chronophage::createAttributes)
+            .renderer(() -> ChronophageRenderer::new)
             .build();
 
 }

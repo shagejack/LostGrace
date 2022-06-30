@@ -1,6 +1,6 @@
-package shagejack.lostgrace.contents.entity.blackKnifeAssassin;
+package shagejack.lostgrace.contents.entity.chronophage;
 
-import net.minecraft.client.resources.language.I18n;
+import com.google.common.util.concurrent.AtomicDouble;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerBossEvent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.BossEvent;
 import net.minecraft.world.damagesource.DamageSource;
@@ -22,15 +23,19 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import shagejack.lostgrace.contents.entity.hyperdimensional.Entity4D;
 import shagejack.lostgrace.contents.entity.hyperdimensional.MoveControl4D;
 import shagejack.lostgrace.foundation.entity.EntityDataSerializersLG;
-import shagejack.lostgrace.foundation.utility.TextUtils;
-import shagejack.lostgrace.foundation.utility.Vector3;
-import shagejack.lostgrace.foundation.utility.Vector4;
+import shagejack.lostgrace.foundation.utility.*;
 import shagejack.lostgrace.registries.entity.AllEntityTypes;
 import shagejack.lostgrace.registries.item.AllItems;
 
@@ -40,34 +45,34 @@ import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Random;
 
-public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
-    private static final EntityDataAccessor<Double> DATA_W = SynchedEntityData.defineId(BlackKnifeAssassin.class, EntityDataSerializersLG.DOUBLE);
-    private static final EntityDataAccessor<Double> DATA_RADIUS = SynchedEntityData.defineId(BlackKnifeAssassin.class, EntityDataSerializersLG.DOUBLE);
-    private static final EntityDataAccessor<Color> DATA_COLOR = SynchedEntityData.defineId(BlackKnifeAssassin.class, EntityDataSerializersLG.COLOR);
-    private static final EntityDataAccessor<Integer> DATA_SUMMONED_TICKS = SynchedEntityData.defineId(BlackKnifeAssassin.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> DATA_ANGRY_TICKS = SynchedEntityData.defineId(BlackKnifeAssassin.class, EntityDataSerializers.INT);
+public class Chronophage extends PathfinderMob implements Entity4D {
+    private static final EntityDataAccessor<Double> DATA_W = SynchedEntityData.defineId(Chronophage.class, EntityDataSerializersLG.DOUBLE);
+    private static final EntityDataAccessor<Double> DATA_RADIUS = SynchedEntityData.defineId(Chronophage.class, EntityDataSerializersLG.DOUBLE);
+    private static final EntityDataAccessor<Color> DATA_COLOR = SynchedEntityData.defineId(Chronophage.class, EntityDataSerializersLG.COLOR);
+    private static final EntityDataAccessor<Integer> DATA_SUMMONED_TICKS = SynchedEntityData.defineId(Chronophage.class, EntityDataSerializers.INT);
+    private static final EntityDataAccessor<Integer> DATA_ANGRY_TICKS = SynchedEntityData.defineId(Chronophage.class, EntityDataSerializers.INT);
 
     private final ServerBossEvent bossEvent = (ServerBossEvent)(new ServerBossEvent(this.getDisplayName(), BossEvent.BossBarColor.RED, BossEvent.BossBarOverlay.PROGRESS)).setDarkenScreen(true);
 
     public static final double DEFAULT_RADIUS = 5.0D;
 
-    public BlackKnifeAssassin(EntityType<? extends BlackKnifeAssassin> entityType, Level level) {
+    public Chronophage(EntityType<? extends Chronophage> entityType, Level level) {
         super(entityType, level);
         this.setHealth(this.getMaxHealth());
-        this.moveControl = new BlackKnifeAssassinMoveControl(this);
+        this.moveControl = new ChronophageMoveControl(this);
         this.xpReward = 50;
     }
 
     @SuppressWarnings("unchecked")
-    public BlackKnifeAssassin(Level level, double posW, double radius) {
-        this((EntityType<? extends BlackKnifeAssassin>) AllEntityTypes.blackKnifeAssassin.get(), level);
+    public Chronophage(Level level, double posW, double radius) {
+        this((EntityType<? extends Chronophage>) AllEntityTypes.chronophage.get(), level);
         this.setW(posW);
         this.setRadius(radius);
     }
 
     @SuppressWarnings("unchecked")
-    public BlackKnifeAssassin(Level level, double posW, double radius, boolean asSummoned) {
-        this((EntityType<? extends BlackKnifeAssassin>) AllEntityTypes.blackKnifeAssassin.get(), level);
+    public Chronophage(Level level, double posW, double radius, boolean asSummoned) {
+        this((EntityType<? extends Chronophage>) AllEntityTypes.chronophage.get(), level);
         this.setW(posW);
         this.setRadius(radius);
 
@@ -127,7 +132,7 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
         this.noPhysics = false;
         this.setNoGravity(true);
 
-        this.setCustomName(new TranslatableComponent("entity.lostgrace.black_knife_assassin").withStyle(TextUtils.randomFormat(this.getRandom())));
+        this.setCustomName(new TranslatableComponent("entity.lostgrace.chronophage").withStyle(TextUtils.randomFormat(this.getRandom())));
 
         if (getSummonedTicks() > 0) {
             if (this.getLevel().noCollision(this.getBoundingBox(getWCloserTo3D(this.getRadius() / 100)))) {
@@ -149,7 +154,7 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
             this.discard();
         }
 
-        this.getLevel().getEntitiesOfClass(LivingEntity.class, new AABB(this.blockPosition()).inflate(getRadiusIn3D())).stream().filter(entity -> !(entity instanceof BlackKnifeAssassin) && Vector3.of(entity).distance(Vector3.atCenterOf(this.blockPosition())) <= getRadiusIn3D())
+        this.getLevel().getEntitiesOfClass(LivingEntity.class, new AABB(this.blockPosition()).inflate(getRadiusIn3D())).stream().filter(entity -> !(entity instanceof Chronophage) && Vector3.of(entity).distance(Vector3.atCenterOf(this.blockPosition())) <= getRadiusIn3D())
                 .forEach(entity -> {
                     entity.hurt(DamageSource.OUT_OF_WORLD, 2.0f + entity.getMaxHealth() * 0.05f);
                     Objects.requireNonNull(entity.getAttribute(Attributes.MAX_HEALTH)).addPermanentModifier(new AttributeModifier("Destined death", -2.0F - entity.getMaxHealth() * 0.05, AttributeModifier.Operation.ADDITION));
@@ -163,8 +168,8 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
 
     protected void registerGoals() {
         super.registerGoals();
-        this.goalSelector.addGoal(4, new BlackKnifeAssassinCuriosityGoal());
-        this.goalSelector.addGoal(8, new BlackKnifeAssassinRandomMoveGoal());
+        this.goalSelector.addGoal(4, new ChronophageCuriosityGoal());
+        this.goalSelector.addGoal(8, new ChronophageRandomMoveGoal());
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
     }
 
@@ -293,6 +298,72 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
     @Override
     protected void customServerAiStep() {
         super.customServerAiStep();
+        this.heal(tryEatTime());
+    }
+
+    protected float tryEatTime() {
+        final double speed;
+
+        if (this.getHealth() < this.getMaxHealth()) {
+            if (this.getHealth() < this.getMaxHealth() / 2) {
+                speed = 4.0;
+            } else {
+                speed = 2.0;
+            }
+        } else if (this.random.nextDouble() < 0.1) {
+            speed = 1.0;
+        } else {
+            return 0.0f;
+        }
+
+        AtomicDouble heal = new AtomicDouble();
+        LevelUtils.inRadius(this.getLevel(), this.blockPosition(), this.getRadiusIn3D() + 3.0 + getAngryTicks() / 400.0, (level, pos) -> {
+            BlockState state = level.getBlockState(pos);
+            Block block = state.getBlock();
+
+            if (state.isAir())
+                return;
+
+            if (level instanceof ServerLevel serverLevel && block.isRandomlyTicking(state)) {
+                heal.getAndAdd(0.01);
+                for (int i = 0; i < level.getRandom().nextInt(1, 3) * speed; i++) {
+                    state.randomTick(serverLevel, pos, level.getRandom());
+                }
+            }
+
+            if (block instanceof EntityBlock entityBlock) {
+                TileEntityUtils.get(BlockEntity.class, level, pos).ifPresent(te -> {
+                    if (te.isRemoved())
+                        return;
+
+                    BlockEntityTicker<BlockEntity> ticker = (BlockEntityTicker<BlockEntity>) entityBlock.getTicker(level, state, te.getType());
+
+                    if (ticker == null)
+                        return;
+
+                    heal.getAndAdd(0.01);
+
+                    for (int i = 0; i < level.getRandom().nextInt(150, 300) * speed; i++) {
+                        if (te.isRemoved())
+                            return;
+                        ticker.tick(level, pos, state, te);
+                    }
+                });
+            }
+        });
+
+        level.getEntitiesOfClass(Entity.class, this.getBoundingBox().inflate(3.0 + getAngryTicks() / 400.0), entity -> !(entity instanceof Chronophage)).forEach(entity -> {
+            // sanity check
+            if (entity.is(this) || entity instanceof Chronophage)
+                return;
+
+            heal.getAndAdd(0.01);
+            for (int i = 0; i < level.getRandom().nextInt(150, 300) * speed; i++) {
+                entity.tick();
+            }
+        });
+
+        return heal.floatValue();
     }
 
     /**
@@ -342,8 +413,8 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
         }
     }
 
-    class BlackKnifeAssassinCuriosityGoal extends Goal {
-        public BlackKnifeAssassinCuriosityGoal() {
+    class ChronophageCuriosityGoal extends Goal {
+        public ChronophageCuriosityGoal() {
             this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         }
 
@@ -352,8 +423,8 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
          * method as well.
          */
         public boolean canUse() {
-            if (BlackKnifeAssassin.this.getTarget() != null && !BlackKnifeAssassin.this.getMoveControl().hasWanted() && BlackKnifeAssassin.this.random.nextInt(reducedTickDelay(7)) == 0) {
-                return BlackKnifeAssassin.this.distanceToSqr(BlackKnifeAssassin.this.getTarget()) > 4.0D;
+            if (Chronophage.this.getTarget() != null && !Chronophage.this.getMoveControl().hasWanted() && Chronophage.this.random.nextInt(reducedTickDelay(7)) == 0) {
+                return Chronophage.this.distanceToSqr(Chronophage.this.getTarget()) > 4.0D;
             } else {
                 return false;
             }
@@ -363,17 +434,17 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
          * Returns whether an in-progress EntityAIBase should continue executing
          */
         public boolean canContinueToUse() {
-            return BlackKnifeAssassin.this.getMoveControl().hasWanted() && BlackKnifeAssassin.this.getTarget() != null && BlackKnifeAssassin.this.getTarget().isAlive();
+            return Chronophage.this.getMoveControl().hasWanted() && Chronophage.this.getTarget() != null && Chronophage.this.getTarget().isAlive();
         }
 
         /**
          * Execute a one shot task or start executing a continuous task
          */
         public void start() {
-            LivingEntity livingentity = BlackKnifeAssassin.this.getTarget();
+            LivingEntity livingentity = Chronophage.this.getTarget();
             if (livingentity != null) {
                 Vec3 vec3 = livingentity.getEyePosition();
-                BlackKnifeAssassin.this.moveControl.setWantedPosition(vec3.x, vec3.y, vec3.z, 0.5D);
+                Chronophage.this.moveControl.setWantedPosition(vec3.x, vec3.y, vec3.z, 0.5D);
             }
         }
 
@@ -391,16 +462,16 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
          * Keep ticking a continuous task that has already been started
          */
         public void tick() {
-            LivingEntity livingentity = BlackKnifeAssassin.this.getTarget();
+            LivingEntity livingentity = Chronophage.this.getTarget();
             if (livingentity != null) {
                 Vec3 vec3 = livingentity.getEyePosition();
-                BlackKnifeAssassin.this.moveControl.setWantedPosition(vec3.x, vec3.y, vec3.z, 1.0D);
+                Chronophage.this.moveControl.setWantedPosition(vec3.x, vec3.y, vec3.z, 1.0D);
             }
         }
     }
 
-    class BlackKnifeAssassinMoveControl extends MoveControl4D {
-        public BlackKnifeAssassinMoveControl(BlackKnifeAssassin entity) {
+    class ChronophageMoveControl extends MoveControl4D {
+        public ChronophageMoveControl(Chronophage entity) {
             super(entity);
         }
 
@@ -410,8 +481,8 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
         }
     }
 
-    class BlackKnifeAssassinRandomMoveGoal extends Goal {
-        public BlackKnifeAssassinRandomMoveGoal() {
+    class ChronophageRandomMoveGoal extends Goal {
+        public ChronophageRandomMoveGoal() {
             this.setFlags(EnumSet.of(Goal.Flag.MOVE));
         }
 
@@ -420,7 +491,7 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
          * method as well.
          */
         public boolean canUse() {
-            return !BlackKnifeAssassin.this.getMoveControl().hasWanted() && BlackKnifeAssassin.this.random.nextInt(reducedTickDelay(7)) == 0;
+            return !Chronophage.this.getMoveControl().hasWanted() && Chronophage.this.random.nextInt(reducedTickDelay(7)) == 0;
         }
 
         /**
@@ -437,16 +508,16 @@ public class BlackKnifeAssassin extends PathfinderMob implements Entity4D {
             Random random = new Random(System.currentTimeMillis() / 10000);
 
             Vector4 offset = new Vector4(random.nextDouble(15) - 7, random.nextDouble(11) - 5, random.nextDouble(15) - 7, random.nextDouble(5.0D) - 10.0D);
-            Vector4 target = Vector4.of(Vector3.of(BlackKnifeAssassin.this), getW()).add(offset);
+            Vector4 target = Vector4.of(Vector3.of(Chronophage.this), getW()).add(offset);
 
             if (random.nextDouble() < 0.5) {
-                if (BlackKnifeAssassin.this.level.noCollision(getBoundingBox().move(offset.get3DPart().toVec3()))) {
-                    BlackKnifeAssassin.this.moveControl.setWantedPosition(target.x(), target.y(), target.z(), 0.5D);
+                if (Chronophage.this.level.noCollision(getBoundingBox().move(offset.get3DPart().toVec3()))) {
+                    Chronophage.this.moveControl.setWantedPosition(target.x(), target.y(), target.z(), 0.5D);
                 }
             } else {
                 // move in 4D
-                if (BlackKnifeAssassin.this.level.noCollision(getBoundingBox(target.w()).move(offset.get3DPart().toVec3()))) {
-                    ((MoveControl4D) BlackKnifeAssassin.this.moveControl).setWantedPosition(target.x(), target.y(), target.z(), target.w(), 0.5D);
+                if (Chronophage.this.level.noCollision(getBoundingBox(target.w()).move(offset.get3DPart().toVec3()))) {
+                    ((MoveControl4D) Chronophage.this.moveControl).setWantedPosition(target.x(), target.y(), target.z(), target.w(), 0.5D);
                 }
             }
         }

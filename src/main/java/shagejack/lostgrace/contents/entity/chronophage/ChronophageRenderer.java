@@ -1,4 +1,4 @@
-package shagejack.lostgrace.contents.entity.blackKnifeAssassin;
+package shagejack.lostgrace.contents.entity.chronophage;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -13,13 +13,13 @@ import shagejack.lostgrace.foundation.render.DrawUtils;
 import java.awt.*;
 
 @OnlyIn(Dist.CLIENT)
-public class BlackKnifeAssassinRenderer extends EntityRenderer<BlackKnifeAssassin> {
+public class ChronophageRenderer extends EntityRenderer<Chronophage> {
 
-    public BlackKnifeAssassinRenderer(EntityRendererProvider.Context pContext) {
+    public ChronophageRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 
-    public void render(BlackKnifeAssassin entity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
+    public void render(Chronophage entity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
         double w = entity.getW();
         double radius3D = entity.getRadiusIn3D();
         Color color = entity.getColor();
@@ -31,7 +31,7 @@ public class BlackKnifeAssassinRenderer extends EntityRenderer<BlackKnifeAssassi
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BlackKnifeAssassin entity) {
+    public ResourceLocation getTextureLocation(Chronophage entity) {
         return TextureAtlas.LOCATION_BLOCKS;
     }
 

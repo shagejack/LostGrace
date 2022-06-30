@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -54,6 +55,28 @@ public class LevelUtils {
                             level.setBlockAndUpdate(pos, replaceTo);
                         }
                     }
+                }
+            }
+        }
+    }
+
+    public static void inRadius(Level level, BlockPos center, double radius, BiConsumer<Level, BlockPos> task) {
+        for (double i = -radius; i <= radius; i++) {
+            for (double j = -radius; j <= radius; j++) {
+                for (double k = -radius; k <= radius; k++) {
+                    if (i * i + j * j + k * k <= radius * radius) {
+                        task.accept(level, new BlockPos(center.getX() + i, center.getY() + j, center.getZ() + k));
+                    }
+                }
+            }
+        }
+    }
+
+    public static void inRadiusCubic(Level level, BlockPos center, double radius, BiConsumer<Level, BlockPos> task) {
+        for (double i = -radius; i <= radius; i++) {
+            for (double j = -radius; j <= radius; j++) {
+                for (double k = -radius; k <= radius; k++) {
+                    task.accept(level, new BlockPos(center.getX() + i, center.getY() + j, center.getZ() + k));
                 }
             }
         }

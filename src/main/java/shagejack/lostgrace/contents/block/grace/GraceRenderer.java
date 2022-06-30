@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -12,12 +13,14 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
+import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
 import shagejack.lostgrace.foundation.utility.Constants;
 import shagejack.lostgrace.foundation.utility.Vector3;
 import shagejack.lostgrace.registries.AllTextures;
 
+import java.awt.*;
 import java.util.Objects;
 import java.util.Random;
 
@@ -31,8 +34,6 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
     }
 
     protected void renderGrace(GraceTileEntity grace, float partialTicks, PoseStack ms, MultiBufferSource bufferSource, int light, int overlay) {
-        int brightness = LightTexture.FULL_BRIGHT;
-
         if (grace.getSummonRemainingTicks() > 0) {
             float treeScale = 5.0f;
 
@@ -42,11 +43,13 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
             // ms.popPose();
         }
 
-        float s = (System.currentTimeMillis() % 4000) / 4000.0f;
+        float time = (System.currentTimeMillis() % 4000) / 4000.0f;
+        float s = time;
         if (s > 0.5f) {
             s = 1.0f - s;
         }
-        float scale = 0.5f + s * 0.1f;
+        float scale = 1.0f + s * 0.2f;
+        int alpha = (int) ((0.8 + 0.2 * Math.sin(time * Math.PI)) * 255);
 
         boolean isTableGrace = grace.isTableGrace();
 
@@ -61,18 +64,20 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
             ms.translate(0.5, 0.75, 0.5);
         }
 
-        Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
-        ms.mulPose(rotation);
-
         VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
-        Matrix4f matrix = ms.last().pose();
 
-        buffer.vertex(matrix, -scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU0(), spriteHumanity.getV0()).uv2(brightness).normal(1,0,0).endVertex();
-        buffer.vertex(matrix, -scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU0(), spriteHumanity.getV1()).uv2(brightness).normal(1,0,0).endVertex();
-        buffer.vertex(matrix, scale, scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU1(), spriteHumanity.getV1()).uv2(brightness).normal(1,0,0).endVertex();
-        buffer.vertex(matrix, scale, -scale, 0.0f).color(1.0f, 1.0f, 1.0f, 0.8f).uv(spriteHumanity.getU1(), spriteHumanity.getV0()).uv2(brightness).normal(1,0,0).endVertex();
+        // TODO: render rework
+
+        Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+
+        ms.pushPose();
+        ms.mulPose(rotation);
+        DrawUtils.renderSimpleIcon(buffer, ms, spriteHumanity, Color.WHITE, alpha, scale);
+        ms.popPose();
 
         ms.popPose();
+
+        // render particles
 
         if (Minecraft.getInstance().isPaused())
             return;
@@ -88,8 +93,6 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
 
         if (distance < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE || distance > 64)
             return;
-
-        // render particles
 
         long t = System.currentTimeMillis();
         double s1 = 0.1 + t % 7600 / 4000.0;

@@ -82,7 +82,7 @@ public class AllBlocks {
     public static final RegistryObject<Block> dream = new BlockBuilder()
             .name("dream")
             .material(Material.WATER)
-            .properties(properties -> properties.noCollission().strength(100.0F).noDrops())
+            .properties(properties -> properties.noCollission().strength(100.0F).noDrops().lightLevel(state -> 8))
             .buildBlock(properties -> new DreamLiquidBlock(AllFluids.dream.still(), properties))
             .noItem();
 

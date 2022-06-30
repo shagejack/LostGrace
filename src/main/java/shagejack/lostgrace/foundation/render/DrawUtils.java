@@ -23,6 +23,21 @@ public class DrawUtils {
 
     public static final List<TriangleFace> sphereFaces = new SphereBuilder().build(4, 16, true);
 
+    public static void renderSimpleIcon(VertexConsumer builder, PoseStack renderStack, TextureAtlasSprite sprite, Color color, int alpha, float scale) {
+        float u0 = sprite.getU0();
+        float u1 = sprite.getU1();
+        float v0 = sprite.getV0();
+        float v1 = sprite.getV1();
+        int r = color.getRed();
+        int g = color.getGreen();
+        int b = color.getBlue();
+        Matrix4f mat = renderStack.last().pose();
+        builder.vertex(mat, scale * -0.5F, scale * -0.5F, 0.0F).color(r, g, b, alpha).uv(u0, v1).uv2(LightTexture.FULL_BRIGHT).normal(0, 0, -1).endVertex();
+        builder.vertex(mat, scale * -0.5F, scale * 0.5F, 0.0F).color(r, g, b, alpha).uv(u0, v0).uv2(LightTexture.FULL_BRIGHT).normal(0, 0, -1).endVertex();
+        builder.vertex(mat, scale * 0.5F, scale * 0.5F, 0.0F).color(r, g, b, alpha).uv(u1, v0).uv2(LightTexture.FULL_BRIGHT).normal(0, 0, -1).endVertex();
+        builder.vertex(mat, scale * 0.5F, scale * -0.5F, 0.0F).color(r, g, b, alpha).uv(u1, v1).uv2(LightTexture.FULL_BRIGHT).normal(0, 0, -1).endVertex();
+    }
+
     // Too many method overloads...
     public static void renderQuad(VertexConsumer builder, PoseStack renderStack, Vector3 pos, Vector3 facingNormal, float scale, TextureAtlasSprite sprite) {
         renderQuad(builder, renderStack, pos, facingNormal, 0, scale, sprite, 255);
@@ -73,10 +88,10 @@ public class DrawUtils {
 
         Matrix4f renderMatrix = renderStack.last().pose();
 
-        pos1.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v0).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
-        pos2.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v1).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
-        pos3.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v1).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
-        pos4.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v0).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos1.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v1).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos2.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u0, v0).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos3.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v0).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
+        pos4.drawPosVertex(renderMatrix, builder).color(r, g, b, alpha).uv(u1, v1).uv2(lightMapUV).normal(normal.xF(), normal.yF(), normal.zF()).endVertex();
     }
 
     public static void renderTriangleWithColor(VertexConsumer builder, PoseStack renderStack, Vector3 pos, TriangleFace triangle, Color color, int alpha) {
