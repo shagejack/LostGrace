@@ -1,6 +1,5 @@
 package shagejack.lostgrace.foundation.utility;
 
-import java.awt.*;
 import java.util.Random;
 
 public class ColorUtils {

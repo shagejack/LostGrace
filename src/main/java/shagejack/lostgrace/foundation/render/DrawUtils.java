@@ -10,9 +10,9 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import shagejack.lostgrace.foundation.utility.Color;
 import shagejack.lostgrace.foundation.utility.Vector3;
 
-import java.awt.Color;
 import java.util.List;
 
 public class DrawUtils {

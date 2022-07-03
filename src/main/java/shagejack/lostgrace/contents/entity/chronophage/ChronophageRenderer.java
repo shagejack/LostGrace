@@ -9,8 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import shagejack.lostgrace.foundation.render.DrawUtils;
-
-import java.awt.*;
+import shagejack.lostgrace.foundation.utility.Color;
 
 @OnlyIn(Dist.CLIENT)
 public class ChronophageRenderer extends EntityRenderer<Chronophage> {

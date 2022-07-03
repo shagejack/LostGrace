@@ -9,14 +9,11 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -24,13 +21,11 @@ import net.minecraftforge.registries.ForgeRegistries;
 import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.FluidRenderer;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
+import shagejack.lostgrace.foundation.utility.Color;
 import shagejack.lostgrace.foundation.utility.Vector3;
 import shagejack.lostgrace.registries.fluid.AllFluids;
 
-import java.awt.*;
 import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 import java.util.Random;
 
 public class DreamPoolRenderer extends SafeTileEntityRenderer<DreamPoolTileEntity> {

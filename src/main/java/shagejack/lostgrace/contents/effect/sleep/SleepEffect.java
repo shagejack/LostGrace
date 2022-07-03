@@ -9,9 +9,9 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.*;
 import net.minecraft.world.phys.Vec3;
+import shagejack.lostgrace.foundation.utility.Color;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 
 public class SleepEffect extends MobEffect {
 

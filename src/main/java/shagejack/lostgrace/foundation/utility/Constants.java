@@ -3,8 +3,6 @@ package shagejack.lostgrace.foundation.utility;
 import shagejack.lostgrace.LostGrace;
 import shagejack.lostgrace.foundation.config.LostGraceConfig;
 
-import java.awt.*;
-
 public class Constants {
     // built-in value
     public static final double PLAYER_SIGHT_Y_OFFSET = 1.7D;

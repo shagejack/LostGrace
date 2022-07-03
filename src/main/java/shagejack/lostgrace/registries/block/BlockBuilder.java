@@ -16,12 +16,12 @@ import net.minecraftforge.client.event.ColorHandlerEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.registries.RegistryObject;
 import shagejack.lostgrace.LostGrace;
+import shagejack.lostgrace.foundation.utility.Color;
 import shagejack.lostgrace.registries.RegisterHandle;
 import shagejack.lostgrace.registries.item.ItemBuilder;
 import shagejack.lostgrace.registries.record.ItemBlock;
 import shagejack.lostgrace.registries.tags.TagBuilder;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

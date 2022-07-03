@@ -36,11 +36,11 @@ import shagejack.lostgrace.contents.entity.hyperdimensional.Entity4D;
 import shagejack.lostgrace.contents.entity.hyperdimensional.MoveControl4D;
 import shagejack.lostgrace.foundation.entity.EntityDataSerializersLG;
 import shagejack.lostgrace.foundation.utility.*;
+import shagejack.lostgrace.foundation.utility.Color;
 import shagejack.lostgrace.registries.entity.AllEntityTypes;
 import shagejack.lostgrace.registries.item.AllItems;
 
 import javax.annotation.Nullable;
-import java.awt.*;
 import java.util.EnumSet;
 import java.util.Objects;
 import java.util.Random;

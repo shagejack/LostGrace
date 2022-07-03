@@ -14,10 +14,9 @@ import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.FluidRenderer;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
+import shagejack.lostgrace.foundation.utility.Color;
 import shagejack.lostgrace.foundation.utility.Vector3;
 import shagejack.lostgrace.registries.AllTextures;
-
-import java.awt.*;
 
 public class BloodAltarRenderer extends SafeTileEntityRenderer<BloodAltarTileEntity> {
 

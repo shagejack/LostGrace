@@ -28,7 +28,6 @@ import shagejack.lostgrace.foundation.render.TriangleFace;
 import shagejack.lostgrace.foundation.utility.*;
 import shagejack.lostgrace.registries.AllTextures;
 
-import java.awt.*;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Optional;

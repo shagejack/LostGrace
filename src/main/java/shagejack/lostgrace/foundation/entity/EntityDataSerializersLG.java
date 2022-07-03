@@ -3,8 +3,7 @@ package shagejack.lostgrace.foundation.entity;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
-
-import java.awt.*;
+import shagejack.lostgrace.foundation.utility.Color;
 
 public class EntityDataSerializersLG {
     public static final EntityDataSerializer<Double> DOUBLE = new EntityDataSerializer<>() {
