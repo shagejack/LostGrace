@@ -68,6 +68,7 @@ public class Color {
         return obj instanceof Color && ((Color)obj).getRGB() == this.getRGB();
     }
 
+    @Override
     public String toString() {
         return getClass().getName() + "[r=" + getRed() + ", g=" + getGreen() + ", b=" + getBlue() + "]";
     }
