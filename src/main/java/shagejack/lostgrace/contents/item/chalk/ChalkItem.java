@@ -13,7 +13,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import shagejack.lostgrace.contents.block.spell.RuneType;
 import shagejack.lostgrace.contents.item.spellBook.SpellBookItem;
-import shagejack.lostgrace.registries.item.AllItems;
 
 public class ChalkItem extends Item {
     public ChalkItem(Properties pProperties) {

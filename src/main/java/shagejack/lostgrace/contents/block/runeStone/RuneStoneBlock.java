@@ -4,10 +4,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import org.apache.commons.compress.utils.Lists;
 import shagejack.lostgrace.contents.block.grace.GraceTileEntity;
 import shagejack.lostgrace.foundation.utility.TileEntityUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RuneStoneBlock extends Block {
@@ -27,7 +27,7 @@ public class RuneStoneBlock extends Block {
     }
 
     public static List<GraceTileEntity> getNearbyGraceTileEntities(Level level, BlockPos pos) {
-        List<GraceTileEntity> tiles = Lists.newArrayList();
+        List<GraceTileEntity> tiles = new ArrayList<>();
         TileEntityUtils.get(GraceTileEntity.class, level, pos.above()).ifPresent(tiles::add);
         TileEntityUtils.get(GraceTileEntity.class, level, pos.offset(1, 0, 0)).ifPresent(tiles::add);
         TileEntityUtils.get(GraceTileEntity.class, level, pos.offset(-1, 0, 0)).ifPresent(tiles::add);

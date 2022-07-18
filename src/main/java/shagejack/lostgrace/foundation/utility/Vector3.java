@@ -1,6 +1,5 @@
 package shagejack.lostgrace.foundation.utility;
 
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
@@ -12,14 +11,9 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.apache.logging.log4j.util.TriConsumer;
 
-import java.util.Iterator;
-import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
-import java.util.function.Function;
-import java.util.function.IntFunction;
 import java.util.function.UnaryOperator;
 
 public record Vector3(double x, double y, double z) {

@@ -53,7 +53,10 @@ public class LostGrace {
             LOGGER.info("Initializing Configuration...");
             ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, LostGraceConfig.SPEC, "lostgrace.toml");
             Constants.init();
+
+            LOGGER.info("Attaching Process Inter Mod Communication event...");
             modEventBus.addListener(this::processIMC);
+
         } catch (Exception e) {
             LOGGER.error("Mod Loading Failed", e);
             throw new RuntimeException();
