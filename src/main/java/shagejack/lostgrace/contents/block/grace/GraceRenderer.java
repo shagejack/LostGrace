@@ -1,15 +1,24 @@
 package shagejack.lostgrace.contents.block.grace;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.VoxelShape;
+import org.lwjgl.opengl.GL13;
 import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
@@ -51,7 +60,9 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         boolean isTableGrace = grace.isTableGrace();
 
         TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.HUMANITY);
-        
+
+        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
+
         ms.pushPose();
 
         if (isTableGrace) {
@@ -61,21 +72,23 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
             ms.translate(0.5, 0.75, 0.5);
         }
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
-
         // TODO: render rework
 
-        Quaternion rotation = Minecraft.getInstance().gameRenderer.getMainCamera().rotation();
+        Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
+        Quaternion rotation = camera.rotation();
 
         ms.pushPose();
         ms.mulPose(rotation);
+
         DrawUtils.renderSimpleIcon(buffer, ms, spriteHumanity, Color.WHITE, alpha, scale);
+
         ms.popPose();
 
         ms.popPose();
 
         // render particles
 
+        /*
         if (Minecraft.getInstance().isPaused())
             return;
 
@@ -106,6 +119,8 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
                 level.addParticle(ParticleTypes.SMALL_FLAME, tilePos.x() + pPos.x(), tilePos.y() + pPos.y(), tilePos.z() + pPos.z(), velocity.x(), velocity.y(), velocity.z());
             }
         }
+
+         */
     }
 
 }

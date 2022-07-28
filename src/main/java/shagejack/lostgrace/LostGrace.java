@@ -42,7 +42,7 @@ public class LostGrace {
             }
 
             LOGGER.info("Registering...");
-            RegisterHandle.RegRegisters();
+            RegisterHandle.regRegisters();
 
             LOGGER.info("Initializing register & register event listeners...");
             RegisterHandle.init();

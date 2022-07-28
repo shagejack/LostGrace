@@ -16,6 +16,7 @@ public class LostGraceClient {
 
         LostGrace.LOGGER.info("Initializing Client Register Events...");
         RegisterHandleClient.init();
+        RegisterHandleClient.regRegisters();
 
         LostGrace.LOGGER.info("Initializing Client Events...");
         ModClientEventSetup.setup(modEventBus, forgeEventBus);
@@ -27,11 +28,10 @@ public class LostGraceClient {
     }
 
     public static void onTextureStitch(TextureStitchEvent.Pre event) {
-        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS)) {
+        if (!event.getAtlas().location().equals(TextureAtlas.LOCATION_BLOCKS))
             return;
-        }
 
-        LostGrace.LOGGER.info("Stitching Texture...");
+        LostGrace.LOGGER.info("Stitching Textures...");
         event.addSprite(AllTextures.HUMANITY);
         event.addSprite(AllTextures.GUIDANCE);
         event.addSprite(AllTextures.IMPACT_CROSS);

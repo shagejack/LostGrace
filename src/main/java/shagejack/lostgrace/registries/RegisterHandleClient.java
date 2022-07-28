@@ -23,4 +23,8 @@ public class RegisterHandleClient {
 
         modBus.addListener(ItemPropertyOverridesRegistry::propertyOverrideRegistry);
     }
+
+    public static void regRegisters() {
+        var bus = FMLJavaModLoadingContext.get().getModEventBus();
+    }
 }

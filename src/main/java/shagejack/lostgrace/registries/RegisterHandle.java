@@ -67,7 +67,7 @@ public class RegisterHandle {
         AllPackets.registerPackets();
     }
 
-    public static void RegRegisters() {
+    public static void regRegisters() {
         var bus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ITEM_REGISTER.register(bus);

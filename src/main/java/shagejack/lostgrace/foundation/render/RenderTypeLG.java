@@ -21,12 +21,12 @@ public class RenderTypeLG extends RenderType {
             .vertexFormat(DefaultVertexFormat.BLOCK)
             .vertexFormatMode(VertexFormat.Mode.QUADS)
             .affectsCrumbling()
-            .setShaderState(RenderStateShard.RENDERTYPE_TRANSLUCENT_SHADER)
+            .setShaderState(RenderStateShard.RENDERTYPE_CUTOUT_MIPPED_SHADER)
             .setTextureState(RenderStateShard.BLOCK_SHEET_MIPPED)
             .setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-            .setOutputState(TRANSLUCENT_TARGET)
+            .setOutputState(RenderStateShard.TRANSLUCENT_TARGET)
+            .setDepthTestState(LEQUAL_DEPTH_TEST)
             .enableLightMap()
-            .disableDepthTest()
             .build();
 
     public static final RenderType GRACE = RenderTypeBuilder.builder()
