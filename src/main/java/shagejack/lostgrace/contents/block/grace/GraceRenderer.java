@@ -1,34 +1,20 @@
 package shagejack.lostgrace.contents.block.grace;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.lowdragmc.shimmer.client.postprocessing.PostProcessing;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.phys.shapes.VoxelShape;
-import org.lwjgl.opengl.GL13;
 import shagejack.lostgrace.foundation.render.DrawUtils;
 import shagejack.lostgrace.foundation.render.RenderTypeLG;
 import shagejack.lostgrace.foundation.tile.renderer.SafeTileEntityRenderer;
 import shagejack.lostgrace.foundation.utility.Color;
-import shagejack.lostgrace.foundation.utility.Constants;
-import shagejack.lostgrace.foundation.utility.Vector3;
 import shagejack.lostgrace.registries.AllTextures;
-
-import java.util.Objects;
-import java.util.Random;
 
 public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
 
@@ -61,8 +47,6 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
 
         TextureAtlasSprite spriteHumanity = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(AllTextures.HUMANITY);
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
-
         ms.pushPose();
 
         if (isTableGrace) {
@@ -73,6 +57,8 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         }
 
         // TODO: render rework
+
+        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
         Quaternion rotation = camera.rotation();

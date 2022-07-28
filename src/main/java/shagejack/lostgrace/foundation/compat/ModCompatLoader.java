@@ -11,7 +11,7 @@ public class ModCompatLoader {
 
     public void addModCompat(IModCompat modCompat) {
         if(shouldLoadCompat(modCompat)) {
-            modCompat.createContext().run();
+            modCompat.createContext().forEach(IModCompatContext::run);
         }
     }
 

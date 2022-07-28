@@ -13,6 +13,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import shagejack.lostgrace.compat.shimmer.ShimmerModCompat;
 import shagejack.lostgrace.compat.top.TOPModCompat;
 import shagejack.lostgrace.foundation.compat.ModCompatLoader;
 import shagejack.lostgrace.foundation.config.LostGraceConfig;
@@ -40,6 +41,8 @@ public class LostGrace {
                 LOGGER.info("TOP Plugin Loaded.");
                 modCompatLoader.addModCompat(new TOPModCompat());
             }
+
+            modCompatLoader.addModCompat(new ShimmerModCompat());
 
             LOGGER.info("Registering...");
             RegisterHandle.regRegisters();

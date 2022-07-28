@@ -3,6 +3,8 @@ package shagejack.lostgrace.compat.top;
 import shagejack.lostgrace.foundation.compat.IModCompatContext;
 import shagejack.lostgrace.foundation.compat.IModCompat;
 
+import java.util.List;
+
 public class TOPModCompat implements IModCompat {
 
     @Override
@@ -11,8 +13,8 @@ public class TOPModCompat implements IModCompat {
     }
 
     @Override
-    public IModCompatContext createContext() {
-        return new TOPModCompatContext();
+    public List<IModCompatContext> createContext() {
+        return List.of(new TOPModCompatContext());
     }
 
 }

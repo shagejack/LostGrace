@@ -1,8 +1,10 @@
 package shagejack.lostgrace.foundation.compat;
 
+import java.util.List;
+
 public interface IModCompat {
 
     String getId();
 
-    IModCompatContext createContext();
+    List<IModCompatContext> createContext();
 }
