@@ -15,6 +15,7 @@ import shagejack.lostgrace.contents.grace.GlobalGraceSet;
 import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
+import shagejack.lostgrace.foundation.config.LostGraceConfig;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.GraceTileEntityUpdatePacket;
 import shagejack.lostgrace.foundation.tile.BaseTileEntity;
@@ -34,6 +35,8 @@ public class GraceTileEntity extends BaseTileEntity {
     protected int summoned;
     protected boolean locked;
     protected boolean isTable;
+
+    protected boolean isOnUse;
 
     protected int syncCounter = 1200;
 
@@ -57,7 +60,7 @@ public class GraceTileEntity extends BaseTileEntity {
         if (this.grace == null || grace.equals(Grace.NULL) || grace.getDimension() == null || !grace.getRawName().equals(graceName))
             this.grace = getGrace(true);
 
-        if (locked || isTable) {
+        if (isOnUse()) {
             List<Player> players = new ArrayList<>();
             for(Player player : level.players()) {
                 if (Vector3.of(getBlockPos()).add(0.5, isTable ? 0.5 : Constants.GRACE_DISTANCE_Y_OFFSET, 0.5).distance(Vector3.of(player.position())) < Constants.GRACE_FORCE_FIRST_PERSON_DISTANCE) {
@@ -66,7 +69,8 @@ public class GraceTileEntity extends BaseTileEntity {
             }
 
             if (players.size() == 0 || players.stream().noneMatch(GraceTileEntity::activatedGrace)) {
-                this.locked = false;
+                this.setOnUse(false);
+                this.setLocked(false);
             } else if (level.isClientSide()) {
                 // try to create fog for client player
                 createFog();
@@ -110,7 +114,7 @@ public class GraceTileEntity extends BaseTileEntity {
     @OnlyIn(Dist.CLIENT)
     public void createFog() {
 
-        if (Minecraft.getInstance().player == null || (!this.isLocked() && !isTable)) {
+        if (Minecraft.getInstance().player == null || !isOnUse()) {
             renderFog = false;
             return;
         }
@@ -141,6 +145,7 @@ public class GraceTileEntity extends BaseTileEntity {
     @Override
     protected void write(CompoundTag tag, boolean clientPacket) {
         super.write(tag, clientPacket);
+        tag.putBoolean("IsOnUse", this.isOnUse);
         tag.putInt("Summoned", this.summoned);
         tag.putBoolean("Locked", this.locked);
         tag.putString("GraceName", this.graceName);
@@ -155,6 +160,7 @@ public class GraceTileEntity extends BaseTileEntity {
         } else {
             this.summoned = 2400;
         }
+        this.isOnUse = tag.getBoolean("IsOnUse");
         this.locked = tag.getBoolean("Locked");
         this.graceName = tag.getString("GraceName");
         this.isTable = tag.getBoolean("IsTable");
@@ -174,6 +180,14 @@ public class GraceTileEntity extends BaseTileEntity {
 
     public void setLocked(boolean locked) {
         this.locked = locked;
+    }
+
+    public boolean isOnUse() {
+        return isOnUse;
+    }
+
+    public void setOnUse(boolean onUse) {
+        this.isOnUse = onUse;
     }
 
     public Grace getGrace() {
@@ -227,7 +241,7 @@ public class GraceTileEntity extends BaseTileEntity {
 
     public void syncToClient() {
         if (level != null && !level.isClientSide())
-            AllPackets.sendToSameDimension(level, new GraceTileEntityUpdatePacket(getBlockPos(), this.graceName));
+            AllPackets.sendToSameDimension(level, new GraceTileEntityUpdatePacket(getBlockPos(), this.graceName, isOnUse(), isLocked()));
     }
 
     @Override

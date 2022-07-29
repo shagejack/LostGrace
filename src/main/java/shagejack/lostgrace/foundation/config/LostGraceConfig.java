@@ -17,6 +17,7 @@ public final class LostGraceConfig {
     public static final ForgeConfigSpec.ConfigValue<Integer> TRINA_LILY_GEN_IN_TRIES;
 
     public static final String CATEGORY_GRACE = "grace";
+    public static final ForgeConfigSpec.ConfigValue<Boolean> LOCK_ON_USE;
     public static final ForgeConfigSpec.ConfigValue<Boolean> MEMORY_OF_GRACE_DROP_EXPERIENCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_FORCE_FIRST_PERSON_DISTANCE;
     public static final ForgeConfigSpec.ConfigValue<Double> GRACE_MAX_DISTANCE;
@@ -45,6 +46,7 @@ public final class LostGraceConfig {
         BUILDER.pop();
 
         BUILDER.comment("Grace Settings").push(CATEGORY_GRACE);
+        LOCK_ON_USE = BUILDER.comment("Lock grace on use if it's not table grace. Default: false").define("lockOnUse", false);
         MEMORY_OF_GRACE_DROP_EXPERIENCE = BUILDER.comment("If using Memory of Grace drops player's experience. Default: true").define("memoryOfGraceDropExperience", true);
         GRACE_FORCE_FIRST_PERSON_DISTANCE = BUILDER.comment("The player-grace distance mentioned below is which between the player foot and the position 1.1 blocks above the grace center.",
                 "Player within this distance of graces will be forcibly changed to first person. This distance is also used to determine if a grace should be rendered in fog. Default: 5.5").define("graceForceFirstPersonDistance", 5.5D);

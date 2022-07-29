@@ -14,21 +14,29 @@ public class GraceTileEntityUpdatePacket extends SimplePacketBase {
 
     BlockPos pos;
     String name;
+    boolean isOnUse;
+    boolean isLocked;
 
-    public GraceTileEntityUpdatePacket(BlockPos pos, String name) {
+    public GraceTileEntityUpdatePacket(BlockPos pos, String name, boolean isOnUse, boolean isLocked) {
         this.pos = pos;
         this.name = name;
+        this.isOnUse = isOnUse;
+        this.isLocked = isLocked;
     }
 
     public GraceTileEntityUpdatePacket(FriendlyByteBuf buffer) {
         this.pos = buffer.readBlockPos();
         this.name = buffer.readUtf();
+        this.isOnUse = buffer.readBoolean();
+        this.isLocked = buffer.readBoolean();
     }
 
     @Override
     public void write(FriendlyByteBuf buffer) {
         buffer.writeBlockPos(pos);
         buffer.writeUtf(name);
+        buffer.writeBoolean(isOnUse);
+        buffer.writeBoolean(isLocked);
     }
 
     @Override
@@ -44,6 +52,8 @@ public class GraceTileEntityUpdatePacket extends SimplePacketBase {
 
             if (tile instanceof GraceTileEntity graceTile) {
                 graceTile.setGraceName(name);
+                graceTile.setOnUse(isOnUse);
+                graceTile.setLocked(isLocked);
             }
         });
 

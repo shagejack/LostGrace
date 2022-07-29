@@ -50,15 +50,17 @@ public class GraceRenderer extends SafeTileEntityRenderer<GraceTileEntity> {
         ms.pushPose();
 
         if (isTableGrace) {
-            scale *= 2;
+            scale *= 1.8;
             ms.translate(0.5, 1.0, 0.5);
         } else {
             ms.translate(0.5, 0.75, 0.5);
+            if (grace.isLocked())
+                scale *= 0.5;
         }
 
         // TODO: render rework
 
-        VertexConsumer buffer = bufferSource.getBuffer(RenderTypeLG.HUMANITY);
+        VertexConsumer buffer = bufferSource.getBuffer(RenderType.cutoutMipped());
 
         Camera camera = Minecraft.getInstance().gameRenderer.getMainCamera();
         Quaternion rotation = camera.rotation();

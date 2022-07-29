@@ -35,6 +35,7 @@ import shagejack.lostgrace.contents.grace.Grace;
 import shagejack.lostgrace.contents.grace.GraceProvider;
 import shagejack.lostgrace.contents.grace.IGraceHandler;
 import shagejack.lostgrace.foundation.block.BaseTileEntityBlock;
+import shagejack.lostgrace.foundation.config.LostGraceConfig;
 import shagejack.lostgrace.foundation.network.AllPackets;
 import shagejack.lostgrace.foundation.network.packet.DiscoverGracePacket;
 import shagejack.lostgrace.foundation.utility.DropUtils;
@@ -95,6 +96,7 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
                     }
                 });
             }
+            te.syncToClient();
         });
 
         if (interacted.get())
@@ -127,11 +129,16 @@ public class GraceBlock extends BaseTileEntityBlock<GraceTileEntity> {
 
     public void commonVisit(Level level, BlockPos pos, Player player) {
         withTileEntityDo(level, pos, te -> {
-            if (!te.isTableGrace()) {
+            te.setOnUse(true);
+            if (LostGraceConfig.LOCK_ON_USE.get() &&  !te.isTableGrace()) {
                 level.setBlockAndUpdate(pos, level.getBlockState(pos).setValue(COOLDOWN, true));
                 te.setLocked(true);
             }
         });
+
+        if (player instanceof ServerPlayer serverPlayer) {
+            serverPlayer.connection.send(new ClientboundSoundPacket(SoundEvents.NOTE_BLOCK_PLING, SoundSource.BLOCKS, pos.getX(), pos.getY(), pos.getZ(), 1.0f, 1.0f));
+        }
     }
 
     @Override
