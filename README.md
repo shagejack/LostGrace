@@ -7,7 +7,7 @@
 ![](https://img.shields.io/badge/Available%20for-MC%201.18.2-blue)
 ![](https://img.shields.io/github/license/ShageJack/LostGrace)
 
-Entries of [Teacon 2022](https://www.teacon.cn/2022/index)
+Entry of [Teacon 2022](https://www.teacon.cn/2022/index)
 
 See [TODO](./doc/TODO.md) to track our progress.
 
@@ -24,7 +24,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://N/A"><img src="https://avatars.githubusercontent.com/u/24351349?v=4?s=100" width="100px;" alt=""/><br /><sub><b>shagejack.eth</b></sub></a><br /><a href="#ideas-ShageJack" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ShageJack/LostGrace/commits?author=ShageJack" title="Code">💻</a></td>
+    <td align="center"><a href="http://N/A"><img src="https://avatars.githubusercontent.com/u/24351349?v=4?s=100" width="100px;" alt=""/><br /><sub><b>Shage_Jack</b></sub></a><br /><a href="#ideas-ShageJack" title="Ideas, Planning, & Feedback">🤔</a> <a href="https://github.com/ShageJack/LostGrace/commits?author=ShageJack" title="Code">💻</a></td>
     <td align="center"><a href="https://github.com/MalayPrime"><img src="https://avatars.githubusercontent.com/u/25426509?v=4?s=100" width="100px;" alt=""/><br /><sub><b>MalayP</b></sub></a><br /><a href="#design-MalayPrime" title="Design">🎨</a></td>
   </tr>
 </table>
